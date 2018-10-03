@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="afdd4516-fbfc-46c4-b9ca-56b31680c8da" name="Default Changelist" comment="" />
+    <list default="true" id="afdd4516-fbfc-46c4-b9ca-56b31680c8da" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/out/production/VenueDesigner/app/domain/painter/Painter.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/VenueDesigner/app/domain/painter/Painter.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/domain/painter/Painter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/domain/painter/Painter.java" afterDir="false" />
+    </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -101,20 +104,20 @@
     <session id="1854757987">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="2" />
+          <entry key="project.closed" value="3" />
           <entry key="project.open.time.0" value="1" />
-          <entry key="project.open.time.9" value="1" />
-          <entry key="project.opened" value="2" />
+          <entry key="project.open.time.9" value="2" />
+          <entry key="project.opened" value="3" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="java" value="468" />
+          <entry key="java" value="500" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="JAVA" value="468" />
+          <entry key="JAVA" value="500" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open" />
@@ -154,8 +157,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/app/domain/painter/Painter.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="634">
-              <caret line="54" column="49" selection-start-line="54" selection-start-column="49" selection-end-line="54" selection-end-column="49" />
+            <state relative-caret-position="434">
+              <caret line="45" column="78" lean-forward="true" selection-start-line="45" selection-start-column="78" selection-end-line="45" selection-end-column="78" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -312,6 +315,30 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="AndroidView" />
+      <pane id="PackagesPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="Ateliers" type="58d84e3e:PackageViewProjectNode" />
+              <item name="Ateliers" type="616d4139:PackageViewModuleNode" />
+            </path>
+            <path>
+              <item name="Ateliers" type="58d84e3e:PackageViewProjectNode" />
+              <item name="Ateliers" type="616d4139:PackageViewModuleNode" />
+              <item name="Ateliers" type="1f31426a:PackageElementNode" />
+            </path>
+            <path>
+              <item name="Ateliers" type="58d84e3e:PackageViewProjectNode" />
+              <item name="Ateliers" type="616d4139:PackageViewModuleNode" />
+              <item name="Ateliers" type="1f31426a:PackageElementNode" />
+              <item name="gui" type="1f31426a:PackageElementNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -356,30 +383,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="PackagesPane">
-        <subPane>
-          <expand>
-            <path>
-              <item name="Ateliers" type="58d84e3e:PackageViewProjectNode" />
-              <item name="Ateliers" type="616d4139:PackageViewModuleNode" />
-            </path>
-            <path>
-              <item name="Ateliers" type="58d84e3e:PackageViewProjectNode" />
-              <item name="Ateliers" type="616d4139:PackageViewModuleNode" />
-              <item name="Ateliers" type="1f31426a:PackageElementNode" />
-            </path>
-            <path>
-              <item name="Ateliers" type="58d84e3e:PackageViewProjectNode" />
-              <item name="Ateliers" type="616d4139:PackageViewModuleNode" />
-              <item name="Ateliers" type="1f31426a:PackageElementNode" />
-              <item name="gui" type="1f31426a:PackageElementNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
-      <pane id="AndroidView" />
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -454,16 +457,17 @@
       <workItem from="1538587726028" duration="4599000" />
       <workItem from="1538592615014" duration="2228000" />
       <workItem from="1538595043095" duration="35000" />
+      <workItem from="1538598278455" duration="350000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="63803000" />
+    <option name="totallyTimeSpent" value="64153000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.19936034" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.20149253" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -587,8 +591,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/app/domain/painter/Painter.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="634">
-          <caret line="54" column="49" selection-start-line="54" selection-start-column="49" selection-end-line="54" selection-end-column="49" />
+        <state relative-caret-position="434">
+          <caret line="45" column="78" lean-forward="true" selection-start-line="45" selection-start-column="78" selection-end-line="45" selection-end-column="78" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>

@@ -46,9 +46,14 @@ public class Painter {
                         m_controller.getXCursor(), m_controller.getYCursor());
             }
             else if (m_controller.getCreationMode() == "rectangle"){
-                g.drawRect(p_forme.getPoints().lastElement().x, p_forme.getPoints().lastElement().y,
-                        m_controller.getXCursor()-p_forme.getPoints().lastElement().x,
-                        m_controller.getYCursor()-p_forme.getPoints().lastElement().y);
+                g.drawLine(p_forme.getPoints().lastElement().x, p_forme.getPoints().lastElement().y,
+                        m_controller.getXCursor(), p_forme.getPoints().lastElement().y);
+                g.drawLine(p_forme.getPoints().lastElement().x, p_forme.getPoints().lastElement().y,
+                        p_forme.getPoints().lastElement().x, m_controller.getYCursor());
+                g.drawLine(m_controller.getXCursor(), p_forme.getPoints().lastElement().y,
+                        m_controller.getXCursor(), m_controller.getYCursor());
+                g.drawLine(p_forme.getPoints().lastElement().x, m_controller.getYCursor(),
+                        m_controller.getXCursor(), m_controller.getYCursor());
             }
 
         }
