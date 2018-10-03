@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="app.gui.MainWindow">
+  <grid id="27dc6" binding="panelMain" layout-manager="BorderLayout" hgap="0" vgap="0">
+    <constraints>
+      <xy x="20" y="20" width="896" height="451"/>
+    </constraints>
+    <properties>
+      <minimumSize width="50" height="50"/>
+    </properties>
+    <border type="none"/>
+    <children>
+      <grid id="d40ef" binding="buttonTopPanel" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="0">
+        <constraints border-constraint="North"/>
+        <properties>
+          <preferredSize width="400" height="35"/>
+        </properties>
+        <border type="none"/>
+        <children>
+          <component id="51fbe" class="javax.swing.JButton" binding="rectangleBtn">
+            <constraints/>
+            <properties>
+              <text value="Rectangle"/>
+            </properties>
+          </component>
+          <component id="74d99" class="javax.swing.JButton" binding="polygoneBtn">
+            <constraints/>
+            <properties>
+              <text value="Polygone"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+      <scrollpane id="79245" binding="mainScrollPane">
+        <constraints border-constraint="Center"/>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="15681" class="app.gui.DrawingPanel" binding="drawingPanel" custom-create="true">
+            <constraints/>
+            <properties/>
+          </component>
+        </children>
+      </scrollpane>
+      <grid id="46c89" binding="tablePanel" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+        <constraints border-constraint="East"/>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="43450" class="javax.swing.JTable" binding="propertyTable">
+            <constraints/>
+            <properties/>
+          </component>
+        </children>
+      </grid>
+    </children>
+  </grid>
+  <buttonGroups>
+    <group name="createFruitButtonGroup">
+      <member id="4203"/>
+      <member id="3e089"/>
+    </group>
+  </buttonGroups>
+</form>
