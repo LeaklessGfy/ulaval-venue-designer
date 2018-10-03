@@ -58,6 +58,13 @@ public class MainWindow extends Panel {
                 polygoneBtn.setForeground(Color.LIGHT_GRAY);
             }
         });
+        drawingPanel.addMouseMotionListener(new MouseMotionAdapter() {
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                super.mouseMoved(e);
+                controller.mouseMoved(e);
+            }
+        });
     }
 
     public static void main(String[] args) {

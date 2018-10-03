@@ -41,6 +41,20 @@ public class Painter {
         } else {
             g.setColor(Color.lightGray);
             g.drawPolyline(xCoords,yCoords,nPoints);
+            if (m_controller.getCreationMode() == "polygone"){
+                g.drawLine(p_forme.getPoints().lastElement().x, p_forme.getPoints().lastElement().y,
+                        m_controller.getXCursor(), m_controller.getYCursor());
+            }
+            else if (m_controller.getCreationMode() == "rectangle"){
+/*                g.drawLine(p_forme.getPoints().lastElement().x,p_forme.getPoints().lastElement().y,
+                        m_controller.getXCursor(), p_forme.getPoints().lastElement().y);
+                g.drawLine(p_forme.getPoints().lastElement().x,p_forme.getPoints().lastElement().y,
+                        p_forme.getPoints().lastElement().x, m_controller.getYCursor());*/
+                g.drawRect(p_forme.getPoints().lastElement().x, p_forme.getPoints().lastElement().y,
+                        m_controller.getXCursor()-p_forme.getPoints().lastElement().x,
+                        m_controller.getYCursor()-p_forme.getPoints().lastElement().y);
+            }
+
         }
     }
 }

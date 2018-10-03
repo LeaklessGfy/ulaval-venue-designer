@@ -10,11 +10,20 @@ public class Controller {
     private Vector<Forme> m_formes = new Vector<>();
     private String m_creationMode= new String();
     private DrawingPanel m_drawingPanel;
+    private int[] m_cursor = {-1,-1};
 
+    public String getCreationMode(){
+        return m_creationMode;
+    }
     public void setDrawingPanel(DrawingPanel p_DrawingPanel){
         m_drawingPanel = p_DrawingPanel;
     }
-
+    public int getXCursor () {
+        return  m_cursor[0];
+    }
+    public int getYCursor () {
+        return  m_cursor[1];
+    }
     public void mouseClicked(MouseEvent e) {
         if(m_formes.isEmpty()){
             if (m_creationMode == "rectangle"){
@@ -66,6 +75,16 @@ public class Controller {
         else if (!m_formes.lastElement().isValid()) {
             m_formes.lastElement().addPoint(new Point(e.getX(), e.getY()));
             m_drawingPanel.repaint();
+        }
+    }
+
+    public void mouseMoved(MouseEvent e){
+        if (!m_formes.isEmpty()){
+            if (!m_formes.lastElement().isValid()){
+                m_cursor[0] = e.getX();
+                m_cursor[1] = e.getY();
+                m_drawingPanel.repaint();
+            }
         }
     }
     public boolean toggleMode(String p_mode) {
