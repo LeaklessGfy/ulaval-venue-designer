@@ -1,104 +1,98 @@
 package app.domain;
 
-import app.gui.DrawingPanel;
+import app.domain.shape.Mode;
+import app.domain.shape.Point;
+import app.domain.shape.Shape;
 
-import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.util.Vector;
+import java.awt.Polygon;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 
 public class Controller {
-    private Vector<Forme> m_formes = new Vector<>();
-    private String m_creationMode= new String();
-    private DrawingPanel m_drawingPanel;
-    private int[] m_cursor = {-1,-1};
+    private final ArrayList<Shape> m_shapes = new ArrayList<>();
 
-    public String getCreationMode(){
-        return m_creationMode;
+    private Mode m_mode = Mode.Rectangle;
+    private UIPanel m_drawingPanel;
+    private Point m_cursor = new Point(-1, -1);
+
+    public void setDrawingPanel(UIPanel p_DrawingPanel){
+        m_drawingPanel = Objects.requireNonNull(p_DrawingPanel);
     }
-    public void setDrawingPanel(DrawingPanel p_DrawingPanel){
-        m_drawingPanel = p_DrawingPanel;
-    }
+
     public int getXCursor () {
-        return  m_cursor[0];
+        return  m_cursor.x;
     }
+
     public int getYCursor () {
-        return  m_cursor[1];
+        return  m_cursor.y;
     }
-    public void mouseClicked(MouseEvent e) {
-        if(m_formes.isEmpty()){
-            if (m_creationMode == "rectangle"){
-                m_formes.add(new Rectangle());
-                m_formes.lastElement().addPoint(new Point(e.getX(), e.getY()));
-            }
-            else if (m_creationMode == "polygone"){
-                m_formes.add(new Forme());
-                m_formes.lastElement().addPoint(new Point(e.getX(), e.getY()));
-            }
+
+    public void mouseClicked(int x, int y) {
+        if (!m_shapes.isEmpty() && !lastShape().isValid()) {
+            lastShape().addPoint(new Point(x, y));
+            m_drawingPanel.repaint();
+            return;
         }
-        else if (m_formes.lastElement().isValid()){
-            if (m_creationMode == "rectangle"){
-                for (Forme forme : m_formes) {
-                    forme.setSelected(false);
-                }
-                m_formes.add(new Rectangle());
-                m_formes.lastElement().addPoint(new Point(e.getX(), e.getY()));
+
+        Shape shape = m_mode.build();
+        m_shapes.add(shape);
+        shape.addPoint(new Point(x, y));
+
+        if (lastShape().isValid()) {
+            for (Shape s : m_shapes) {
+                s.setSelected(false);
             }
-            else if(m_creationMode == "polygone"){
-                for (Forme forme : m_formes) {
-                    forme.setSelected(false);
+        } else {
+            for (Shape s : m_shapes) {
+                int nPoints = s.getPoints().size();
+                int[] xCoords = new int[nPoints];
+                int[] yCoords = new int[nPoints];
+                int i = 0;
+                for (Point point : s.getPoints()) {
+                    xCoords[i] = point.x;
+                    yCoords[i] = point.y;
+                    i++;
                 }
-                m_formes.add(new Forme());
-                m_formes.lastElement().addPoint(new Point(e.getX(), e.getY()));
+                java.awt.Shape sh = new Polygon(xCoords, yCoords, nPoints);
             }
-            else {
-                for (Forme forme : m_formes) {
-                    int nPoints=forme.getPoints().size();
-                    int[] xCoords = new int[nPoints];
-                    int[] yCoords = new int[nPoints];
-                    int i=0;
-                    for(Point point:forme.getPoints()){
-                        xCoords[i]=point.x;
-                        yCoords[i]=point.y;
-                        i++;
-                    }
-                    Shape shape = new Polygon(xCoords, yCoords, nPoints);
-                    if (shape.contains(e.getPoint())) {
-                        forme.setSelected(true);
-                    }
-                    else {
-                        forme.setSelected(false);
-                    }
-                }
-                m_drawingPanel.repaint();
-            }
-        }
-        else if (!m_formes.lastElement().isValid()) {
-            m_formes.lastElement().addPoint(new Point(e.getX(), e.getY()));
+
             m_drawingPanel.repaint();
         }
     }
 
-    public void mouseMoved(MouseEvent e){
-        if (!m_formes.isEmpty()){
-            if (!m_formes.lastElement().isValid()){
-                m_cursor[0] = e.getX();
-                m_cursor[1] = e.getY();
-                m_drawingPanel.repaint();
-            }
+    public void mouseMoved(int x, int y){
+        if (m_shapes.isEmpty() || lastShape().isValid()) {
+            return;
         }
-    }
-    public boolean toggleMode(String p_mode) {
-        if(m_creationMode == p_mode){
-            m_creationMode = "";
-            return false;
-        }
-        else {
-            m_creationMode=p_mode;
-            return true;
-        }
+
+        m_cursor.set(x, y);
+        m_drawingPanel.repaint();
     }
 
-    public Vector<Forme> getForme(){
-        return m_formes;
+    public boolean toggleMode(Mode p_mode) {
+        Objects.requireNonNull(p_mode);
+
+        if (m_mode.equals(p_mode)) {
+            return false;
+        }
+
+        m_mode = p_mode;
+
+        return true;
+    }
+
+    public Mode getMode() {
+        return m_mode;
+    }
+
+    public List<Shape> getShapes() {
+        return Collections.unmodifiableList(m_shapes);
+    }
+
+    private Shape lastShape() {
+        return m_shapes.get(m_shapes.size() - 1);
     }
 }

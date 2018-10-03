@@ -1,10 +1,8 @@
-package app.domain;
+package app.domain.shape;
 
-import java.awt.*;
-
-public class Rectangle extends Forme{
+public class Rectangle extends Shape {
     public void addPoint(Point p_point){
-        if (super.getPoints().isEmpty()){
+        if (m_points.isEmpty()){
             m_points.add(p_point);
         } else {
             m_points.add(new Point(p_point.x, super.getPoints().firstElement().y));
@@ -13,5 +11,4 @@ public class Rectangle extends Forme{
             super.setValid(true);
         }
     }
-
 }

@@ -1,6 +1,7 @@
 package app.gui;
 
 import app.domain.Controller;
+import app.domain.shape.Mode;
 
 import javax.swing.*;
 import java.awt.*;
@@ -31,11 +32,21 @@ public class MainWindow extends Panel {
         drawingPanel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                controller.mouseClicked(e);
+                controller.mouseClicked(e.getX(), e.getY());
             }
         });
+
+        drawingPanel.addMouseMotionListener(new MouseMotionAdapter() {
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                super.mouseMoved(e);
+                controller.mouseMoved(e.getX(), e.getY());
+            }
+        });
+
         rectangleBtn.addActionListener(e -> {
-            boolean isEnabled = controller.toggleMode("rectangle");
+            boolean isEnabled = controller.toggleMode(Mode.Rectangle);
+
             if (isEnabled) {
                 rectangleBtn.setBackground(Color.BLUE);
                 rectangleBtn.setForeground(Color.WHITE);
@@ -46,8 +57,10 @@ public class MainWindow extends Panel {
                 rectangleBtn.setForeground(Color.LIGHT_GRAY);
             }
         });
+
         polygoneBtn.addActionListener(e -> {
-            boolean isEnabled = controller.toggleMode("polygone");
+            boolean isEnabled = controller.toggleMode(Mode.Polygon);
+
             if (isEnabled) {
                 polygoneBtn.setBackground(Color.BLUE);
                 polygoneBtn.setForeground(Color.WHITE);
@@ -56,13 +69,6 @@ public class MainWindow extends Panel {
             } else {
                 polygoneBtn.setBackground(Color.DARK_GRAY);
                 polygoneBtn.setForeground(Color.LIGHT_GRAY);
-            }
-        });
-        drawingPanel.addMouseMotionListener(new MouseMotionAdapter() {
-            @Override
-            public void mouseMoved(MouseEvent e) {
-                super.mouseMoved(e);
-                controller.mouseMoved(e);
             }
         });
     }
@@ -79,6 +85,5 @@ public class MainWindow extends Panel {
         controller = new Controller();
         drawingPanel = new DrawingPanel(controller);
     }
-
 }
 

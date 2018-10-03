@@ -1,9 +1,15 @@
 package app.domain.painter;
 
 import app.domain.Controller;
-import app.domain.Forme;
+import app.domain.shape.Mode;
+import app.domain.shape.Point;
+import app.domain.shape.Shape;
 
-import java.awt.*;
+import java.awt.Graphics2D;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Polygon;
+import java.util.Vector;
 
 public class Painter {
     private final Controller m_controller;
@@ -13,44 +19,46 @@ public class Painter {
     }
 
     public void paint(Graphics2D g){
-        for(Forme forme: m_controller.getForme()) {
-            this.paintForme(g, forme);
+        for (Shape shape : m_controller.getShapes()) {
+            paintShape(g, shape);
         }
     }
-    public void paintForme(Graphics2D g, Forme p_forme){
-        int nPoints=p_forme.getPoints().size();
+
+    public void paintShape(Graphics2D g, Shape shape){
+        Vector<Point> points = shape.getPoints();
+        int nPoints = points.size();
         int[] xCoords = new int[nPoints];
         int[] yCoords = new int[nPoints];
-        int i=0;
-        for(Point point:p_forme.getPoints()){
-            xCoords[i]=point.x;
-            yCoords[i]=point.y;
-            i++;
+
+        for (int i = 0; i < nPoints; i++) {
+            xCoords[i] = points.get(i).x;
+            yCoords[i] = points.get(i).y;
         }
+
         g.setStroke(new BasicStroke(2));
-        if (p_forme.isValid()) {
-            Shape shape = new Polygon(xCoords, yCoords, nPoints);
-            if (!p_forme.getSelected()) {
+
+        if (shape.isValid()) {
+            java.awt.Shape s = new Polygon(xCoords, yCoords, nPoints);
+
+            if (!shape.getSelected()) {
                 g.setColor(Color.lightGray);
             } else {
                 g.setColor(Color.GREEN);
             }
-            g.draw(shape);
+
+            g.draw(s);
             g.setColor(Color.darkGray);
-            g.fill(shape);
+            g.fill(s);
         } else {
             g.setColor(Color.lightGray);
             g.drawPolyline(xCoords,yCoords,nPoints);
-            if (m_controller.getCreationMode() == "polygone"){
-                g.drawLine(p_forme.getPoints().lastElement().x, p_forme.getPoints().lastElement().y,
-                        m_controller.getXCursor(), m_controller.getYCursor());
-            }
-            else if (m_controller.getCreationMode() == "rectangle"){
-                g.drawRect(p_forme.getPoints().lastElement().x, p_forme.getPoints().lastElement().y,
-                        m_controller.getXCursor()-p_forme.getPoints().lastElement().x,
-                        m_controller.getYCursor()-p_forme.getPoints().lastElement().y);
-            }
+            Point last = points.lastElement();
 
+            if (m_controller.getMode().equals(Mode.Polygon)) {
+                g.drawLine(last.x, last.y, m_controller.getXCursor(), m_controller.getYCursor());
+            } else if (m_controller.getMode().equals(Mode.Rectangle)){
+                g.drawRect(last.x, last.y,m_controller.getXCursor() - last.x,m_controller.getYCursor() - last.y);
+            }
         }
     }
 }
