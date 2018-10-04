@@ -3,6 +3,7 @@ package app.domain;
 import app.domain.shape.Mode;
 import app.domain.shape.Point;
 import app.domain.shape.Shape;
+import app.domain.shape.ShapeFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,7 +37,7 @@ public class Controller {
             return;
         }
 
-        Shape shape = mode.build();
+        Shape shape = ShapeFactory.create(mode);
         shapes.add(shape);
         shape.addPoint(new Point(x, y));
 
