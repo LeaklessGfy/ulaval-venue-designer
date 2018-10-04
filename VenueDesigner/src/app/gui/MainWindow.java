@@ -7,7 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class MainWindow extends Panel {
+public final class MainWindow extends Panel {
     private JPanel panelMain;
     private JPanel buttonTopPanel;
     private JScrollPane mainScrollPane;
@@ -18,7 +18,7 @@ public class MainWindow extends Panel {
     private JPanel tablePanel;
     private Controller controller;
 
-    public MainWindow() {
+    private MainWindow() {
         tablePanel.setBackground(new Color(20, 38, 52));
         rectangleBtn.setBackground(Color.DARK_GRAY);
         rectangleBtn.setFocusPainted(false);

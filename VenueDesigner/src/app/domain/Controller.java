@@ -10,11 +10,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-public class Controller {
+public final class Controller {
     private final ArrayList<Shape> shapes = new ArrayList<>();
     private final Point cursor = new Point(-1, -1);
 
-    private Mode mode = Mode.Rectangle;
+    private Mode mode = Mode.None;
     private UIPanel panel;
 
     public Controller setDrawingPanel(UIPanel p_DrawingPanel){
@@ -31,6 +31,10 @@ public class Controller {
     }
 
     public void mouseClicked(int x, int y) {
+        if (mode == null) {
+            return;
+        }
+
         if (!shapes.isEmpty() && !lastShape().isValid()) {
             lastShape().addPoint(new Point(x, y));
             panel.repaint();
@@ -59,14 +63,15 @@ public class Controller {
         panel.repaint();
     }
 
-    public boolean toggleMode(Mode p_mode) {
-        Objects.requireNonNull(p_mode);
+    public boolean toggleMode(Mode mode) {
+        Objects.requireNonNull(mode);
 
-        if (mode.equals(p_mode)) {
+        if (mode.equals(this.mode)) {
+            this.mode = Mode.None;
             return false;
         }
 
-        mode = p_mode;
+        this.mode = mode;
 
         return true;
     }
