@@ -1,14 +1,24 @@
 package app.domain.shape;
 
-public class Rectangle extends Shape {
+public final class Rectangle extends AbstractShape {
+    @Override
     public void addPoint(Point p_point){
-        if (m_points.isEmpty()){
-            m_points.add(p_point);
+        if (points.isEmpty()) {
+            points.add(p_point);
         } else {
-            m_points.add(new Point(p_point.x, super.getPoints().firstElement().y));
-            m_points.add(p_point);
-            m_points.add(new Point(super.getPoints().firstElement().x, p_point.y));
-            super.setValid(true);
+            points.add(new Point(p_point.x, super.getPoints().firstElement().y));
+            points.add(p_point);
+            points.add(new Point(super.getPoints().firstElement().x, p_point.y));
+            setValid(true);
+        }
+    }
+
+    @Override
+    public <T> void accept(T canvas, ShapeVisitor<T> visitor) {
+        if (isValid()) {
+            visitor.visit(canvas, this);
+        } else {
+            visitor.visitTemporary(canvas, this);
         }
     }
 }

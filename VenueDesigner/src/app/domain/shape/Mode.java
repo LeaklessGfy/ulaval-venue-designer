@@ -9,12 +9,12 @@ public enum Mode {
         this.m_mode = p_mode;
     }
 
-    public Shape build() {
+    public AbstractShape build() {
         switch (this.m_mode) {
             case 0:
                 return new Rectangle();
             case 1:
-                return new Shape();
+                return new Polygon();
         }
         throw new RuntimeException();
     }

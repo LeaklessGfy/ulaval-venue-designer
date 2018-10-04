@@ -4,95 +4,77 @@ import app.domain.shape.Mode;
 import app.domain.shape.Point;
 import app.domain.shape.Shape;
 
-import java.awt.Polygon;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
 public class Controller {
-    private final ArrayList<Shape> m_shapes = new ArrayList<>();
+    private final ArrayList<Shape> shapes = new ArrayList<>();
+    private final Point cursor = new Point(-1, -1);
 
-    private Mode m_mode = Mode.Rectangle;
-    private UIPanel m_drawingPanel;
-    private Point m_cursor = new Point(-1, -1);
+    private Mode mode = Mode.Rectangle;
+    private UIPanel panel;
 
-    public void setDrawingPanel(UIPanel p_DrawingPanel){
-        m_drawingPanel = Objects.requireNonNull(p_DrawingPanel);
+    public Controller setDrawingPanel(UIPanel p_DrawingPanel){
+        panel = Objects.requireNonNull(p_DrawingPanel);
+        return this;
     }
 
     public int getXCursor () {
-        return  m_cursor.x;
+        return  cursor.x;
     }
 
     public int getYCursor () {
-        return  m_cursor.y;
+        return  cursor.y;
     }
 
     public void mouseClicked(int x, int y) {
-        if (!m_shapes.isEmpty() && !lastShape().isValid()) {
+        if (!shapes.isEmpty() && !lastShape().isValid()) {
             lastShape().addPoint(new Point(x, y));
-            m_drawingPanel.repaint();
+            panel.repaint();
             return;
         }
 
-        Shape shape = m_mode.build();
-        m_shapes.add(shape);
+        Shape shape = mode.build();
+        shapes.add(shape);
         shape.addPoint(new Point(x, y));
 
         if (lastShape().isValid()) {
-            for (Shape s : m_shapes) {
+            for (Shape s : shapes) {
                 s.setSelected(false);
             }
         } else {
-            for (Shape s : m_shapes) {
-                int nPoints = s.getPoints().size();
-                int[] xCoords = new int[nPoints];
-                int[] yCoords = new int[nPoints];
-                int i = 0;
-                for (Point point : s.getPoints()) {
-                    xCoords[i] = point.x;
-                    yCoords[i] = point.y;
-                    i++;
-                }
-                java.awt.Shape sh = new Polygon(xCoords, yCoords, nPoints);
-            }
-
-            m_drawingPanel.repaint();
+            panel.repaint();
         }
     }
 
     public void mouseMoved(int x, int y){
-        if (m_shapes.isEmpty() || lastShape().isValid()) {
+        if (shapes.isEmpty() || lastShape().isValid()) {
             return;
         }
 
-        m_cursor.set(x, y);
-        m_drawingPanel.repaint();
+        cursor.set(x, y);
+        panel.repaint();
     }
 
     public boolean toggleMode(Mode p_mode) {
         Objects.requireNonNull(p_mode);
 
-        if (m_mode.equals(p_mode)) {
+        if (mode.equals(p_mode)) {
             return false;
         }
 
-        m_mode = p_mode;
+        mode = p_mode;
 
         return true;
     }
 
-    public Mode getMode() {
-        return m_mode;
-    }
-
     public List<Shape> getShapes() {
-        return Collections.unmodifiableList(m_shapes);
+        return Collections.unmodifiableList(shapes);
     }
 
     private Shape lastShape() {
-        return m_shapes.get(m_shapes.size() - 1);
+        return shapes.get(shapes.size() - 1);
     }
 }
