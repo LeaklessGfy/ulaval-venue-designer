@@ -6,9 +6,9 @@ public final class Rectangle extends AbstractShape {
         if (points.isEmpty()) {
             points.add(p_point);
         } else {
-            points.add(new Point(p_point.x, super.getPoints().firstElement().y));
+            points.add(new Point(p_point.x, points.firstElement().y));
             points.add(p_point);
-            points.add(new Point(super.getPoints().firstElement().x, p_point.y));
+            points.add(new Point(points.firstElement().x, p_point.y));
             setValid(true);
         }
     }

@@ -9,7 +9,7 @@ public enum Mode {
         this.m_mode = p_mode;
     }
 
-    public AbstractShape build() {
+    public Shape build() {
         switch (this.m_mode) {
             case 0:
                 return new Rectangle();

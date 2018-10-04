@@ -1,6 +1,6 @@
 package app.domain.shape;
 
-public class Point {
+public final class Point {
     public int x;
     public int y;
 
