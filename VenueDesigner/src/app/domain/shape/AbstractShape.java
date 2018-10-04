@@ -1,11 +1,16 @@
 package app.domain.shape;
 
+import java.util.Objects;
 import java.util.Vector;
 
 abstract class AbstractShape implements Shape {
-    final Vector<Point> points = new Vector<>();
-    private boolean valid = false;
-    private boolean selected = false;
+    private final Vector<Point> points;
+    private boolean selected;
+
+    public AbstractShape(Vector<Point> points) {
+        this.points = Objects.requireNonNull(points);
+        this.selected = false;
+    }
 
     public void setSelected(boolean bool) {
         selected = bool;
@@ -13,14 +18,6 @@ abstract class AbstractShape implements Shape {
 
     public boolean isSelected() {
         return selected;
-    }
-
-    public void setValid(boolean bool) {
-        valid = bool;
-    }
-
-    public boolean isValid() {
-        return valid;
     }
 
     public Vector<Point> getPoints() {

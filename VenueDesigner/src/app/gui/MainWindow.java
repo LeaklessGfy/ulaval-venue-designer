@@ -83,7 +83,7 @@ public final class MainWindow extends Panel {
     }
 
     private void createUIComponents() {
-        controller = new Controller();
+        controller = new Controller(new GUICollider());
         drawingPanel = new DrawingPanel(new GUIPainter(controller));
         controller.setDrawingPanel(drawingPanel);
     }

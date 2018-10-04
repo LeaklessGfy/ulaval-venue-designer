@@ -2,23 +2,30 @@ package app.domain;
 
 import app.domain.shape.Point;
 import app.domain.shape.Shape;
-import app.domain.shape.ShapeFactory;
+import app.domain.shape.ShapeBuilder;
+import app.domain.shape.ShapeBuilderFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
-public final class Controller {
+public class Controller {
+    private final Collider collider;
     private final ArrayList<Shape> shapes = new ArrayList<>();
     private final Point cursor = new Point(-1, -1);
 
     private Mode mode = Mode.None;
     private UIPanel ui;
+    private ShapeBuilder current;
 
-    public Controller setDrawingPanel(UIPanel ui){
+    public Controller(Collider collider) {
+        this.collider = Objects.requireNonNull(collider);
+    }
+
+    public void setDrawingPanel(UIPanel ui) {
         this.ui = Objects.requireNonNull(ui);
-        return this;
     }
 
     public int getXCursor () {
@@ -30,56 +37,46 @@ public final class Controller {
     }
 
     public void mouseClicked(int x, int y) {
-        if (mode == null) {
-            return;
-        }
-
-        if (!shapes.isEmpty() && !lastShape().isValid()) {
-            lastShape().addPoint(new Point(x, y));
-            ui.repaint();
-            return;
-        }
-
-        Shape shape = ShapeFactory.create(mode);
-        shapes.add(shape);
-        shape.addPoint(new Point(x, y));
-
-        if (lastShape().isValid()) {
+        if (mode == Mode.None) {
             for (Shape s : shapes) {
-                s.setSelected(false);
+                s.setSelected(collider.hasCollide(x, y, s));
             }
-        } else {
             ui.repaint();
+            return;
         }
+
+        if (current == null) {
+            current = ShapeBuilderFactory.create(mode);
+        }
+
+        current.addPoint(new Point(x, y));
+        if (current.isComplete()) {
+            shapes.add(current.build());
+            current = null;
+        }
+
+        ui.repaint();
     }
 
-    public void mouseMoved(int x, int y){
-        if (shapes.isEmpty() || lastShape().isValid()) {
-            return;
-        }
-
+    public void mouseMoved(int x, int y) {
         cursor.set(x, y);
         ui.repaint();
     }
 
     public boolean toggleMode(Mode mode) {
-        Objects.requireNonNull(mode);
-
-        if (mode.equals(this.mode)) {
+        if (this.mode == mode) {
             this.mode = Mode.None;
             return false;
         }
-
-        this.mode = mode;
-
+        this.mode = Objects.requireNonNull(mode);
         return true;
+    }
+
+    public Optional<Shape> getCurrent() {
+        return Optional.ofNullable(current);
     }
 
     public List<Shape> getShapes() {
         return Collections.unmodifiableList(shapes);
-    }
-
-    private Shape lastShape() {
-        return shapes.get(shapes.size() - 1);
     }
 }
