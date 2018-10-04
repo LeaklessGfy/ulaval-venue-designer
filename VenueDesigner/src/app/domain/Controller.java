@@ -1,6 +1,5 @@
 package app.domain;
 
-import app.domain.shape.Mode;
 import app.domain.shape.Point;
 import app.domain.shape.Shape;
 import app.domain.shape.ShapeFactory;
@@ -15,10 +14,10 @@ public final class Controller {
     private final Point cursor = new Point(-1, -1);
 
     private Mode mode = Mode.None;
-    private UIPanel panel;
+    private UIPanel ui;
 
-    public Controller setDrawingPanel(UIPanel p_DrawingPanel){
-        panel = Objects.requireNonNull(p_DrawingPanel);
+    public Controller setDrawingPanel(UIPanel ui){
+        this.ui = Objects.requireNonNull(ui);
         return this;
     }
 
@@ -37,7 +36,7 @@ public final class Controller {
 
         if (!shapes.isEmpty() && !lastShape().isValid()) {
             lastShape().addPoint(new Point(x, y));
-            panel.repaint();
+            ui.repaint();
             return;
         }
 
@@ -50,7 +49,7 @@ public final class Controller {
                 s.setSelected(false);
             }
         } else {
-            panel.repaint();
+            ui.repaint();
         }
     }
 
@@ -60,7 +59,7 @@ public final class Controller {
         }
 
         cursor.set(x, y);
-        panel.repaint();
+        ui.repaint();
     }
 
     public boolean toggleMode(Mode mode) {

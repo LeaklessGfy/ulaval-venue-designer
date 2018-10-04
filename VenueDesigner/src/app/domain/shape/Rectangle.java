@@ -14,11 +14,7 @@ public final class Rectangle extends AbstractShape {
     }
 
     @Override
-    public <T> void accept(T canvas, ShapeVisitor<T> visitor) {
-        if (isValid()) {
-            visitor.visit(canvas, this);
-        } else {
-            visitor.visitTemporary(canvas, this);
-        }
+    public <T> void accept(T g, Painter<T> painter) {
+        painter.draw(g, this);
     }
 }

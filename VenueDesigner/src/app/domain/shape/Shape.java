@@ -11,5 +11,5 @@ public interface Shape {
 
     void setSelected(boolean selected);
 
-    <T> void accept(T canvas, ShapeVisitor<T> visitor);
+    <T> void accept(T g, Painter<T> painter);
 }

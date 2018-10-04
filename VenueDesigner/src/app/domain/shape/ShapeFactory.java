@@ -1,5 +1,7 @@
 package app.domain.shape;
 
+import app.domain.Mode;
+
 import java.util.Objects;
 
 public final class ShapeFactory {

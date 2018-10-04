@@ -11,12 +11,15 @@ public final class Polygon extends AbstractShape {
     }
 
     @Override
-    public <T> void accept(T canvas, ShapeVisitor<T> visitor) {
+    public <T> void accept(T g, Painter<T> painter) {
+        painter.draw(g,this);
+        /*
         if (isValid()) {
             visitor.visit(canvas, this);
         } else {
             visitor.visitTemporary(canvas, this);
         }
+        */
     }
 
     private double dist(Point p_p1, Point p_p2) {

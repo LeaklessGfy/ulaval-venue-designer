@@ -1,13 +1,15 @@
 package app.gui;
 
 import app.domain.Controller;
-import app.domain.shape.Mode;
+import app.domain.Mode;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
 public final class MainWindow extends Panel {
+    private Controller controller;
+
     private JPanel panelMain;
     private JPanel buttonTopPanel;
     private JScrollPane mainScrollPane;
@@ -16,7 +18,6 @@ public final class MainWindow extends Panel {
     private JButton polygoneBtn;
     private JTable propertyTable;
     private JPanel tablePanel;
-    private Controller controller;
 
     private MainWindow() {
         tablePanel.setBackground(new Color(20, 38, 52));
@@ -83,7 +84,8 @@ public final class MainWindow extends Panel {
 
     private void createUIComponents() {
         controller = new Controller();
-        drawingPanel = new DrawingPanel(controller);
+        drawingPanel = new DrawingPanel(new GUIPainter(controller));
+        controller.setDrawingPanel(drawingPanel);
     }
 }
 
