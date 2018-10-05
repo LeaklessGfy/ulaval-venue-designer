@@ -16,4 +16,8 @@ abstract class AbstractSection implements Section {
     AbstractSection(Shape shape) {
         this(null, 0, shape);
     }
+
+    public Shape getShape() {
+        return shape;
+    }
 }

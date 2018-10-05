@@ -3,7 +3,10 @@ package app.domain;
 import app.domain.section.Section;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 public final class Room {
     private final ArrayList<Section> sections = new ArrayList<>();
@@ -23,5 +26,13 @@ public final class Room {
 
     public void setStage(Stage stage) {
         this.stage = stage;
+    }
+
+    public Optional<Stage> getStage() {
+        return Optional.ofNullable(stage);
+    }
+
+    public List<Section> getSections() {
+        return Collections.unmodifiableList(sections);
     }
 }

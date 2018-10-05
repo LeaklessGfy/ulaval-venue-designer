@@ -10,4 +10,8 @@ public final class Stage {
     public Stage(Shape shape) {
         this.shape = Objects.requireNonNull(shape);
     }
+
+    public Shape getShape() {
+        return shape;
+    }
 }

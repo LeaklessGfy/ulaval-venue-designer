@@ -1,6 +1,7 @@
 package app.gui;
 
 import app.domain.Controller;
+import app.domain.section.Section;
 import app.domain.shape.Painter;
 import app.domain.shape.*;
 
@@ -18,8 +19,16 @@ public final class GUIPainter implements Painter<Graphics2D> {
 
     void draw(Graphics2D g) {
         controller.getCurrent().ifPresent(s -> s.accept(g, this));
+
+        // TODO: Delete get shapes because it's not on controller to do that
         for (Shape shape : controller.getShapes()) {
             shape.accept(g, this);
+        }
+
+        controller.getStage().ifPresent(s -> s.getShape().accept(g, this));
+
+        for (Section section : controller.getSections()) {
+            section.getShape().accept(g, this);
         }
     }
 

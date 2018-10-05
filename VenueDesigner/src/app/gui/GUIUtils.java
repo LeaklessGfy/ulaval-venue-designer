@@ -5,7 +5,7 @@ import app.domain.shape.Shape;
 
 import java.util.Vector;
 
-class GUIUtils {
+final class GUIUtils {
     static Coordinates getCoordinates(Shape shape) {
         Vector<Point> points = shape.getPoints();
 
