@@ -11,6 +11,6 @@ public final class StandingSection extends AbstractSection {
     }
 
     public static StandingSection create(int max, Shape shape) {
-        return new StandingSection(null, 0, null, max);
+        return new StandingSection(null, 0, shape, max);
     }
 }

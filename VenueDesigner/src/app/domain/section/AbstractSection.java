@@ -17,6 +17,16 @@ abstract class AbstractSection implements Section {
         this(null, 0, shape);
     }
 
+    @Override
+    public String getName() {
+        return name == null ? "" : name;
+    }
+
+    public int getElevation() {
+        return elevation;
+    }
+
+    @Override
     public Shape getShape() {
         return shape;
     }
