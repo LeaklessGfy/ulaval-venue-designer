@@ -1,12 +1,15 @@
 package app.gui;
 
 import app.domain.Controller;
+import app.domain.Mode;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class MainWindow extends Panel {
+public final class MainWindow extends Panel {
+    private Controller controller;
+
     private JPanel panelMain;
     private JPanel buttonTopPanel;
     private JScrollPane mainScrollPane;
@@ -15,9 +18,8 @@ public class MainWindow extends Panel {
     private JButton polygoneBtn;
     private JTable propertyTable;
     private JPanel tablePanel;
-    private Controller controller;
 
-    public MainWindow() {
+    private MainWindow() {
         tablePanel.setBackground(new Color(20, 38, 52));
         rectangleBtn.setBackground(Color.DARK_GRAY);
         rectangleBtn.setFocusPainted(false);
@@ -31,11 +33,21 @@ public class MainWindow extends Panel {
         drawingPanel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                controller.mouseClicked(e);
+                controller.mouseClicked(e.getX(), e.getY());
             }
         });
+
+        drawingPanel.addMouseMotionListener(new MouseMotionAdapter() {
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                super.mouseMoved(e);
+                controller.mouseMoved(e.getX(), e.getY());
+            }
+        });
+
         rectangleBtn.addActionListener(e -> {
-            boolean isEnabled = controller.toggleMode("rectangle");
+            boolean isEnabled = controller.toggleMode(Mode.Rectangle);
+
             if (isEnabled) {
                 rectangleBtn.setBackground(Color.BLUE);
                 rectangleBtn.setForeground(Color.WHITE);
@@ -46,8 +58,10 @@ public class MainWindow extends Panel {
                 rectangleBtn.setForeground(Color.LIGHT_GRAY);
             }
         });
+
         polygoneBtn.addActionListener(e -> {
-            boolean isEnabled = controller.toggleMode("polygone");
+            boolean isEnabled = controller.toggleMode(Mode.Polygon);
+
             if (isEnabled) {
                 polygoneBtn.setBackground(Color.BLUE);
                 polygoneBtn.setForeground(Color.WHITE);
@@ -56,13 +70,6 @@ public class MainWindow extends Panel {
             } else {
                 polygoneBtn.setBackground(Color.DARK_GRAY);
                 polygoneBtn.setForeground(Color.LIGHT_GRAY);
-            }
-        });
-        drawingPanel.addMouseMotionListener(new MouseMotionAdapter() {
-            @Override
-            public void mouseMoved(MouseEvent e) {
-                super.mouseMoved(e);
-                controller.mouseMoved(e);
             }
         });
     }
@@ -76,9 +83,9 @@ public class MainWindow extends Panel {
     }
 
     private void createUIComponents() {
-        controller = new Controller();
-        drawingPanel = new DrawingPanel(controller);
+        controller = new Controller(new GUICollider());
+        drawingPanel = new DrawingPanel(new GUIPainter(controller));
+        controller.setDrawingPanel(drawingPanel);
     }
-
 }
 
