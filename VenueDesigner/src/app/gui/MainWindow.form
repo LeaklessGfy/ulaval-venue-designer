@@ -28,6 +28,24 @@
               <text value="Polygone"/>
             </properties>
           </component>
+          <component id="6c9fb" class="javax.swing.JButton" binding="stage">
+            <constraints/>
+            <properties>
+              <text value="Stage"/>
+            </properties>
+          </component>
+          <component id="1c96d" class="javax.swing.JButton" binding="seatedSectionButton" default-binding="true">
+            <constraints/>
+            <properties>
+              <text value="Seated Section"/>
+            </properties>
+          </component>
+          <component id="ad4b5" class="javax.swing.JButton" binding="standingSectionButton" default-binding="true">
+            <constraints/>
+            <properties>
+              <text value="Standing Section"/>
+            </properties>
+          </component>
         </children>
       </grid>
       <scrollpane id="79245" binding="mainScrollPane">

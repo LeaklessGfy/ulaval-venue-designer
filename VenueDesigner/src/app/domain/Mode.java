@@ -3,5 +3,10 @@ package app.domain;
 public enum Mode {
     None,
     Rectangle,
-    Polygon
+    Polygon,
+    Stage,
+    RegularSeatedSection,
+    IrregularSeatedSection,
+    RegularStandingSection,
+    IrregularStandingSeaction
 }
