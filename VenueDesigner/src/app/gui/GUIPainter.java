@@ -48,7 +48,7 @@ public final class GUIPainter implements Painter<Graphics2D> {
 
         g.setStroke(new BasicStroke(2));
         g.setColor(Color.lightGray);
-        g.drawPolyline(coordinates.xCoords, coordinates.yCoords, coordinates.size);
+        g.drawPolyline(coordinates.xCoords, coordinates.yCoords, coordinates.points.size());
         app.domain.shape.Point last = coordinates.points.lastElement();
 
         int startX = last.x;
@@ -75,7 +75,7 @@ public final class GUIPainter implements Painter<Graphics2D> {
 
         g.setStroke(new BasicStroke(2));
         g.setColor(Color.lightGray);
-        g.drawPolyline(coordinates.xCoords, coordinates.yCoords, coordinates.size);
+        g.drawPolyline(coordinates.xCoords, coordinates.yCoords, coordinates.points.size());
         app.domain.shape.Point last = coordinates.points.lastElement();
 
         g.drawLine(last.x, last.y, controller.getXCursor(), controller.getYCursor());
@@ -83,7 +83,7 @@ public final class GUIPainter implements Painter<Graphics2D> {
 
     private void drawFinal(Graphics2D g, Shape shape) {
         Coordinates coordinates = GUIUtils.getCoordinates(shape);
-        java.awt.Polygon polygon = new java.awt.Polygon(coordinates.xCoords, coordinates.yCoords, coordinates.size);
+        java.awt.Polygon polygon = new java.awt.Polygon(coordinates.xCoords, coordinates.yCoords, coordinates.points.size());
 
         g.setStroke(new BasicStroke(2));
         if (!shape.isSelected()) {

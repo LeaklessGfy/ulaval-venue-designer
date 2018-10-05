@@ -1,8 +1,7 @@
 package app.domain;
 
-public class VitalSpace {
+public final class VitalSpace {
     private int width;
-
     private int height;
 
     public int getWidth() {

@@ -22,6 +22,7 @@ abstract class AbstractSection implements Section {
         return name == null ? "" : name;
     }
 
+    @Override
     public int getElevation() {
         return elevation;
     }

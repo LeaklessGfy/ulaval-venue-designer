@@ -20,6 +20,6 @@ final class GUIUtils {
             i++;
         }
 
-        return new Coordinates(points, size, xCoords, yCoords);
+        return new Coordinates(points, xCoords, yCoords);
     }
 }
