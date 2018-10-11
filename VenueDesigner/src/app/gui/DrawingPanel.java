@@ -2,11 +2,11 @@ package app.gui;
 
 import java.awt.*;
 import java.util.Objects;
-import javax.swing.BorderFactory;
+import javax.swing.*;
 
 import app.domain.UIPanel;
 
-public final class DrawingPanel extends javax.swing.JPanel implements UIPanel {
+public final class DrawingPanel extends JPanel implements UIPanel {
     private final GUIPainter painter;
 
     DrawingPanel(GUIPainter painter) {

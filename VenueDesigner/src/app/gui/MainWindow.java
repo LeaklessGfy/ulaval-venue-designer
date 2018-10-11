@@ -7,7 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public final class MainWindow extends Panel {
+public final class MainWindow extends Frame {
     private Controller controller;
 
     private JPanel panelMain;
@@ -18,6 +18,9 @@ public final class MainWindow extends Panel {
     private JButton polygoneBtn;
     private JTable propertyTable;
     private JPanel tablePanel;
+    private JButton stage;
+    private JButton seatedSectionButton;
+    private JButton standingSectionButton;
 
     private MainWindow() {
         tablePanel.setBackground(new Color(20, 38, 52));
@@ -72,6 +75,10 @@ public final class MainWindow extends Panel {
                 polygoneBtn.setForeground(Color.LIGHT_GRAY);
             }
         });
+
+        stage.addActionListener(e -> {
+            controller.toggleMode(Mode.Stage);
+        });
     }
 
     public static void main(String[] args) {
@@ -80,6 +87,30 @@ public final class MainWindow extends Panel {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
+
+        JMenuBar menuBar = new JMenuBar();
+
+        JMenu file = new JMenu("File");
+        JMenuItem newItem = new JMenuItem("New");
+        JMenuItem openItem = new JMenuItem("Open");
+        JMenuItem saveItem = new JMenuItem("Save");
+        file.add(newItem);
+        file.add(openItem);
+        file.add(saveItem);
+
+        JMenu edition = new JMenu("Edition");
+        JMenuItem dimensions = new JMenuItem("Dimensions");
+        JMenuItem vitalSpace = new JMenuItem("Vital Space");
+        JMenuItem offers = new JMenuItem("Offers");
+        JMenuItem grid = new JMenuItem("Grid");
+        edition.add(dimensions);
+        edition.add(vitalSpace);
+        edition.add(offers);
+        edition.add(grid);
+
+        menuBar.add(file);
+        menuBar.add(edition);
+        frame.setJMenuBar(menuBar);
     }
 
     private void createUIComponents() {
