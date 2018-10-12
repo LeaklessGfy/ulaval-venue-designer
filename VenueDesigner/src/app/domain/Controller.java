@@ -85,6 +85,7 @@ public class Controller {
 
         current.addPoint(new Point(x, y));
         if (current.isComplete()) {
+            current.correctLastPoint();
             shapes.add(current.build());
             current = null;
         }
@@ -98,6 +99,7 @@ public class Controller {
     }
 
     public boolean toggleMode(Mode mode) {
+        current = null;
         if (this.mode == mode) {
             this.mode = Mode.None;
             return false;

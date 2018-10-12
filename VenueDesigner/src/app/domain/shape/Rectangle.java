@@ -23,6 +23,9 @@ public final class Rectangle extends AbstractShape {
         }
 
         @Override
+        public void correctLastPoint() { return; }
+
+        @Override
         public Rectangle build() {
             return new Rectangle(points);
         }
