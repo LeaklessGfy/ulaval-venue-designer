@@ -19,7 +19,6 @@ public final class Polygon extends AbstractShape {
         @Override
         public void correctLastPoint() {
             points.removeElementAt(points.size() - 1);
-            points.add(points.firstElement());
         }
 
         @Override
