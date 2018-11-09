@@ -13,7 +13,12 @@ public final class Polygon extends AbstractShape {
 
         @Override
         public boolean isComplete() {
-            return points.size() >= 3 && dist(points.firstElement(), points.lastElement()) <= 30;
+            return points.size() >= 3 && dist(points.firstElement(), points.lastElement()) <= 10;
+        }
+
+        @Override
+        public void correctLastPoint() {
+            points.removeElementAt(points.size() - 1);
         }
 
         @Override
