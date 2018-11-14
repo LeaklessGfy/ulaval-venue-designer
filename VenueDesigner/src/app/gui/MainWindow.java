@@ -24,6 +24,7 @@ public final class MainWindow extends Frame {
 
     private MainWindow() {
         tablePanel.setBackground(new Color(20, 38, 52));
+        tablePanel.setBorder(BorderFactory.createMatteBorder(5, 5, 0, 0, Color.LIGHT_GRAY));
         rectangleBtn.setBackground(Color.DARK_GRAY);
         rectangleBtn.setFocusPainted(false);
         rectangleBtn.setForeground(Color.LIGHT_GRAY);
@@ -31,7 +32,7 @@ public final class MainWindow extends Frame {
         polygoneBtn.setFocusPainted(false);
         polygoneBtn.setForeground(Color.LIGHT_GRAY);
         buttonTopPanel.setBackground(new Color(20, 38, 52));
-        drawingPanel.setBackground(new Color(20, 38, 52));
+        mainScrollPane.setBorder(BorderFactory.createEmptyBorder());
 
         drawingPanel.addMouseListener(new MouseAdapter() {
             @Override
@@ -87,6 +88,7 @@ public final class MainWindow extends Frame {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
+        frame.setExtendedState( frame.getExtendedState()|JFrame.MAXIMIZED_BOTH );
 
         JMenuBar menuBar = new JMenuBar();
 
@@ -114,6 +116,16 @@ public final class MainWindow extends Frame {
     }
 
     private void createUIComponents() {
+        String[] columnNames = {"First Name",
+                "Last Name"};
+        Object[][] data = {
+                {"Kathy", "Smith"},
+                {"John", "Doe"},
+                {"Sue", "Black"},
+                {"Jane", "White"},
+                {"Joe", "Brown"}
+        };
+        propertyTable = new JTable(data, columnNames);
         controller = new Controller(new GUICollider());
         drawingPanel = new DrawingPanel(new GUIPainter(controller));
         controller.setDrawingPanel(drawingPanel);

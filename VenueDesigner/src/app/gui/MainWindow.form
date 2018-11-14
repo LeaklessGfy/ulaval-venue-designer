@@ -64,7 +64,7 @@
         <properties/>
         <border type="none"/>
         <children>
-          <component id="43450" class="javax.swing.JTable" binding="propertyTable">
+          <component id="43450" class="javax.swing.JTable" binding="propertyTable" custom-create="true">
             <constraints/>
             <properties/>
           </component>
