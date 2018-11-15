@@ -79,6 +79,20 @@ public final class MainWindow extends Frame {
         stage.addActionListener(e -> {
             controller.toggleMode(Mode.Stage);
         });
+
+        // LISTENER ANTHONY
+        seatedSectionButton.addActionListener(e ->{
+            boolean isEnabled = controller.toggleMode(Mode.RegularSeatedSection);
+
+            if(isEnabled){
+                seatedSectionButton.setBackground(Color.BLUE);
+                seatedSectionButton.setForeground(Color.WHITE);
+            } else {
+                seatedSectionButton.setBackground(Color.DARK_GRAY);
+                seatedSectionButton.setForeground(Color.LIGHT_GRAY);
+            }
+        });
+        // FIN DU LISTENER ANTHONY
     }
 
     public static void main(String[] args) {

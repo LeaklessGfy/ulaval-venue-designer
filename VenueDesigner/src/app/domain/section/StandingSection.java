@@ -5,7 +5,7 @@ import app.domain.shape.Shape;
 public final class StandingSection extends AbstractSection {
     private int max;
 
-    private StandingSection(String name, int elevation, Shape shape, int max) {
+    StandingSection(String name, int elevation, Shape shape, int max) {
         super(name, elevation, shape);
         this.max = max;
     }

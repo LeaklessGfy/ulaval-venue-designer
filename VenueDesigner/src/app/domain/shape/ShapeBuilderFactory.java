@@ -9,6 +9,8 @@ public final class ShapeBuilderFactory {
                 return new Rectangle.Builder();
             case Polygon:
                 return new Polygon.Builder();
+            case RegularSeatedSection:
+                return new Rectangle.Builder();
         }
         throw new RuntimeException();
     }

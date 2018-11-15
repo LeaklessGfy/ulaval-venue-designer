@@ -6,6 +6,7 @@ import app.domain.shape.Rectangle;
 import app.domain.shape.Shape;
 import app.domain.shape.ShapeBuilder;
 import app.domain.shape.ShapeBuilderFactory;
+import app.domain.section.SectionFactory;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ public class Controller {
     private ShapeBuilder current;
 
     public Controller(Collider collider) {
+        create(500,500,new VitalSpace());// creation d une room manuellement
         this.collider = Objects.requireNonNull(collider);
     }
 
@@ -85,8 +87,9 @@ public class Controller {
 
         current.addPoint(new Point(x, y));
         if (current.isComplete()) {
-            current.correctLastPoint();
-            shapes.add(current.build());
+            room.addSection(SectionFactory.create(mode,current.build()));
+            //current.correctLastPoint();
+            //shapes.add(current.build());
             current = null;
         }
 

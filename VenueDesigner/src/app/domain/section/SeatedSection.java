@@ -13,7 +13,7 @@ public final class SeatedSection extends AbstractSection {
     private VitalSpace vitalSpace;
     private Seat[][] seats;
 
-    private SeatedSection(String name, int elevation, Shape shape, VitalSpace vitalSpace) {
+    SeatedSection(String name, int elevation, Shape shape, VitalSpace vitalSpace) {
         super(name, elevation, shape);
         this.vitalSpace = vitalSpace;
     }
