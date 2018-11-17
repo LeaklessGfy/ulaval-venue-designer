@@ -19,7 +19,7 @@ public final class MainWindow extends Frame {
     private JTable propertyTable;
     private JPanel tablePanel;
     private JButton stage;
-    private JButton seatedSectionButton;
+    private JButton regSeatedSectionButton;
     private JButton standingSectionButton;
 
     private MainWindow() {
@@ -81,15 +81,15 @@ public final class MainWindow extends Frame {
         });
 
         // LISTENER ANTHONY
-        seatedSectionButton.addActionListener(e ->{
+        regSeatedSectionButton.addActionListener(e ->{
             boolean isEnabled = controller.toggleMode(Mode.RegularSeatedSection);
 
             if(isEnabled){
-                seatedSectionButton.setBackground(Color.BLUE);
-                seatedSectionButton.setForeground(Color.WHITE);
+                regSeatedSectionButton.setBackground(Color.BLUE);
+                regSeatedSectionButton.setForeground(Color.WHITE);
             } else {
-                seatedSectionButton.setBackground(Color.DARK_GRAY);
-                seatedSectionButton.setForeground(Color.LIGHT_GRAY);
+                regSeatedSectionButton.setBackground(Color.DARK_GRAY);
+                regSeatedSectionButton.setForeground(Color.LIGHT_GRAY);
             }
         });
         // FIN DU LISTENER ANTHONY
