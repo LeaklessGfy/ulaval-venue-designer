@@ -21,8 +21,16 @@ public final class MainWindow extends Frame {
     private JButton stage;
     private JButton seatedSectionButton;
     private JButton standingSectionButton;
+    private JMenu file;
+    private JMenuItem newItem;
+    private JMenuItem openItem;
+    private JMenuItem saveItem;
+    private JMenu edition;
+    private JMenuItem room;
+    private JMenuItem offers;
+    private JMenuItem grid;
 
-    private MainWindow() {
+    private MainWindow(JFrame frame) {
         tablePanel.setBackground(new Color(20, 38, 52));
         rectangleBtn.setBackground(Color.DARK_GRAY);
         rectangleBtn.setFocusPainted(false);
@@ -79,38 +87,53 @@ public final class MainWindow extends Frame {
         stage.addActionListener(e -> {
             controller.toggleMode(Mode.Stage);
         });
-    }
-
-    public static void main(String[] args) {
-        JFrame frame = new JFrame("MainWindow");
-        frame.setContentPane(new MainWindow().panelMain);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
-        frame.setVisible(true);
 
         JMenuBar menuBar = new JMenuBar();
 
-        JMenu file = new JMenu("File");
-        JMenuItem newItem = new JMenuItem("New");
-        JMenuItem openItem = new JMenuItem("Open");
-        JMenuItem saveItem = new JMenuItem("Save");
+        file = new JMenu("File");
+        newItem = new JMenuItem("New");
+        openItem = new JMenuItem("Open");
+        saveItem = new JMenuItem("Save");
         file.add(newItem);
         file.add(openItem);
         file.add(saveItem);
 
-        JMenu edition = new JMenu("Edition");
-        JMenuItem dimensions = new JMenuItem("Dimensions");
-        JMenuItem vitalSpace = new JMenuItem("Vital Space");
-        JMenuItem offers = new JMenuItem("Offers");
-        JMenuItem grid = new JMenuItem("Grid");
-        edition.add(dimensions);
-        edition.add(vitalSpace);
+        newItem.addActionListener( e -> {
+            JFrame roomSettings = new RoomSettings(this.controller, e);
+            roomSettings.setSize(300,400);
+            roomSettings.setVisible(true);
+        });
+
+        edition = new JMenu("Edition");
+        room = new JMenuItem("Room");
+        offers = new JMenuItem("Offers");
+        grid = new JMenuItem("Grid");
+        edition.add(room);
         edition.add(offers);
         edition.add(grid);
+
+        room.addActionListener( e -> {
+            if (this.controller.getRoom() != null) {
+                JFrame roomSettings = new RoomSettings(this.controller, e);
+                roomSettings.setSize(300, 400);
+                roomSettings.setVisible(true);
+            }
+            else {
+                JOptionPane.showMessageDialog(null, "No room defined", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
 
         menuBar.add(file);
         menuBar.add(edition);
         frame.setJMenuBar(menuBar);
+    }
+
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("MainWindow");
+        frame.setContentPane(new MainWindow(frame).panelMain);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.pack();
+        frame.setVisible(true);
     }
 
     private void createUIComponents() {

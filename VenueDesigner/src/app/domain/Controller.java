@@ -50,12 +50,17 @@ public class Controller {
         return controller;
     }
 
+    public UIPanel getDrawingPanel() {return  this.ui; }
+
+    public Room getRoom() {return this.room; }
+
     public void setDrawingPanel(UIPanel ui) {
         this.ui = Objects.requireNonNull(ui);
     }
 
-    public void create(int width, int heigth, VitalSpace vitalSpace) {
-        this.room = new Room(width, heigth, vitalSpace);
+    public void create(int roomWidth, int roomHeight, int vitalSpaceWidth, int vitalSpaceHeight) {
+        VitalSpace vitalSpace = new VitalSpace(vitalSpaceWidth, vitalSpaceHeight);
+        this.room = new Room(roomWidth, roomHeight, vitalSpace);
     }
 
     public void load(Path path) {
