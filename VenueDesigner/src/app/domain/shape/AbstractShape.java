@@ -72,4 +72,5 @@ abstract class AbstractShape implements Shape {
         }
         return points;
     }
+    
 }
