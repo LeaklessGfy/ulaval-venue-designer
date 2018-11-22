@@ -48,6 +48,10 @@ public final class MainWindow extends Frame {
                 super.mouseMoved(e);
                 controller.mouseMoved(e.getX(), e.getY());
             }
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                controller.mouseDragged(e.getX(), e.getY());
+            }
         });
 
         rectangleBtn.addActionListener(e -> {

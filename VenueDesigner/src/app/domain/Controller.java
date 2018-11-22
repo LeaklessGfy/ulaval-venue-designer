@@ -72,10 +72,24 @@ public class Controller {
         return  cursor.y;
     }
 
+    public void mouseDragged(int x, int y) {
+        if (mode == Mode.None) {
+            for (Section s : room.getSections()) {
+                Shape currentShape = s.getShape();
+                if (currentShape.isSelected())
+                {
+                    s.move(x,y);
+                }
+            }
+            ui.repaint();
+            return;
+        }
+    }
     public void mouseClicked(int x, int y) {
         if (mode == Mode.None) {
-            for (Shape s : shapes) {
-                s.setSelected(collider.hasCollide(x, y, s));
+            for (Section s : room.getSections()) {
+                Shape currentShape = s.getShape();
+                currentShape.setSelected(collider.hasCollide(x, y, currentShape));
             }
             ui.repaint();
             return;
@@ -87,9 +101,9 @@ public class Controller {
 
         current.addPoint(new Point(x, y));
         if (current.isComplete()) {
+            current.correctLastPoint();
             room.addSection(SectionFactory.create(mode,current.build()));
-            //current.correctLastPoint();
-            //shapes.add(current.build());
+            shapes.add(current.build());
             current = null;
         }
 

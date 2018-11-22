@@ -34,7 +34,7 @@ abstract class AbstractSection implements Section {
     }
 
     @Override
-    public  void move(Point p) {
-        this.shape.move(p);
+    public  void move(int x, int y) {
+        this.shape.move(x,y);
     }
 }

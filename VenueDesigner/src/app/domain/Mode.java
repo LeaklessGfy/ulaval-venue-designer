@@ -8,5 +8,6 @@ public enum Mode {
     RegularSeatedSection,
     IrregularSeatedSection,
     RegularStandingSection,
-    IrregularStandingSeaction
+    IrregularStandingSeaction,
+    Selection
 }

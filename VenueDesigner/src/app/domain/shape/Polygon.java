@@ -30,7 +30,7 @@ public final class Polygon extends AbstractShape {
         public void setSelected(boolean selected) {}
 
         @Override
-        public void move(Point p) {}
+        public void move(int x, int y) {}
 
         @Override
         public boolean isSelected() {
