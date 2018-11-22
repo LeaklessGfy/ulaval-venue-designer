@@ -37,6 +37,7 @@ public final class MainWindow extends Frame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 controller.mouseClicked(e.getX(), e.getY());
+
             }
         });
 

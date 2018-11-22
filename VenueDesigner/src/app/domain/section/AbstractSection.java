@@ -1,5 +1,6 @@
 package app.domain.section;
 
+import app.domain.shape.Point;
 import app.domain.shape.Shape;
 
 abstract class AbstractSection implements Section {
@@ -30,5 +31,10 @@ abstract class AbstractSection implements Section {
     @Override
     public Shape getShape() {
         return shape;
+    }
+
+    @Override
+    public  void move(Point p) {
+        this.shape.move(p);
     }
 }

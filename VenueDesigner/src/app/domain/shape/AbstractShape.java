@@ -53,13 +53,10 @@ abstract class AbstractShape implements Shape {
         return GravityPoint;
     }
 
-    public Vector<Point> Translation(int Xmouse, int Ymouse) {
-        int dGx = Xmouse;
-        int dGy = Ymouse;
-        for (Point p : points) {
-            p.set(p.x + dGx, p.y + dGy);
+    public void move(Point p) {
+        for (Point pts : points) {
+            pts.set(p.x, p.y);
         }
-        return points;
     }
 
     public Vector<Point> Rotation(float degree_angle){

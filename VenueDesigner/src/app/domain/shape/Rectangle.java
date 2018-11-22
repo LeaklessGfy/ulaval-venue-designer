@@ -34,6 +34,9 @@ public final class Rectangle extends AbstractShape {
         public void setSelected(boolean selected) {}
 
         @Override
+        public void move(Point p) {}
+
+        @Override
         public boolean isSelected() {
             return false;
         }
