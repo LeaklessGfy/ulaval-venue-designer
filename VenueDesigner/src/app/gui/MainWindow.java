@@ -116,14 +116,12 @@ public final class MainWindow extends Frame {
     }
 
     private void createUIComponents() {
-        String[] columnNames = {"First Name",
-                "Last Name"};
+        String[] columnNames = {"Table de ",
+                "test"};
         Object[][] data = {
-                {"Kathy", "Smith"},
-                {"John", "Doe"},
-                {"Sue", "Black"},
-                {"Jane", "White"},
-                {"Joe", "Brown"}
+                {"ceci", "est"},
+                {"une", "table"},
+                {"temporaire", "."}
         };
         propertyTable = new JTable(data, columnNames);
         controller = new Controller(new GUICollider());
