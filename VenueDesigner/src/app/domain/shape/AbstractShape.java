@@ -37,58 +37,41 @@ abstract class AbstractShape implements Shape {
     }
 
     public Point computeCentroid() {
-        Point centroid = new Point(0,0);
+        double cx =0.0;
+        double cy =0.0;
         double signedArea = 0.0;
-        double x0 = 0.0; // Current vertex X
-        double y0 = 0.0; // Current vertex Y
-        double x1 = 0.0; // Next vertex X
-        double y1 = 0.0; // Next vertex Y
-        double a = 0.0;  // Partial signed area
+        double x0; // Current vertex X
+        double y0; // Current vertex Y
+        double x1; // Next vertex X
+        double y1; // Next vertex Y
+        double a;  // Partial signed area
 
-        // For all vertices except last
-        int i=0;
-        for (i=0; i<points.size()-2; ++i)
+        // For all vertices
+        for (int i=0; i<points.size(); ++i)
         {
             x0 = points.elementAt(i).x;
             y0 = points.elementAt(i).y;
-            x1 = points.elementAt(i).x;
-            y1 = points.elementAt(i).y;
+            x1 = points.elementAt((i+1)%points.size()).x;
+            y1 = points.elementAt((i+1)%points.size()).y;
             a = x0*y1 - x1*y0;
             signedArea += a;
-            centroid.x += (x0 + x1)*a;
-            centroid.y += (y0 + y1)*a;
+            cx += (x0 + x1)*a;
+            cy += (y0 + y1)*a;
         }
 
-        // Do last vertex separately to avoid performing an expensive
-        // modulus operation in each iteration.
-        x0 = points.elementAt(i).x;
-        y0 = points.elementAt(i).y;
-        x1 = points.elementAt(i).x;
-        y1 = points.elementAt(i).y;
-        a = x0*y1 - x1*y0;
-        signedArea += a;
-        centroid.x += (x0 + x1)*a;
-        centroid.y += (y0 + y1)*a;
-
         signedArea *= 0.5;
-        centroid.x /= (6.0*signedArea);
-        centroid.y /= (6.0*signedArea);
-        return centroid;
+        cx /= (6.0*signedArea);
+        cy /= (6.0*signedArea);
+
+        return new Point((int) cx,(int)cy);
+
     }
 
     public void move(int x, int y) {
-        Point gp = this.computeCentroid();
+        Point centroid = this.computeCentroid();
         for (Point p : points) {
-            System.out.print(x);
-            System.out.print("-");
-            System.out.print(y);
-            System.out.print(" --- ");
-            int dx = gp.x - p.x;
-            int dy = gp.y - p.y;
-            System.out.print(x+dx);
-            System.out.print("-");
-            System.out.print(y+dy);
-            System.out.print("\n");
+            int dx = centroid.x - p.x;
+            int dy = centroid.y - p.y;
             p.set(x+dx, y+dy);
         }
     }

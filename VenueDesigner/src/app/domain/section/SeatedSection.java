@@ -24,8 +24,8 @@ public final class SeatedSection extends AbstractSection {
         Vector<Point> points = new Vector<>();
         points.add(new Point(x, y));
         points.add(new Point(x + (column * vitalSpace.getWidth()), y));
-        points.add(new Point(x, y + (row * vitalSpace.getHeight())));
         points.add(new Point(x + (column * vitalSpace.getWidth()), y + (row * vitalSpace.getHeight())));
+        points.add(new Point(x, y + (row * vitalSpace.getHeight())));
         Rectangle rectangle = new Rectangle(points);
 
         SeatedSection section = new SeatedSection(null, 0, rectangle, vitalSpace);

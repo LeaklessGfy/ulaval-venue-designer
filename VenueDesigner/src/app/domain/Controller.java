@@ -1,5 +1,6 @@
 package app.domain;
 
+import app.domain.section.SeatedSection;
 import app.domain.section.Section;
 import app.domain.shape.Point;
 import app.domain.shape.Rectangle;
@@ -7,6 +8,7 @@ import app.domain.shape.Shape;
 import app.domain.shape.ShapeBuilder;
 import app.domain.shape.ShapeBuilderFactory;
 import app.domain.section.SectionFactory;
+import app.gui.SectionInfoDialog;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -17,9 +19,9 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 
+
 public class Controller {
     private final Collider collider;
-    private final ArrayList<Shape> shapes = new ArrayList<>();
     private final Point cursor = new Point(-1, -1);
     private final HashMap<Mode, BiConsumer<Integer, Integer>> clickActions = new HashMap<>();
 
@@ -96,14 +98,24 @@ public class Controller {
         }
 
         if (current == null) {
+            if (mode == Mode.RegularSeatedSection2) {
+                int[] values = SectionInfoDialog.show();
+                if(values[0]<1){ return; }
+                VitalSpace vs= new VitalSpace();
+                vs.setHeight(2);
+                vs.setWidth(2);
+                room.addSection(SeatedSection.create(x,y,values[0],values[1],vs));
+                ui.repaint();
+                return;
+            }
             current = ShapeBuilderFactory.create(mode);
         }
+
 
         current.addPoint(new Point(x, y));
         if (current.isComplete()) {
             current.correctLastPoint();
             room.addSection(SectionFactory.create(mode,current.build()));
-            shapes.add(current.build());
             current = null;
         }
 
@@ -129,9 +141,6 @@ public class Controller {
         return Optional.ofNullable(current);
     }
 
-    public List<Shape> getShapes() {
-        return Collections.unmodifiableList(shapes);
-    }
 
     public Optional<Stage> getStage() {
         if (room != null) {

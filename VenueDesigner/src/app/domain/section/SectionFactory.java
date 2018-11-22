@@ -15,7 +15,7 @@ public final class SectionFactory {
                 return new SeatedSection("", 0, shape, new VitalSpace());
             case RegularStandingSection:
                 return new StandingSection("",0,shape,10);
-            case IrregularStandingSeaction:
+            case IrregularStandingSection:
                 return new StandingSection("",0,shape,10);
         }
         throw new RuntimeException();

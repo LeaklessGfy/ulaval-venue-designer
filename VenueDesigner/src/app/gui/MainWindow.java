@@ -14,23 +14,16 @@ public final class MainWindow extends Frame {
     private JPanel buttonTopPanel;
     private JScrollPane mainScrollPane;
     private DrawingPanel drawingPanel;
-    private JButton rectangleBtn;
-    private JButton polygoneBtn;
     private JTable propertyTable;
     private JPanel tablePanel;
     private JButton stage;
     private JButton regSeatedSectionButton;
     private JButton standingSectionButton;
+    private JButton regSeat2;
 
     private MainWindow() {
         tablePanel.setBackground(new Color(20, 38, 52));
         tablePanel.setBorder(BorderFactory.createMatteBorder(5, 5, 0, 0, Color.LIGHT_GRAY));
-        rectangleBtn.setBackground(Color.DARK_GRAY);
-        rectangleBtn.setFocusPainted(false);
-        rectangleBtn.setForeground(Color.LIGHT_GRAY);
-        polygoneBtn.setBackground(Color.DARK_GRAY);
-        polygoneBtn.setFocusPainted(false);
-        polygoneBtn.setForeground(Color.LIGHT_GRAY);
         buttonTopPanel.setBackground(new Color(20, 38, 52));
         mainScrollPane.setBorder(BorderFactory.createEmptyBorder());
 
@@ -54,33 +47,6 @@ public final class MainWindow extends Frame {
             }
         });
 
-        rectangleBtn.addActionListener(e -> {
-            boolean isEnabled = controller.toggleMode(Mode.Rectangle);
-
-            if (isEnabled) {
-                rectangleBtn.setBackground(Color.BLUE);
-                rectangleBtn.setForeground(Color.WHITE);
-                polygoneBtn.setBackground(Color.DARK_GRAY);
-                polygoneBtn.setForeground(Color.LIGHT_GRAY);
-            } else {
-                rectangleBtn.setBackground(Color.DARK_GRAY);
-                rectangleBtn.setForeground(Color.LIGHT_GRAY);
-            }
-        });
-
-        polygoneBtn.addActionListener(e -> {
-            boolean isEnabled = controller.toggleMode(Mode.Polygon);
-
-            if (isEnabled) {
-                polygoneBtn.setBackground(Color.BLUE);
-                polygoneBtn.setForeground(Color.WHITE);
-                rectangleBtn.setBackground(Color.DARK_GRAY);
-                rectangleBtn.setForeground(Color.LIGHT_GRAY);
-            } else {
-                polygoneBtn.setBackground(Color.DARK_GRAY);
-                polygoneBtn.setForeground(Color.LIGHT_GRAY);
-            }
-        });
 
         stage.addActionListener(e -> {
             controller.toggleMode(Mode.Stage);
@@ -99,6 +65,17 @@ public final class MainWindow extends Frame {
             }
         });
         // FIN DU LISTENER ANTHONY
+        regSeat2.addActionListener(e ->{
+            boolean isEnabled = controller.toggleMode(Mode.RegularSeatedSection2);
+
+            if(isEnabled){
+                regSeat2.setBackground(Color.BLUE);
+                regSeat2.setForeground(Color.WHITE);
+            } else {
+                regSeat2.setBackground(Color.DARK_GRAY);
+                regSeat2.setForeground(Color.LIGHT_GRAY);
+            }
+        });
     }
 
     public static void main(String[] args) {

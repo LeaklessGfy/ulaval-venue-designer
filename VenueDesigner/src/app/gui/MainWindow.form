@@ -16,18 +16,6 @@
         </properties>
         <border type="none"/>
         <children>
-          <component id="51fbe" class="javax.swing.JButton" binding="rectangleBtn">
-            <constraints/>
-            <properties>
-              <text value="Rectangle"/>
-            </properties>
-          </component>
-          <component id="74d99" class="javax.swing.JButton" binding="polygoneBtn">
-            <constraints/>
-            <properties>
-              <text value="Polygone"/>
-            </properties>
-          </component>
           <component id="6c9fb" class="javax.swing.JButton" binding="stage">
             <constraints/>
             <properties>
@@ -38,6 +26,12 @@
             <constraints/>
             <properties>
               <text value="Reg Seated Section"/>
+            </properties>
+          </component>
+          <component id="49a81" class="javax.swing.JButton" binding="regSeat2">
+            <constraints/>
+            <properties>
+              <text value="reg Seated 2"/>
             </properties>
           </component>
           <component id="ad4b5" class="javax.swing.JButton" binding="standingSectionButton" default-binding="true">
