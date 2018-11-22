@@ -11,7 +11,7 @@ import java.util.Vector;
 
 public final class SeatedSection extends AbstractSection {
     private VitalSpace vitalSpace;
-    private Seat[][] seats;
+    private Vector<Seat> seats;
 
     SeatedSection(String name, int elevation, Shape shape, VitalSpace vitalSpace) {
         super(name, elevation, shape);
@@ -29,14 +29,18 @@ public final class SeatedSection extends AbstractSection {
         Rectangle rectangle = new Rectangle(points);
 
         SeatedSection section = new SeatedSection(null, 0, rectangle, vitalSpace);
-        section.seats = new Seat[column][row];
+        section.seats = new Vector<Seat>();
 
         for (int i = 0; i < column; i++) {
             for (int j = 0; j < row; j++) {
-                section.seats[i][j] = new Seat(i, j);
+                section.seats.add( new Seat(i, j, vitalSpace, points.elementAt(0)));
             }
         }
 
         return section;
+    }
+
+    public Vector<Seat> getSeats() {
+        return seats;
     }
 }

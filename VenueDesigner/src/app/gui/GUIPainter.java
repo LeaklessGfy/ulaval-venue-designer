@@ -1,6 +1,7 @@
 package app.gui;
 
 import app.domain.Controller;
+import app.domain.Seat;
 import app.domain.section.Section;
 import app.domain.shape.Painter;
 import app.domain.shape.*;
@@ -24,6 +25,9 @@ public final class GUIPainter implements Painter<Graphics2D> {
 
         for (Section section : controller.getSections()) {
             section.getShape().accept(g, this);
+            for (Seat seat: section.getSeats()) {
+                seat.getShape().accept(g,this);
+            }
         }
     }
 

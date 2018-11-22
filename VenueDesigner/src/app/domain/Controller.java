@@ -102,8 +102,8 @@ public class Controller {
                 int[] values = SectionInfoDialog.show();
                 if(values[0]<1){ return; }
                 VitalSpace vs= new VitalSpace();
-                vs.setHeight(2);
-                vs.setWidth(2);
+                vs.setHeight(20);
+                vs.setWidth(20);
                 room.addSection(SeatedSection.create(x,y,values[0],values[1],vs));
                 ui.repaint();
                 return;
