@@ -50,6 +50,11 @@ public final class Rectangle extends AbstractShape {
         public <T> void accept(T g, Painter<T> painter) {
             painter.draw(g, this);
         }
+
+        @Override
+        public Point computeCentroid(){
+            return new Point(-1,-1);
+        }
     }
 
     public Rectangle(Vector<Point> points) {

@@ -27,4 +27,8 @@ public final class Seat {
     public Shape getShape(){
         return shape;
     }
+
+    public void move(int x, int y){
+        this.shape.move(x,y);
+    }
 }

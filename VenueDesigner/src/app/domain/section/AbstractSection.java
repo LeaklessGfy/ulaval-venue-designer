@@ -1,5 +1,6 @@
 package app.domain.section;
 
+import app.domain.Seat;
 import app.domain.shape.Point;
 import app.domain.shape.Shape;
 
@@ -35,6 +36,13 @@ abstract class AbstractSection implements Section {
 
     @Override
     public  void move(int x, int y) {
+        for (Seat seat: this.getSeats()){
+            Point sectionCenter = this.shape.computeCentroid();
+            Point seatCenter = seat.getShape().computeCentroid();
+            int dx = sectionCenter.x - seatCenter.x;
+            int dy = sectionCenter.y - seatCenter.y;
+            seat.move(x + dx,y+dy);
+        }
         this.shape.move(x,y);
     }
 }
