@@ -24,6 +24,16 @@ public final class Room {
         this.vitalSpace = Objects.requireNonNull(vitalSpace);
     }
 
+    public int getWidth() { return this.width; }
+
+    public int getHeight() { return this.height; }
+
+    public void setWidth(int width) { this.width = width; }
+
+    public void setHeight(int height) { this.height = height; }
+
+    public VitalSpace getVitalSpace() { return this.vitalSpace; }
+
     public void setStage(Stage stage) {
         this.stage = stage;
     }
@@ -31,6 +41,8 @@ public final class Room {
     public Optional<Stage> getStage() {
         return Optional.ofNullable(stage);
     }
+
+    public void addSection(Section section) {sections.add(section); }
 
     public List<Section> getSections() {
         return Collections.unmodifiableList(sections);
