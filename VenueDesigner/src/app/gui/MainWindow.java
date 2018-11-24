@@ -77,7 +77,7 @@ public final class MainWindow extends Frame {
         regSeatedSection2.addActionListener(e -> {
             toggleButton(regSeatedSection2, Mode.RegularSeatedSection2);
         });
-        
+
         JMenuBar menuBar = new JMenuBar();
         file = new JMenu("File");
         newItem = new JMenuItem("New");
@@ -92,8 +92,7 @@ public final class MainWindow extends Frame {
             int result = fileChooser.showOpenDialog(this);
             if (result == JFileChooser.APPROVE_OPTION) {
                 File selectedFile = fileChooser.getSelectedFile();
-                if(this.controller.getRoom().isPresent())
-                    this.controller.getRoom().get().save(selectedFile.toString());
+                this.controller.getRoom().get().save(selectedFile.toString());
             }
         });
 
