@@ -1,11 +1,14 @@
 package app.domain;
 
+import app.domain.section.SeatedSection;
 import app.domain.section.Section;
 import app.domain.shape.Point;
 import app.domain.shape.Rectangle;
 import app.domain.shape.Shape;
 import app.domain.shape.ShapeBuilder;
 import app.domain.shape.ShapeBuilderFactory;
+import app.domain.section.SectionFactory;
+import app.gui.SectionInfoDialog;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -16,9 +19,9 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 
+
 public class Controller {
     private final Collider collider;
-    private final ArrayList<Shape> shapes = new ArrayList<>();
     private final Point cursor = new Point(-1, -1);
     private final HashMap<Mode, BiConsumer<Integer, Integer>> clickActions = new HashMap<>();
 
@@ -28,6 +31,7 @@ public class Controller {
     private ShapeBuilder current;
 
     public Controller(Collider collider) {
+        create(500,500,new VitalSpace());// creation d une room manuellement
         this.collider = Objects.requireNonNull(collider);
     }
 
@@ -75,23 +79,48 @@ public class Controller {
         return  cursor.y;
     }
 
+    public void mouseDragged(int x, int y) {
+        if (mode == Mode.None) {
+            for (Section s : room.getSections()) {
+                Shape currentShape = s.getShape();
+                if (currentShape.isSelected())
+                {
+                    s.move(x,y);
+                }
+            }
+            ui.repaint();
+            return;
+        }
+    }
     public void mouseClicked(int x, int y) {
         if (mode == Mode.None) {
-            for (Shape s : shapes) {
-                s.setSelected(collider.hasCollide(x, y, s));
+            for (Section s : room.getSections()) {
+                Shape currentShape = s.getShape();
+                currentShape.setSelected(collider.hasCollide(x, y, currentShape));
             }
             ui.repaint();
             return;
         }
 
         if (current == null) {
+            if (mode == Mode.RegularSeatedSection2) {
+                int[] values = SectionInfoDialog.show();
+                if(values[0]<1){ return; }
+                VitalSpace vs= new VitalSpace();
+                vs.setHeight(20);
+                vs.setWidth(20);
+                room.addSection(SeatedSection.create(x,y,values[0],values[1],vs));
+                ui.repaint();
+                return;
+            }
             current = ShapeBuilderFactory.create(mode);
         }
+
 
         current.addPoint(new Point(x, y));
         if (current.isComplete()) {
             current.correctLastPoint();
-            shapes.add(current.build());
+            room.addSection(SectionFactory.create(mode,current.build()));
             current = null;
         }
 
@@ -117,9 +146,6 @@ public class Controller {
         return Optional.ofNullable(current);
     }
 
-    public List<Shape> getShapes() {
-        return Collections.unmodifiableList(shapes);
-    }
 
     public Optional<Stage> getStage() {
         if (room != null) {

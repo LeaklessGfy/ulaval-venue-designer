@@ -30,6 +30,9 @@ public final class Polygon extends AbstractShape {
         public void setSelected(boolean selected) {}
 
         @Override
+        public void move(int x, int y) {}
+
+        @Override
         public boolean isSelected() {
             return true;
         }
@@ -52,11 +55,17 @@ public final class Polygon extends AbstractShape {
 
             return Math.sqrt(Math.pow(x2-x1, 2) + Math.pow(y2-y1, 2));
         }
+
+        @Override
+        public Point computeCentroid(){
+            return new Point(-1,-1);
+        }
     }
 
     public Polygon(Vector<Point> points) {
         super(points);
     }
+
 
     @Override
     public <T> void accept(T g, Painter<T> painter) {

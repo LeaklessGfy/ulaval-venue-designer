@@ -6,7 +6,8 @@ public enum Mode {
     Polygon,
     Stage,
     RegularSeatedSection,
+    RegularSeatedSection2,
     IrregularSeatedSection,
     RegularStandingSection,
-    IrregularStandingSeaction
+    IrregularStandingSection,
 }

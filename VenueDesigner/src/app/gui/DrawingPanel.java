@@ -11,7 +11,7 @@ public final class DrawingPanel extends JPanel implements UIPanel {
 
     DrawingPanel(GUIPainter painter) {
         this.painter = Objects.requireNonNull(painter);
-        setBorder(BorderFactory.createMatteBorder(1, 0, 0, 1, Color.LIGHT_GRAY));
+        setBorder(BorderFactory.createMatteBorder(5, 0, 0, 0, Color.LIGHT_GRAY));
     }
 
     public Dimension getPreferredSize() {
@@ -19,7 +19,9 @@ public final class DrawingPanel extends JPanel implements UIPanel {
     }
 
     public void paintComponent(Graphics g) {
-        g.clearRect(0, 0, 600, 500);
+        g.clearRect(0, 0, getWidth(), getHeight());
+        g.setColor(new Color(20, 38, 52));
+        g.fillRect(0,0,getWidth(),getHeight());
         painter.draw((Graphics2D) g);
     }
 }

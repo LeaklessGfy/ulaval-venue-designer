@@ -14,13 +14,12 @@ public final class MainWindow extends Frame {
     private JPanel buttonTopPanel;
     private JScrollPane mainScrollPane;
     private DrawingPanel drawingPanel;
-    private JButton rectangleBtn;
-    private JButton polygoneBtn;
     private JTable propertyTable;
     private JPanel tablePanel;
     private JButton stage;
-    private JButton seatedSectionButton;
+    private JButton regSeatedSectionButton;
     private JButton standingSectionButton;
+    private JButton regSeat2;
     private JMenu file;
     private JMenuItem newItem;
     private JMenuItem openItem;
@@ -32,19 +31,15 @@ public final class MainWindow extends Frame {
 
     private MainWindow(JFrame frame) {
         tablePanel.setBackground(new Color(20, 38, 52));
-        rectangleBtn.setBackground(Color.DARK_GRAY);
-        rectangleBtn.setFocusPainted(false);
-        rectangleBtn.setForeground(Color.LIGHT_GRAY);
-        polygoneBtn.setBackground(Color.DARK_GRAY);
-        polygoneBtn.setFocusPainted(false);
-        polygoneBtn.setForeground(Color.LIGHT_GRAY);
+        tablePanel.setBorder(BorderFactory.createMatteBorder(5, 5, 0, 0, Color.LIGHT_GRAY));
         buttonTopPanel.setBackground(new Color(20, 38, 52));
-        drawingPanel.setBackground(new Color(20, 38, 52));
+        mainScrollPane.setBorder(BorderFactory.createEmptyBorder());
 
         drawingPanel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 controller.mouseClicked(e.getX(), e.getY());
+
             }
         });
 
@@ -54,40 +49,42 @@ public final class MainWindow extends Frame {
                 super.mouseMoved(e);
                 controller.mouseMoved(e.getX(), e.getY());
             }
-        });
-
-        rectangleBtn.addActionListener(e -> {
-            boolean isEnabled = controller.toggleMode(Mode.Rectangle);
-
-            if (isEnabled) {
-                rectangleBtn.setBackground(Color.BLUE);
-                rectangleBtn.setForeground(Color.WHITE);
-                polygoneBtn.setBackground(Color.DARK_GRAY);
-                polygoneBtn.setForeground(Color.LIGHT_GRAY);
-            } else {
-                rectangleBtn.setBackground(Color.DARK_GRAY);
-                rectangleBtn.setForeground(Color.LIGHT_GRAY);
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                controller.mouseDragged(e.getX(), e.getY());
             }
         });
 
-        polygoneBtn.addActionListener(e -> {
-            boolean isEnabled = controller.toggleMode(Mode.Polygon);
-
-            if (isEnabled) {
-                polygoneBtn.setBackground(Color.BLUE);
-                polygoneBtn.setForeground(Color.WHITE);
-                rectangleBtn.setBackground(Color.DARK_GRAY);
-                rectangleBtn.setForeground(Color.LIGHT_GRAY);
-            } else {
-                polygoneBtn.setBackground(Color.DARK_GRAY);
-                polygoneBtn.setForeground(Color.LIGHT_GRAY);
-            }
-        });
 
         stage.addActionListener(e -> {
             controller.toggleMode(Mode.Stage);
         });
 
+        // LISTENER ANTHONY
+        regSeatedSectionButton.addActionListener(e ->{
+            boolean isEnabled = controller.toggleMode(Mode.RegularSeatedSection);
+
+            if(isEnabled){
+                regSeatedSectionButton.setBackground(Color.BLUE);
+                regSeatedSectionButton.setForeground(Color.WHITE);
+            } else {
+                regSeatedSectionButton.setBackground(Color.DARK_GRAY);
+                regSeatedSectionButton.setForeground(Color.LIGHT_GRAY);
+            }
+        });
+        // FIN DU LISTENER ANTHONY
+        regSeat2.addActionListener(e ->{
+            boolean isEnabled = controller.toggleMode(Mode.RegularSeatedSection2);
+
+            if(isEnabled){
+                regSeat2.setBackground(Color.BLUE);
+                regSeat2.setForeground(Color.WHITE);
+            } else {
+                regSeat2.setBackground(Color.DARK_GRAY);
+                regSeat2.setForeground(Color.LIGHT_GRAY);
+            }
+        });
+        
         JMenuBar menuBar = new JMenuBar();
 
         file = new JMenu("File");
@@ -134,9 +131,18 @@ public final class MainWindow extends Frame {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
+        frame.setExtendedState( frame.getExtendedState()|JFrame.MAXIMIZED_BOTH );
     }
 
     private void createUIComponents() {
+        String[] columnNames = {"Table de ",
+                "test"};
+        Object[][] data = {
+                {"ceci", "est"},
+                {"une", "table"},
+                {"temporaire", "."}
+        };
+        propertyTable = new JTable(data, columnNames);
         controller = new Controller(new GUICollider());
         drawingPanel = new DrawingPanel(new GUIPainter(controller));
         controller.setDrawingPanel(drawingPanel);

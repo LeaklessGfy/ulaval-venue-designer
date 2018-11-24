@@ -34,6 +34,9 @@ public final class Rectangle extends AbstractShape {
         public void setSelected(boolean selected) {}
 
         @Override
+        public void move(int x, int y) {}
+
+        @Override
         public boolean isSelected() {
             return false;
         }
@@ -46,6 +49,11 @@ public final class Rectangle extends AbstractShape {
         @Override
         public <T> void accept(T g, Painter<T> painter) {
             painter.draw(g, this);
+        }
+
+        @Override
+        public Point computeCentroid(){
+            return new Point(-1,-1);
         }
     }
 

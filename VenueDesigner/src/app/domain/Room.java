@@ -47,4 +47,6 @@ public final class Room {
     public List<Section> getSections() {
         return Collections.unmodifiableList(sections);
     }
+
+    public void addSection(Section section){ sections.add(section);}
 }
