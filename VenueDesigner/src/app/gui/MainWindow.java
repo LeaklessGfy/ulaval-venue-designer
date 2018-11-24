@@ -6,6 +6,9 @@ import app.domain.Mode;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.*;
+import javax.swing.filechooser.*;
+import javax.swing.filechooser.FileFilter;
 
 public final class MainWindow extends Frame {
     private Controller controller;
@@ -29,6 +32,8 @@ public final class MainWindow extends Frame {
     private JMenuItem room;
     private JMenuItem offers;
     private JMenuItem grid;
+    private JButton seatedSectionButton;
+    private JButton standingSectionButton;
 
     private MainWindow(JFrame frame) {
         tablePanel.setBackground(new Color(20, 38, 52));
@@ -78,6 +83,34 @@ public final class MainWindow extends Frame {
         newItem = new JMenuItem("New");
         openItem = new JMenuItem("Open");
         saveItem = new JMenuItem("Save");
+
+        openItem.addActionListener( e -> {
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+            FileFilter filter = new FileNameExtensionFilter("JSON files", "json");
+            fileChooser.setFileFilter(filter);
+            int result = fileChooser.showOpenDialog(this);
+            if (result == JFileChooser.APPROVE_OPTION) {
+                File selectedFile = fileChooser.getSelectedFile();
+                if(this.controller.getRoom().isPresent())
+                    this.controller.getRoom().get().save(selectedFile.toString());
+            }
+        });
+
+        saveItem.addActionListener( e -> {
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+            FileFilter filter = new FileNameExtensionFilter("JSON files", "json");
+            fileChooser.setFileFilter(filter);
+            int result = fileChooser.showSaveDialog(this);
+            if (result == JFileChooser.APPROVE_OPTION) {
+                File selectedFile = fileChooser.getSelectedFile();
+                if(this.controller.getRoom().isPresent()) {
+                    this.controller.getRoom().get().save(selectedFile.toString());
+                }
+            }
+        });
+
         file.add(newItem);
         file.add(openItem);
         file.add(saveItem);

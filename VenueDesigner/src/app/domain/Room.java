@@ -79,4 +79,14 @@ public final class Room {
             s.accept(g, painter);
         }
     }
+
+    public void save(String path) {
+        JSONSerialize serialize = new JSONSerialize();
+        serialize.serializeToJson(this, path);
+    }
+
+    public void load(String path) {
+        JSONSerialize serialize = new JSONSerialize();
+        serialize.deserializeFromJson(path);
+    }
 }
