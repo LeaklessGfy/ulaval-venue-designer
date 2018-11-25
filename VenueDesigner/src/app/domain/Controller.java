@@ -32,9 +32,7 @@ public class Controller {
     public Optional<Room> getRoom() {
         return Optional.ofNullable(this.room);
     }
-
-    public void setRoom(Room room) {this.room = room; }
-
+    
     public void setDrawingPanel(UIPanel ui) {
         this.ui = Objects.requireNonNull(ui);
     }
