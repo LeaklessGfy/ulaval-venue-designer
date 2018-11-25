@@ -33,7 +33,7 @@ public final class GUIPainter implements Painter<Graphics2D> {
 
     @Override
     public void draw(Graphics2D g, Rectangle.Builder rectangle) {
-        Coordinates coordinates = GUIUtils.getCoordinates(rectangle, new Point(0, 0));
+        Coordinates coordinates = GUIUtils.getCoordinates(rectangle.getPoints(), new Point(0, 0));
 
         g.setStroke(new BasicStroke(2));
         g.setColor(Color.lightGray);
@@ -60,7 +60,7 @@ public final class GUIPainter implements Painter<Graphics2D> {
 
     @Override
     public void draw(Graphics2D g, Polygon.Builder polygon) {
-        Coordinates coordinates = GUIUtils.getCoordinates(polygon, new Point(0, 0));
+        Coordinates coordinates = GUIUtils.getCoordinates(polygon.getPoints(), new Point(0, 0));
 
         g.setStroke(new BasicStroke(2));
         g.setColor(Color.lightGray);
@@ -71,7 +71,7 @@ public final class GUIPainter implements Painter<Graphics2D> {
     }
 
     private void drawFinal(Graphics2D g, Shape shape) {
-        Coordinates coordinates = GUIUtils.getCoordinates(shape, controller.getOffset());
+        Coordinates coordinates = GUIUtils.getCoordinates(shape.getPoints(), controller.getOffset());
         java.awt.Polygon polygon = new java.awt.Polygon(coordinates.xCoords, coordinates.yCoords, coordinates.points.size());
 
         g.setStroke(new BasicStroke(2));

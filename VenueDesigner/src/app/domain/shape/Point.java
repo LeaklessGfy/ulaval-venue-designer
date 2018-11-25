@@ -9,6 +9,15 @@ public final class Point {
         this.y = y;
     }
 
+    public Point() {
+        this(0, 0);
+    }
+
+    public Point(Point p) {
+        this.x = p.x;
+        this.y = p.y;
+    }
+
     public void set(int x, int y) {
         this.x = x;
         this.y = y;

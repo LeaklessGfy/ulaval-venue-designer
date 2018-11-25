@@ -1,6 +1,7 @@
 package app.domain.section;
 
 import app.domain.shape.Painter;
+import app.domain.shape.Point;
 import app.domain.shape.Shape;
 
 public final class StandingSection extends AbstractSection {
@@ -16,8 +17,8 @@ public final class StandingSection extends AbstractSection {
     }
 
     @Override
-    public void move(int x, int y) {
-        getShape().move(x, y);
+    public void move(int x, int y, Point offset) {
+        getShape().move(x, y, offset);
     }
 
     @Override

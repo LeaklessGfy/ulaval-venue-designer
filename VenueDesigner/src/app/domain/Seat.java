@@ -29,7 +29,7 @@ public final class Seat {
         return shape;
     }
 
-    public void move(int x, int y){
-        shape.move(x,y);
+    public void move(int x, int y, Point offset){
+        shape.move(x, y, offset);
     }
 }

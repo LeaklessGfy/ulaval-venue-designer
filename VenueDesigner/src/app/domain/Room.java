@@ -56,14 +56,14 @@ public final class Room {
         return Collections.unmodifiableList(sections);
     }
 
-    public boolean validShape(Shape s) {
+    public boolean validShape(Shape s, Point offset) {
         int x = shape.getPoints().firstElement().x;
         int y = shape.getPoints().firstElement().y;
         for (Point p : s.getPoints()) {
-            if (p.x < x || p.x > x + width) {
+            if (p.x - offset.x < x || p.x - offset.x > x + width) {
                 return false;
             }
-            if (p.y < y || p.y > y + height) {
+            if (p.y - offset.y < y || p.y - offset.y > y + height) {
                 return false;
             }
         }

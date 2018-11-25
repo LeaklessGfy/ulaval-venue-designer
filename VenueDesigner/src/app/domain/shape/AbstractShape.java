@@ -14,6 +14,15 @@ abstract class AbstractShape implements Shape {
         this.selected = false;
     }
 
+    AbstractShape(AbstractShape shape) {
+        this.points = new Vector<>();
+        for (Point p : shape.points) {
+            points.add(new Point(p));
+        }
+        this.color = shape.color;
+        this.selected = shape.selected;
+    }
+
     @Override
     public void setSelected(boolean bool) {
         selected = bool;
@@ -78,12 +87,12 @@ abstract class AbstractShape implements Shape {
     }
 
     @Override
-    public void move(int x, int y) {
+    public void move(int x, int y, Point offset) {
         Point centroid = this.computeCentroid();
         for (Point p : points) {
             int dx = centroid.x - p.x;
             int dy = centroid.y - p.y;
-            p.set(x+dx, y+dy);
+            p.set((x+dx) - offset.x, (y+dy) - offset.y);
         }
     }
 
@@ -96,5 +105,10 @@ abstract class AbstractShape implements Shape {
             p.set((int)Math.round(((p.x-Gx)*Math.cos(theta_radian))-((p.y-Gy)*Math.sin(theta_radian)) + Gx),(int)Math.round((p.x-Gx)*Math.sin(theta_radian)+(p.y-Gy)*Math.cos(theta_radian)+ Gy));
         }
         return points;
+    }
+
+    @Override
+    public Shape clone() {
+        return null;
     }
 }

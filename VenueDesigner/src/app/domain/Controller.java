@@ -2,7 +2,6 @@ package app.domain;
 
 import app.domain.section.Section;
 import app.domain.shape.Point;
-import app.domain.shape.Rectangle;
 import app.domain.shape.Shape;
 import app.domain.shape.ShapeBuilder;
 import app.domain.shape.ShapeBuilderFactory;
@@ -62,19 +61,22 @@ public class Controller {
 
         if (mode == Mode.None) {
             if (room.getStage().isPresent()) {
-                Stage s = room.getStage().get();
-                Shape shape = s.getShape();
+                Shape shape = room.getStage().get().getShape();
                 if (shape.isSelected()) {
-                    shape.move(x, y);
-                    ui.repaint();
+                    if (isMovable(shape, x, y)) {
+                        shape.move(x, y, offset);
+                        ui.repaint();
+                    }
                     return;
                 }
             }
             for (Section section : room.getSections()) {
                 Shape shape = section.getShape();
                 if (shape.isSelected()) {
-                    section.move(x, y);
-                    ui.repaint();
+                    if (isMovable(shape, x, y)) {
+                        section.move(x, y, offset);
+                        ui.repaint();
+                    }
                     return;
                 }
             }
@@ -125,7 +127,7 @@ public class Controller {
         return true;
     }
 
-    public Optional<Shape> getCurrent() {
+    public Optional<ShapeBuilder> getCurrent() {
         return Optional.ofNullable(current);
     }
 
@@ -141,17 +143,23 @@ public class Controller {
         current.correctLastPoint();
         Shape shape = current.build();
         current = null;
+        if (!room.validShape(shape, offset)) {
+            return;
+        }
         for (Point p : shape.getPoints()) {
             p.x -= offset.x;
             p.y -= offset.y;
-        }
-        if (!room.validShape(shape)) {
-            return;
         }
         if (mode == Mode.Stage) {
             room.setStage(new Stage(shape));
         } else {
             room.addSection(SectionFactory.create(mode, shape));
         }
+    }
+
+    private boolean isMovable(Shape shape, int x, int y) {
+        Shape predict = shape.clone();
+        predict.move(x, y, offset);
+        return room.validShape(predict, new Point());
     }
 }

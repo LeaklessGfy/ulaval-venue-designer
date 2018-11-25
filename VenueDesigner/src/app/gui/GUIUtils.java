@@ -1,14 +1,11 @@
 package app.gui;
 
 import app.domain.shape.Point;
-import app.domain.shape.Shape;
 
 import java.util.Vector;
 
 final class GUIUtils {
-    static Coordinates getCoordinates(Shape shape, Point offset) {
-        Vector<Point> points = shape.getPoints();
-
+    static Coordinates getCoordinates(Vector<Point> points, Point offset) {
         int size = points.size();
         int[] xCoords = new int[size];
         int[] yCoords = new int[size];

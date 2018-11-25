@@ -36,24 +36,8 @@ public final class Polygon extends AbstractShape {
         }
 
         @Override
-        public void setSelected(boolean selected) {}
-
-        @Override
-        public void move(int x, int y) {}
-
-        @Override
-        public boolean isSelected() {
-            return true;
-        }
-
-        @Override
         public Vector<Point> getPoints() {
             return points;
-        }
-
-        @Override
-        public int[] getColor() {
-            return color;
         }
 
         @Override
@@ -69,11 +53,6 @@ public final class Polygon extends AbstractShape {
 
             return Math.sqrt(Math.pow(x2-x1, 2) + Math.pow(y2-y1, 2));
         }
-
-        @Override
-        public Point computeCentroid(){
-            return new Point(-1,-1);
-        }
     }
 
     private Polygon(Vector<Point> points, int[] color) {
@@ -83,5 +62,10 @@ public final class Polygon extends AbstractShape {
     @Override
     public <T> void accept(T g, Painter<T> painter) {
         painter.draw(g,this);
+    }
+
+    @Override
+    public Shape clone() {
+        return new Rectangle(getPoints(), getColor());
     }
 }

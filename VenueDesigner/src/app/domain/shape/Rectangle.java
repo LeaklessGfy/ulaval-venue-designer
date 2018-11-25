@@ -40,39 +40,22 @@ public final class Rectangle extends AbstractShape {
         }
 
         @Override
-        public void setSelected(boolean selected) {}
-
-        @Override
-        public void move(int x, int y) {}
-
-        @Override
-        public boolean isSelected() {
-            return false;
-        }
-
-        @Override
         public Vector<Point> getPoints() {
             return points;
-        }
-
-        @Override
-        public int[] getColor() {
-            return color;
         }
 
         @Override
         public <T> void accept(T g, Painter<T> painter) {
             painter.draw(g, this);
         }
-
-        @Override
-        public Point computeCentroid(){
-            return new Point(-1,-1);
-        }
     }
 
     public Rectangle(Vector<Point> points, int[] color) {
         super(points, color);
+    }
+
+    private Rectangle(Rectangle rectangle) {
+        super(rectangle);
     }
 
     public static Rectangle create(int x, int y, int width, int height, int[] color) {
@@ -88,5 +71,10 @@ public final class Rectangle extends AbstractShape {
     @Override
     public <T> void accept(T g, Painter<T> painter) {
         painter.draw(g, this);
+    }
+
+    @Override
+    public Shape clone() {
+        return new Rectangle(this);
     }
 }

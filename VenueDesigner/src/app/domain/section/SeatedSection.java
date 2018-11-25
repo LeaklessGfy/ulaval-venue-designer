@@ -42,16 +42,16 @@ public final class SeatedSection extends AbstractSection {
     }
 
     @Override
-    public  void move(int x, int y) {
+    public  void move(int x, int y, Point offset) {
         Shape shape = getShape();
         for (Seat seat : seats){
             Point sectionCenter = shape.computeCentroid();
             Point seatCenter = seat.getShape().computeCentroid();
             int dx = sectionCenter.x - seatCenter.x;
             int dy = sectionCenter.y - seatCenter.y;
-            seat.move(x + dx,y+dy);
+            seat.move(x + dx,y+dy, offset);
         }
-        shape.move(x, y);
+        shape.move(x, y, offset);
     }
 
     @Override
