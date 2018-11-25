@@ -1,8 +1,8 @@
 package app.gui;
 
-import app.domain.Controller;
-import app.domain.Room;
-import app.domain.UIPanel;
+import app.domain.*;
+import app.domain.section.SeatedSection;
+import app.domain.section.Section;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -52,6 +52,18 @@ public final class RoomSettings extends JFrame {
                     r.getVitalSpace().setWidth(Integer.parseInt(vitalSpaceWidthTextField.getText()));
                     r.getVitalSpace().setHeight(Integer.parseInt(vitalSpaceHeightTextField.getText()));
                     setVisible(false);
+                    for (Section section: r.getSections()){
+                        section.accept(new SelectionVisitor() {
+                            @Override
+                            public void visit(Stage stage) {
+                            }
+
+                            @Override
+                            public void visit(SeatedSection section) {
+                                section.refresh();
+                            }
+                        });
+                    }
                     dispose();
                     ui.repaint();
                 }
