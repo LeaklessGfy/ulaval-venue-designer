@@ -259,7 +259,20 @@ public class Controller {
     private boolean isMovable(Shape shape, int x, int y) {
         Shape predict = shape.clone();
         predict.move(x, y, offset);
-        return room.validShape(predict, new Point());
+        if (!room.validShape(predict, new Point())) {
+            return false;
+        }
+        if (room.getStage().isPresent() && shape != room.getStage().get().getShape()) {
+            if (collider.hasCollide(room.getStage().get().getShape(), predict)) {
+                return false;
+            }
+        }
+        for (Section section : room.getSections()) {
+            if (section.getShape() != shape && collider.hasCollide(section.getShape(), predict)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private void selectionCheck(int x, int y, Shape shape){
