@@ -1,8 +1,11 @@
 package app.domain.section;
 
+import app.domain.Seat;
 import app.domain.shape.Painter;
 import app.domain.shape.Point;
 import app.domain.shape.Shape;
+
+import java.util.Vector;
 
 public final class StandingSection extends AbstractSection {
     private int max;
@@ -24,6 +27,11 @@ public final class StandingSection extends AbstractSection {
     @Override
     public <T> void accept(T g, Painter<T> painter) {
         getShape().accept(g, painter);
+    }
+
+    @Override
+    public Vector<Seat> getSeats(){
+        return new Vector<>();
     }
 }
 

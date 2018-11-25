@@ -57,8 +57,22 @@ public final class SeatedSection extends AbstractSection {
     @Override
     public <T> void accept(T g, Painter<T> painter) {
         getShape().accept(g, painter);
+        boolean selectionExist = false;
+        Seat selectedSeat = new Seat(0,0,new VitalSpace(1,1), new Point());
         for (Seat seat : seats) {
+            if (seat.getShape().isSelected()){
+                selectionExist=true;
+                selectedSeat=seat;
+            }
             seat.getShape().accept(g, painter);
         }
+        if (selectionExist) {
+            selectedSeat.getShape().accept(g, painter);
+        }
+    }
+
+    @Override
+    public Vector<Seat> getSeats(){
+        return seats;
     }
 }

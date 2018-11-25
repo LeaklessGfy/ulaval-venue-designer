@@ -91,6 +91,11 @@ public class Controller {
         if (mode == Mode.None) {
             room.getStage().ifPresent(r -> r.getShape().setSelected(collider.hasCollide(x - offset.x, y - offset.y, r.getShape())));
             for (Section s : room.getSections()) {
+                for (Seat seat: s.getSeats()){
+                    if (s.getShape().isSelected()) {
+                        seat.getShape().setSelected(collider.hasCollide(x - offset.x, y - offset.y, seat.getShape()));
+                    }
+                }
                 s.getShape().setSelected(collider.hasCollide(x - offset.x, y - offset.y, s.getShape()));
             }
             ui.repaint();

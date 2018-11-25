@@ -8,6 +8,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.Objects;
+import java.util.Vector;
 
 public final class GUIPainter implements Painter<Graphics2D> {
     private final Controller controller;
@@ -75,14 +76,38 @@ public final class GUIPainter implements Painter<Graphics2D> {
         java.awt.Polygon polygon = new java.awt.Polygon(coordinates.xCoords, coordinates.yCoords, coordinates.points.size());
 
         g.setStroke(new BasicStroke(2));
-        if (!shape.isSelected()) {
-            g.setColor(Color.lightGray);
-        } else {
-            g.setColor(Color.GREEN);
-        }
+        g.setColor(Color.lightGray);
+
         int[] color = shape.getColor();
         g.draw(polygon);
         g.setColor(new Color(color[0], color[1], color[2]));
         g.fill(polygon);
+        if (shape.isSelected()) {
+            Vector<Point> points = shape.getPoints();
+            Point centroid = shape.computeCentroid();
+            int[] xSel = new int[points.size()];
+            int [] ySel = new int[points.size()];
+            int i=0;
+            for (Point point: points)
+            {
+                if (point.x-centroid.x>0){
+                    xSel[i] = point.x + controller.getOffset().x+2;
+                }
+                else {
+                    xSel[i] = point.x + controller.getOffset().x-2;
+                }
+                if (point.y-centroid.y>0){
+                    ySel[i] = points.elementAt(i).y + controller.getOffset().y+2;
+                }
+                else {
+                    ySel[i] = point.y + controller.getOffset().y-2;
+                }
+                i++;
+            }
+            java.awt.Polygon polygonSel = new java.awt.Polygon(xSel, ySel, points.size());
+            g.setColor(Color.GREEN);
+            g.draw(polygonSel);
+            g.fill(polygonSel);
+        }
     }
 }
