@@ -101,6 +101,9 @@ public class Controller {
                 if (s.isSelected()) {
                     for (Seat[] seats : s.getSeats()) {
                         for (Seat seat : seats) {
+                            if (seat.isSelected()) {
+                                // select line
+                            }
                             selectionCheck(x, y, seat.getShape());
                         }
                     }
@@ -166,13 +169,21 @@ public class Controller {
         }
         if (room.getStage().isPresent()) {
             Stage stage = room.getStage().get();
-            if (stage.getShape().isSelected()) {
+            if (stage.isSelected()) {
                 visitor.visit(stage);
                 return;
             }
         }
         for (Section section : room.getSections()) {
-            if (section.getShape().isSelected()) {
+            if (section.isSelected()) {
+                for (Seat[] seats : section.getSeats()) {
+                    for (Seat seat : seats) {
+                        if (seat.isSelected()) {
+                            seat.accept(visitor);
+                            return;
+                        }
+                    }
+                }
                 section.accept(visitor);
                 return;
             }

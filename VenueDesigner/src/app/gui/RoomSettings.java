@@ -62,6 +62,10 @@ public final class RoomSettings extends JFrame {
                             public void visit(SeatedSection section) {
                                 section.refresh();
                             }
+
+                            @Override
+                            public void visit(Seat seat) {
+                            }
                         });
                     }
                     dispose();

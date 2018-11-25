@@ -34,6 +34,14 @@ public final class Seat {
         this.shape = shape;
     }
 
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
+
     public Shape getShape(){
         return shape;
     }
@@ -48,5 +56,9 @@ public final class Seat {
 
     public void move(int x, int y, Point offset){
         shape.move(x, y, offset);
+    }
+
+    public void accept(SelectionVisitor visitor) {
+        visitor.visit(this);
     }
 }
