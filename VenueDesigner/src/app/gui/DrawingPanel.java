@@ -20,7 +20,7 @@ public final class DrawingPanel extends JPanel implements UIPanel {
 
     public void paintComponent(Graphics g) {
         g.clearRect(0, 0, getWidth(), getHeight());
-        g.setColor(new Color(20, 38, 52));
+        g.setColor(new Color(0, 0, 0));
         g.fillRect(0,0,getWidth(),getHeight());
         painter.draw((Graphics2D) g);
     }

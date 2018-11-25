@@ -61,8 +61,8 @@ public final class SeatedSection extends AbstractSection {
             for (Seat seat : seatRow) {
                 Point sectionCenter = shape.computeCentroid();
                 Point seatCenter = seat.getShape().computeCentroid();
-                int dx = sectionCenter.x - seatCenter.x;
-                int dy = sectionCenter.y - seatCenter.y;
+                int dx = seatCenter.x - sectionCenter.x;
+                int dy = seatCenter.y - sectionCenter.y;
                 seat.move(x + dx,y+dy, offset);
             }
         }
