@@ -32,7 +32,7 @@ public class Controller {
     public Optional<Room> getRoom() {
         return Optional.ofNullable(this.room);
     }
-
+    
     public void setDrawingPanel(UIPanel ui) {
         this.ui = Objects.requireNonNull(ui);
     }
@@ -42,10 +42,14 @@ public class Controller {
         this.room = new Room(roomWidth, roomHeight, vitalSpace);
     }
 
-    public void load(Path path) {
-        this.room = null;
+    public void save(String path) {
+        JSONSerialize.serializeToJson(this.room, path);
     }
 
+    public void load(String path) {
+        this.room = JSONSerialize.deserializeFromJson(path);
+        ui.repaint();
+    }
     public int getXCursor () {
         return  cursor.x;
     }

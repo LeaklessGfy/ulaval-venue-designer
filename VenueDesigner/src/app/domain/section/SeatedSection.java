@@ -7,17 +7,29 @@ import app.domain.shape.Painter;
 import app.domain.shape.Point;
 import app.domain.shape.Rectangle;
 import app.domain.shape.Shape;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
 import java.util.Vector;
 
 public final class SeatedSection extends AbstractSection {
+    @JsonProperty
     private VitalSpace vitalSpace;
+    @JsonProperty
     private Seat[][] seats = new Seat[0][0];
 
-    SeatedSection(String name, int elevation, Shape shape, VitalSpace vitalSpace) {
+    SeatedSection(String name, int elevation,Shape shape, VitalSpace vitalSpace) {
         super(name, elevation, shape);
         this.vitalSpace = vitalSpace;
+    }
+
+    @JsonCreator
+    SeatedSection(@JsonProperty("name") String name, @JsonProperty("elevation") int elevation, @JsonProperty("shape") Shape shape, @JsonProperty("vitalSpace") VitalSpace vitalSpace, @JsonProperty("seats") Seat[][] seats) {
+        super(name, elevation, shape);
+        this.vitalSpace = vitalSpace;
+        this.seats = seats;
     }
 
     public static SeatedSection create(int x, int y, int columns, int rows, VitalSpace vitalSpace) {
@@ -72,10 +84,12 @@ public final class SeatedSection extends AbstractSection {
         visitor.visit(this);
     }
 
+    @JsonIgnore
     public int getColumns() {
         return seats.length;
     }
 
+    @JsonIgnore
     public int getRows() {
         if (seats.length < 1) {
             return 0;

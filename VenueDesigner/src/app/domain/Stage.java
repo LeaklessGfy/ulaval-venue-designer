@@ -2,6 +2,8 @@ package app.domain;
 
 import app.domain.shape.Point;
 import app.domain.shape.Shape;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
 import java.util.Vector;
@@ -10,7 +12,8 @@ public final class Stage {
     private final Shape shape;
     private int elevation;
 
-    public Stage(Shape shape) {
+    @JsonCreator
+    public Stage(@JsonProperty("shape") Shape shape) {
         this.shape = Objects.requireNonNull(shape);
     }
 
