@@ -59,7 +59,7 @@ public class Controller {
         int dy = (y - cursor.y);
         cursor.set(x, y);
 
-        if (mode == Mode.None) {
+        if (mode == Mode.Selection) {
             if (room.getStage().isPresent()) {
                 Shape shape = room.getStage().get().getShape();
                 if (shape.isSelected()) {
@@ -88,14 +88,16 @@ public class Controller {
         if (room == null) {
             return;
         }
-        if (mode == Mode.None) {
-            room.getStage().ifPresent(r -> r.getShape().setSelected(collider.hasCollide(x - offset.x, y - offset.y, r.getShape())));
+        if (mode == Mode.None || mode == Mode.Selection) {
+            mode = Mode.None;
+            room.getStage().ifPresent(r -> selectionCheck(x,y, r.getShape()));
             for (Section s : room.getSections()) {
-                s.getShape().setSelected(collider.hasCollide(x - offset.x, y - offset.y, s.getShape()));
+                selectionCheck(x,y,s.getShape());
             }
             ui.repaint();
             return;
         }
+
         if (current == null) {
             current = ShapeBuilderFactory.create(mode);
         }
@@ -166,6 +168,7 @@ public class Controller {
             Stage stage = room.getStage().get();
             if (stage.getShape().isSelected()) {
                 room.setStage(null);
+                mode =  Mode.None;
                 ui.repaint();
                 return;
             }
@@ -179,6 +182,7 @@ public class Controller {
         }
         if (toRemove != null) {
             room.getSections().remove(toRemove);
+            mode =  Mode.None;
             ui.repaint();
         }
     }
@@ -205,5 +209,15 @@ public class Controller {
         Shape predict = shape.clone();
         predict.move(x, y, offset);
         return room.validShape(predict, new Point());
+    }
+
+    private void selectionCheck(int x, int y,Shape shape){
+        if (collider.hasCollide(x - offset.x, y - offset.y, shape)){
+            shape.setSelected(true);
+            mode = Mode.Selection;
+        }
+        else {
+            shape.setSelected(false);
+        }
     }
 }
