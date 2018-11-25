@@ -2,7 +2,6 @@ package app.domain;
 
 import app.domain.section.Section;
 import app.domain.shape.Point;
-import app.domain.shape.Rectangle;
 import app.domain.shape.Shape;
 import app.domain.shape.ShapeBuilder;
 import app.domain.shape.ShapeBuilderFactory;
@@ -17,6 +16,7 @@ import java.util.function.BiConsumer;
 public class Controller {
     private final Collider collider;
     private final Point cursor = new Point(-1, -1);
+    private final Point offset = new Point(0, 0);
     private final HashMap<Mode, BiConsumer<Integer, Integer>> clickActions = new HashMap<>();
 
     private Room room;
@@ -26,25 +26,7 @@ public class Controller {
 
     public Controller(Collider collider) {
         this.collider = Objects.requireNonNull(collider);
-    }
-
-    public static Controller create(Collider collider) {
-        Controller controller = new Controller(collider);
-        controller.clickActions.put(Mode.Stage, (x, y) -> {
-            if (controller.current == null) {
-                controller.current = new Rectangle.Builder();
-            }
-
-            controller.current.addPoint(new Point(x, y));
-            if (controller.current.isComplete()) {
-
-                /* TODO: check for room existence ? */
-                controller.room.setStage(new Stage(controller.current.build()));
-                controller.current = null;
-            }
-        });
-
-        return controller;
+        this.room = new Room(500, 500, new VitalSpace(1, 1));
     }
 
     public Optional<Room> getRoom() {
@@ -73,14 +55,32 @@ public class Controller {
     }
 
     public void mouseDragged(int x, int y) {
+        int dx = (x - cursor.x);
+        int dy = (y - cursor.y);
+        cursor.set(x, y);
+
         if (mode == Mode.None) {
-            for (Section s : room.getSections()) {
-                Shape currentShape = s.getShape();
-                if (currentShape.isSelected())
-                {
-                    s.move(x,y);
+            if (room.getStage().isPresent()) {
+                Shape shape = room.getStage().get().getShape();
+                if (shape.isSelected()) {
+                    if (isMovable(shape, x, y)) {
+                        shape.move(x, y, offset);
+                        ui.repaint();
+                    }
+                    return;
                 }
             }
+            for (Section section : room.getSections()) {
+                Shape shape = section.getShape();
+                if (shape.isSelected()) {
+                    if (isMovable(shape, x, y)) {
+                        section.move(x, y, offset);
+                        ui.repaint();
+                    }
+                    return;
+                }
+            }
+            offset.offset(dx, dy);
             ui.repaint();
         }
     }
@@ -89,10 +89,9 @@ public class Controller {
             return;
         }
         if (mode == Mode.None) {
-            room.getStage().ifPresent(r -> r.getShape().setSelected(collider.hasCollide(x, y, r.getShape())));
+            room.getStage().ifPresent(r -> r.getShape().setSelected(collider.hasCollide(x - offset.x, y - offset.y, r.getShape())));
             for (Section s : room.getSections()) {
-                Shape currentShape = s.getShape();
-                currentShape.setSelected(collider.hasCollide(x, y, currentShape));
+                s.getShape().setSelected(collider.hasCollide(x - offset.x, y - offset.y, s.getShape()));
             }
             ui.repaint();
             return;
@@ -128,7 +127,7 @@ public class Controller {
         return true;
     }
 
-    public Optional<Shape> getCurrent() {
+    public Optional<ShapeBuilder> getCurrent() {
         return Optional.ofNullable(current);
     }
 
@@ -136,13 +135,31 @@ public class Controller {
         return mode;
     }
 
+    public Point getOffset() {
+        return offset;
+    }
+
     private void createShape() {
         current.correctLastPoint();
-        if (mode == Mode.Stage) {
-            room.setStage(new Stage(current.build()));
-        } else {
-            room.addSection(SectionFactory.create(mode, current.build()));
-        }
+        Shape shape = current.build();
         current = null;
+        if (!room.validShape(shape, offset)) {
+            return;
+        }
+        for (Point p : shape.getPoints()) {
+            p.x -= offset.x;
+            p.y -= offset.y;
+        }
+        if (mode == Mode.Stage) {
+            room.setStage(new Stage(shape));
+        } else {
+            room.addSection(SectionFactory.create(mode, shape));
+        }
+    }
+
+    private boolean isMovable(Shape shape, int x, int y) {
+        Shape predict = shape.clone();
+        predict.move(x, y, offset);
+        return room.validShape(predict, new Point());
     }
 }

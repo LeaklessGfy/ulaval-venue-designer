@@ -12,26 +12,13 @@ import java.util.Objects;
 public final class GUIPainter implements Painter<Graphics2D> {
     private final Controller controller;
 
-    GUIPainter(Controller controller, DrawingPanel panel) {
+    GUIPainter(Controller controller) {
         this.controller = Objects.requireNonNull(controller);
     }
 
-    void draw(Graphics2D g, int width, int height) {
+    void draw(Graphics2D g) {
+        controller.getRoom().ifPresent(r -> r.accept(g, this));
         controller.getCurrent().ifPresent(s -> s.accept(g, this));
-        controller.getRoom().ifPresent(r -> {
-            int startX = (width / 2) - (r.getWidth() / 2);
-            int startY = (height / 2) - (r.getHeight() / 2);
-            g.setColor(Color.WHITE);
-            g.drawRect(startX, startY, r.getWidth(), r.getHeight());
-
-            r.getStage().ifPresent(s -> s.getShape().accept(g, this));
-            r.getSections().forEach(section -> {
-                section.getShape().accept(g, this);
-                section.getSeats().forEach(seat -> {
-                    seat.getShape().accept(g, this);
-                });
-            });
-        });
     }
 
     @Override
@@ -46,7 +33,7 @@ public final class GUIPainter implements Painter<Graphics2D> {
 
     @Override
     public void draw(Graphics2D g, Rectangle.Builder rectangle) {
-        Coordinates coordinates = GUIUtils.getCoordinates(rectangle);
+        Coordinates coordinates = GUIUtils.getCoordinates(rectangle.getPoints(), new Point(0, 0));
 
         g.setStroke(new BasicStroke(2));
         g.setColor(Color.lightGray);
@@ -73,7 +60,7 @@ public final class GUIPainter implements Painter<Graphics2D> {
 
     @Override
     public void draw(Graphics2D g, Polygon.Builder polygon) {
-        Coordinates coordinates = GUIUtils.getCoordinates(polygon);
+        Coordinates coordinates = GUIUtils.getCoordinates(polygon.getPoints(), new Point(0, 0));
 
         g.setStroke(new BasicStroke(2));
         g.setColor(Color.lightGray);
@@ -84,7 +71,7 @@ public final class GUIPainter implements Painter<Graphics2D> {
     }
 
     private void drawFinal(Graphics2D g, Shape shape) {
-        Coordinates coordinates = GUIUtils.getCoordinates(shape);
+        Coordinates coordinates = GUIUtils.getCoordinates(shape.getPoints(), controller.getOffset());
         java.awt.Polygon polygon = new java.awt.Polygon(coordinates.xCoords, coordinates.yCoords, coordinates.points.size());
 
         g.setStroke(new BasicStroke(2));
@@ -93,8 +80,9 @@ public final class GUIPainter implements Painter<Graphics2D> {
         } else {
             g.setColor(Color.GREEN);
         }
+        int[] color = shape.getColor();
         g.draw(polygon);
-        g.setColor(Color.darkGray);
+        g.setColor(new Color(color[0], color[1], color[2]));
         g.fill(polygon);
     }
 }

@@ -4,6 +4,8 @@ import app.domain.Controller;
 import app.domain.UIPanel;
 import app.domain.VitalSpace;
 import app.domain.section.SeatedSection;
+import app.domain.section.Section;
+import app.domain.shape.Point;
 
 import javax.swing.*;
 import java.util.Objects;
@@ -23,7 +25,12 @@ public final class SectionSettings extends JFrame {
                 int xInt = Integer.parseInt(columns.getText());
                 int yInt = Integer.parseInt(rows.getText());
                 VitalSpace vs = new VitalSpace(20, 20);
-                controller.getRoom().ifPresent(r -> r.addSection(SeatedSection.create(x, y, xInt, yInt, vs)));
+                controller.getRoom().ifPresent(r -> {
+                    Section section = SeatedSection.create(x - controller.getOffset().x, y - controller.getOffset().y, xInt, yInt, vs);
+                    if (r.validShape(section.getShape(), new Point())) {
+                        r.addSection(section);
+                    }
+                });
                 setVisible(false);
                 dispose();
                 ui.repaint();

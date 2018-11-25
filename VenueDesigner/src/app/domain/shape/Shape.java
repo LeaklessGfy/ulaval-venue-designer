@@ -6,7 +6,9 @@ public interface Shape {
     void setSelected(boolean selected);
     boolean isSelected();
     Vector<Point> getPoints();
-    void move(int x, int y);
+    int[] getColor();
+    void move(int x, int y, Point offset);
     Point computeCentroid();
     <T> void accept(T g, Painter<T> painter);
+    Shape clone();
 }

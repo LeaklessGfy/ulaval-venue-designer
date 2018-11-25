@@ -2,6 +2,7 @@ package app.domain.section;
 
 import app.domain.Seat;
 import app.domain.VitalSpace;
+import app.domain.shape.Painter;
 import app.domain.shape.Point;
 import app.domain.shape.Rectangle;
 import app.domain.shape.Shape;
@@ -27,7 +28,7 @@ public final class SeatedSection extends AbstractSection {
         points.add(new Point(x + (column * vitalSpace.getWidth()), y));
         points.add(new Point(x + (column * vitalSpace.getWidth()), y + (row * vitalSpace.getHeight())));
         points.add(new Point(x, y + (row * vitalSpace.getHeight())));
-        Rectangle rectangle = new Rectangle(points);
+        Rectangle rectangle = new Rectangle(points, new int[3]);
 
         SeatedSection section = new SeatedSection(null, 0, rectangle, vitalSpace);
 
@@ -40,7 +41,24 @@ public final class SeatedSection extends AbstractSection {
         return section;
     }
 
-    public Vector<Seat> getSeats() {
-        return seats;
+    @Override
+    public  void move(int x, int y, Point offset) {
+        Shape shape = getShape();
+        for (Seat seat : seats){
+            Point sectionCenter = shape.computeCentroid();
+            Point seatCenter = seat.getShape().computeCentroid();
+            int dx = sectionCenter.x - seatCenter.x;
+            int dy = sectionCenter.y - seatCenter.y;
+            seat.move(x + dx,y+dy, offset);
+        }
+        shape.move(x, y, offset);
+    }
+
+    @Override
+    public <T> void accept(T g, Painter<T> painter) {
+        getShape().accept(g, painter);
+        for (Seat seat : seats) {
+            seat.getShape().accept(g, painter);
+        }
     }
 }

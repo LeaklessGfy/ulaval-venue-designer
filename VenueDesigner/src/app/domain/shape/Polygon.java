@@ -5,6 +5,15 @@ import java.util.Vector;
 public final class Polygon extends AbstractShape {
     public static class Builder implements ShapeBuilder {
         private final Vector<Point> points = new Vector<>();
+        private final int[] color = new int[3];
+
+        Builder() {}
+
+        Builder(int r, int g, int b) {
+            color[0] = r;
+            color[1] = g;
+            color[2] = b;
+        }
 
         @Override
         public void addPoint(Point point) {
@@ -23,18 +32,7 @@ public final class Polygon extends AbstractShape {
 
         @Override
         public Shape build() {
-            return new Polygon(points);
-        }
-
-        @Override
-        public void setSelected(boolean selected) {}
-
-        @Override
-        public void move(int x, int y) {}
-
-        @Override
-        public boolean isSelected() {
-            return true;
+            return new Polygon(points, color);
         }
 
         @Override
@@ -55,20 +53,19 @@ public final class Polygon extends AbstractShape {
 
             return Math.sqrt(Math.pow(x2-x1, 2) + Math.pow(y2-y1, 2));
         }
-
-        @Override
-        public Point computeCentroid(){
-            return new Point(-1,-1);
-        }
     }
 
-    public Polygon(Vector<Point> points) {
-        super(points);
+    private Polygon(Vector<Point> points, int[] color) {
+        super(points, color);
     }
-
 
     @Override
     public <T> void accept(T g, Painter<T> painter) {
         painter.draw(g,this);
+    }
+
+    @Override
+    public Shape clone() {
+        return new Rectangle(getPoints(), getColor());
     }
 }

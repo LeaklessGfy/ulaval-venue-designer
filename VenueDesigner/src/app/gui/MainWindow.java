@@ -9,6 +9,7 @@ import java.awt.event.*;
 
 public final class MainWindow extends Frame {
     private Controller controller;
+    private GUIPainter painter;
 
     private JPanel panelMain;
     private JPanel buttonTopPanel;
@@ -129,7 +130,8 @@ public final class MainWindow extends Frame {
         };
         propertyTable = new JTable(data, columnNames);
         controller = new Controller(new GUICollider());
-        drawingPanel = new DrawingPanel(new GUIPainter(controller, drawingPanel));
+        painter = new GUIPainter(controller);
+        drawingPanel = new DrawingPanel(painter);
         controller.setDrawingPanel(drawingPanel);
     }
 

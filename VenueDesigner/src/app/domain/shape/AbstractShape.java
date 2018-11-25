@@ -5,23 +5,42 @@ import java.util.Vector;
 
 abstract class AbstractShape implements Shape {
     private final Vector<Point> points;
+    private final int[] color;
     private boolean selected;
 
-    public AbstractShape(Vector<Point> points) {
+    AbstractShape(Vector<Point> points, int[] color) {
         this.points = Objects.requireNonNull(points);
+        this.color = Objects.requireNonNull(color);
         this.selected = false;
     }
 
+    AbstractShape(AbstractShape shape) {
+        this.points = new Vector<>();
+        for (Point p : shape.points) {
+            points.add(new Point(p));
+        }
+        this.color = shape.color;
+        this.selected = shape.selected;
+    }
+
+    @Override
     public void setSelected(boolean bool) {
         selected = bool;
     }
 
+    @Override
     public boolean isSelected() {
         return selected;
     }
 
+    @Override
     public Vector<Point> getPoints() {
         return points;
+    }
+
+    @Override
+    public int[] getColor() {
+        return color;
     }
 
     public float Area(){ // Polygon Area Calculation
@@ -36,6 +55,7 @@ abstract class AbstractShape implements Shape {
         return area;
     }
 
+    @Override
     public Point computeCentroid() {
         double cx =0.0;
         double cy =0.0;
@@ -64,15 +84,15 @@ abstract class AbstractShape implements Shape {
         cy /= (6.0*signedArea);
 
         return new Point((int) cx,(int)cy);
-
     }
 
-    public void move(int x, int y) {
+    @Override
+    public void move(int x, int y, Point offset) {
         Point centroid = this.computeCentroid();
         for (Point p : points) {
             int dx = centroid.x - p.x;
             int dy = centroid.y - p.y;
-            p.set(x+dx, y+dy);
+            p.set((x+dx) - offset.x, (y+dy) - offset.y);
         }
     }
 
@@ -86,5 +106,9 @@ abstract class AbstractShape implements Shape {
         }
         return points;
     }
-    
+
+    @Override
+    public Shape clone() {
+        return null;
+    }
 }
