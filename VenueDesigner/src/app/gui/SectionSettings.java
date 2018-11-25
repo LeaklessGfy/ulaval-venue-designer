@@ -2,10 +2,6 @@ package app.gui;
 
 import app.domain.Controller;
 import app.domain.UIPanel;
-import app.domain.VitalSpace;
-import app.domain.section.SeatedSection;
-import app.domain.section.Section;
-import app.domain.shape.Point;
 
 import javax.swing.*;
 import java.util.Objects;
@@ -24,13 +20,7 @@ public final class SectionSettings extends JFrame {
             if (validateForm()) {
                 int xInt = Integer.parseInt(columns.getText());
                 int yInt = Integer.parseInt(rows.getText());
-                controller.getRoom().ifPresent(r -> {
-                    Section section = SeatedSection.create(x - controller.getOffset().x, y - controller.getOffset().y, xInt, yInt, r.getVitalSpace());
-                    if (r.validShape(section.getShape(), new Point())) {
-                        r.addSection(section);
-                    }
-                });
-                controller.toggleMode(controller.getMode());
+                controller.createRegularSection(x, y, xInt, yInt);
                 setVisible(false);
                 dispose();
                 ui.repaint();

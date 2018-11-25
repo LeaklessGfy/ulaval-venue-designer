@@ -6,7 +6,7 @@ import app.domain.section.SeatedSection;
 
 import javax.swing.*;
 
-public class SectionEdition extends JFrame {
+public final class SectionEdition extends JFrame {
     private JTextField columns;
     private JTextField rows;
     private JTextField elevation;

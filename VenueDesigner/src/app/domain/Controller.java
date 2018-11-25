@@ -1,5 +1,6 @@
 package app.domain;
 
+import app.domain.section.SeatedSection;
 import app.domain.section.Section;
 import app.domain.shape.Point;
 import app.domain.shape.Shape;
@@ -116,7 +117,6 @@ public class Controller {
         current.addPoint(new Point(x, y));
         if (current.isComplete()) {
             createShape();
-            mode = Mode.None;
         }
         ui.repaint();
     }
@@ -206,12 +206,43 @@ public class Controller {
         }
     }
 
+    public void createRegularSection(int x, int y, int xInt, int yInt) {
+        if (room != null) {
+            Section section = SeatedSection.create(x - offset.x, y - offset.y, xInt, yInt, room.getVitalSpace());
+            if (!room.validShape(section.getShape(), new Point())) {
+                return;
+            }
+            if (room.getStage().isPresent()) {
+                if (collider.hasCollide(room.getStage().get().getShape(), section.getShape())) {
+                    return;
+                }
+            }
+            for (Section s : room.getSections()) {
+                if (collider.hasCollide(s.getShape(), section.getShape())) {
+                    return;
+                }
+            }
+            room.addSection(section);
+            mode = Mode.None;
+        }
+    }
+
     private void createShape() {
         current.correctLastPoint();
         Shape shape = current.build();
         current = null;
         if (!room.validShape(shape, offset)) {
             return;
+        }
+        if (room.getStage().isPresent()) {
+            if (collider.hasCollide(room.getStage().get().getShape(), shape)) {
+                return;
+            }
+        }
+        for (Section section : room.getSections()) {
+            if (collider.hasCollide(shape, section.getShape())) {
+                return;
+            }
         }
         for (Point p : shape.getPoints()) {
             p.x -= offset.x;
@@ -222,6 +253,7 @@ public class Controller {
         } else {
             room.addSection(SectionFactory.create(mode, shape));
         }
+        mode = Mode.None;
     }
 
     private boolean isMovable(Shape shape, int x, int y) {
