@@ -13,7 +13,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 public final class Room {
-    private ArrayList<Section> sections = new ArrayList<>();
+    private final ArrayList<Section> sections;
     @JsonProperty
     private final Shape shape;
 
@@ -30,6 +30,7 @@ public final class Room {
         this.width = width;
         this.height = height;
         this.vitalSpace = Objects.requireNonNull(vitalSpace);
+        this.sections = new ArrayList<>();
     }
 
     @JsonCreator
