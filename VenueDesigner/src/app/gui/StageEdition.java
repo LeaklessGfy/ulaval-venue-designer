@@ -5,7 +5,7 @@ import app.domain.UIPanel;
 
 import javax.swing.*;
 
-public class StageEdition extends JFrame {
+public final class StageEdition extends JFrame {
     private JTextField width;
     private JTextField height;
     private JTextField elevation;
