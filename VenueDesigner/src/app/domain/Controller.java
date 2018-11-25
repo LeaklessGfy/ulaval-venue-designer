@@ -7,7 +7,6 @@ import app.domain.shape.ShapeBuilder;
 import app.domain.shape.ShapeBuilderFactory;
 import app.domain.section.SectionFactory;
 
-import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.Optional;
@@ -26,7 +25,7 @@ public class Controller {
 
     public Controller(Collider collider) {
         this.collider = Objects.requireNonNull(collider);
-        this.room = new Room(500, 500, new VitalSpace(1, 1));
+        this.room = new Room(500, 500, new VitalSpace(10, 10));
     }
 
     public Optional<Room> getRoom() {
@@ -50,6 +49,7 @@ public class Controller {
         this.room = JSONSerialize.deserializeFromJson(path);
         ui.repaint();
     }
+
     public int getXCursor () {
         return  cursor.x;
     }
@@ -76,7 +76,7 @@ public class Controller {
             }
             for (Section section : room.getSections()) {
                 Shape shape = section.getShape();
-                if (shape.isSelected()) {
+                if (section.isSelected()) {
                     if (isMovable(shape, x, y)) {
                         section.move(x, y, offset);
                         ui.repaint();
@@ -92,11 +92,19 @@ public class Controller {
         if (room == null) {
             return;
         }
+
         if (mode == Mode.None || mode == Mode.Selection) {
             mode = Mode.None;
             room.getStage().ifPresent(r -> selectionCheck(x,y, r.getShape()));
             for (Section s : room.getSections()) {
-                selectionCheck(x,y,s.getShape());
+                if (s.isSelected()) {
+                    for (Seat[] seats : s.getSeats()) {
+                        for (Seat seat : seats) {
+                            selectionCheck(x, y, seat.getShape());
+                        }
+                    }
+                }
+                selectionCheck(x, y, s.getShape());
             }
             ui.repaint();
             return;
@@ -105,13 +113,11 @@ public class Controller {
         if (current == null) {
             current = ShapeBuilderFactory.create(mode);
         }
-
         current.addPoint(new Point(x, y));
-
         if (current.isComplete()) {
             createShape();
+            mode = Mode.None;
         }
-
         ui.repaint();
     }
 
@@ -130,6 +136,15 @@ public class Controller {
             return false;
         }
         this.mode = Objects.requireNonNull(mode);
+        room.getStage().ifPresent(stage -> stage.setSelected(false));
+        room.getSections().forEach(section -> {
+            section.setSelected(false);
+            for (Seat[] seats : section.getSeats()) {
+                for (Seat seat : seats) {
+                    seat.setSelected(false);
+                }
+            }
+        });
         return true;
     }
 
@@ -215,12 +230,11 @@ public class Controller {
         return room.validShape(predict, new Point());
     }
 
-    private void selectionCheck(int x, int y,Shape shape){
+    private void selectionCheck(int x, int y, Shape shape){
         if (collider.hasCollide(x - offset.x, y - offset.y, shape)){
             shape.setSelected(true);
             mode = Mode.Selection;
-        }
-        else {
+        } else {
             shape.setSelected(false);
         }
     }

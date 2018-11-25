@@ -24,8 +24,8 @@ public final class RoomSettings extends JFrame {
         Optional<Room> room = controller.getRoom();
 
         if (event.getActionCommand().equals("New") || !room.isPresent()) {
-            vitalSpaceWidthTextField.setText("1");
-            vitalSpaceHeightTextField.setText("1");
+            vitalSpaceWidthTextField.setText("10");
+            vitalSpaceHeightTextField.setText("10");
         } else {
             Room r = room.get();
             roomWidthTextField.setText(Integer.toString(r.getWidth()));

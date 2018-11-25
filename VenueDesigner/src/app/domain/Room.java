@@ -26,7 +26,7 @@ public final class Room {
     private Stage stage;
 
     public Room(int width, int height, VitalSpace vitalSpace) {
-        this.shape = Rectangle.create(0, 0, width, height, new int[]{20, 38, 52});
+        this.shape = Rectangle.create(0, 0, width, height, new int[]{20, 38, 52, 255});
         this.width = width;
         this.height = height;
         this.vitalSpace = Objects.requireNonNull(vitalSpace);
@@ -58,6 +58,10 @@ public final class Room {
 
     public VitalSpace getVitalSpace() { return vitalSpace; }
 
+    public Shape getShape() {
+        return shape;
+    }
+
     public void setStage(Stage stage) {
         this.stage = stage;
     }
@@ -88,12 +92,6 @@ public final class Room {
     }
 
     public <T> void accept(T g, Painter<T> painter) {
-        shape.accept(g, painter);
-        if (stage != null) {
-            stage.getShape().accept(g, painter);
-        }
-        for (Section s : sections) {
-            s.accept(g, painter);
-        }
+        painter.draw(g, this);
     }
 }

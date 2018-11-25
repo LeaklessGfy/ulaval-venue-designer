@@ -1,5 +1,6 @@
 package app.domain.section;
 
+import app.domain.Seat;
 import app.domain.SelectionVisitor;
 import app.domain.shape.Painter;
 import app.domain.shape.Point;
@@ -34,6 +35,9 @@ public final class StandingSection extends AbstractSection {
     @Override
     public void accept(SelectionVisitor visitor) {
     }
+
+    @Override
+    public Seat[][] getSeats() {
+        return new Seat[0][0];
+    }
 }
-
-

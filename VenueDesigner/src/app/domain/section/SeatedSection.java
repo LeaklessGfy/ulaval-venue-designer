@@ -40,7 +40,7 @@ public final class SeatedSection extends AbstractSection {
         points.add(new Point(x + (columns * vitalSpace.getWidth()), y));
         points.add(new Point(x + (columns * vitalSpace.getWidth()), y + (rows * vitalSpace.getHeight())));
         points.add(new Point(x, y + (rows * vitalSpace.getHeight())));
-        Rectangle rectangle = new Rectangle(points, new int[3]);
+        Rectangle rectangle = new Rectangle(points, new int[4]);
 
         SeatedSection section = new SeatedSection(null, 0, rectangle, vitalSpace);
         section.seats = new Seat[columns][rows];
@@ -71,12 +71,12 @@ public final class SeatedSection extends AbstractSection {
 
     @Override
     public <T> void accept(T g, Painter<T> painter) {
-        getShape().accept(g, painter);
-        for (Seat[] seatRow : seats) {
-            for (Seat seat : seatRow) {
-                seat.getShape().accept(g, painter);
-            }
-        }
+        painter.draw(g, this);
+    }
+
+    @Override
+    public Seat[][] getSeats() {
+        return seats;
     }
 
     @Override
@@ -128,5 +128,6 @@ public final class SeatedSection extends AbstractSection {
                 seats[i][j] = new Seat(i, j, vitalSpace, getShape().getPoints().get(0));
             }
         }
+        refresh();
     }
 }

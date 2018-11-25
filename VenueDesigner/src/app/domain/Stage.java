@@ -21,6 +21,14 @@ public final class Stage {
         return shape;
     }
 
+    public void setSelected(boolean selected) {
+        shape.setSelected(selected);
+    }
+
+    public boolean isSelected() {
+        return shape.isSelected();
+    }
+
     public int getWidth() {
         Vector<Point> points = shape.getPoints();
         return points.get(1).x - points.firstElement().x;
