@@ -2,6 +2,7 @@ package app.domain.section;
 
 import app.domain.Seat;
 import app.domain.VitalSpace;
+import app.domain.shape.Painter;
 import app.domain.shape.Point;
 import app.domain.shape.Rectangle;
 import app.domain.shape.Shape;
@@ -42,5 +43,26 @@ public final class SeatedSection extends AbstractSection {
 
     public Vector<Seat> getSeats() {
         return seats;
+    }
+
+    @Override
+    public  void move(int x, int y) {
+        Shape shape = getShape();
+        for (Seat seat : seats){
+            Point sectionCenter = shape.computeCentroid();
+            Point seatCenter = seat.getShape().computeCentroid();
+            int dx = sectionCenter.x - seatCenter.x;
+            int dy = sectionCenter.y - seatCenter.y;
+            seat.move(x + dx,y+dy);
+        }
+        shape.move(x, y);
+    }
+
+    @Override
+    public <T> void accept(T g, Painter<T> painter) {
+        getShape().accept(g, painter);
+        for (Seat seat : seats) {
+            seat.getShape().accept(g, painter);
+        }
     }
 }

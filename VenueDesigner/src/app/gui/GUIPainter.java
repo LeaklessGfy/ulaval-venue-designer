@@ -17,16 +17,7 @@ public final class GUIPainter implements Painter<Graphics2D> {
     }
 
     void draw(Graphics2D g) {
-        controller.getRoom().ifPresent(r -> {
-            r.getShape().accept(g, this);
-            r.getStage().ifPresent(s -> s.getShape().accept(g, this));
-            r.getSections().forEach(section -> {
-                section.getShape().accept(g, this);
-                section.getSeats().forEach(seat -> {
-                    seat.getShape().accept(g, this);
-                });
-            });
-        });
+        controller.getRoom().ifPresent(r -> r.accept(g, this));
         controller.getCurrent().ifPresent(s -> s.accept(g, this));
     }
 

@@ -1,6 +1,7 @@
 package app.domain;
 
 import app.domain.section.Section;
+import app.domain.shape.Painter;
 import app.domain.shape.Point;
 import app.domain.shape.Rectangle;
 import app.domain.shape.Shape;
@@ -37,7 +38,7 @@ public final class Room {
 
     public void setHeight(int height) { this.height = height; }
 
-    public VitalSpace getVitalSpace() { return this.vitalSpace; }
+    public VitalSpace getVitalSpace() { return vitalSpace; }
 
     public void setStage(Stage stage) {
         this.stage = Objects.requireNonNull(stage);
@@ -55,10 +56,6 @@ public final class Room {
         return Collections.unmodifiableList(sections);
     }
 
-    public Shape getShape() {
-        return shape;
-    }
-
     public boolean validShape(Shape s) {
         int x = shape.getPoints().firstElement().x;
         int y = shape.getPoints().firstElement().y;
@@ -70,7 +67,16 @@ public final class Room {
                 return false;
             }
         }
-
         return true;
+    }
+
+    public <T> void accept(T g, Painter<T> painter) {
+        shape.accept(g, painter);
+        if (stage != null) {
+            stage.getShape().accept(g, painter);
+        }
+        for (Section s : sections) {
+            s.accept(g, painter);
+        }
     }
 }

@@ -29,6 +29,6 @@ public final class Seat {
     }
 
     public void move(int x, int y){
-        this.shape.move(x,y);
+        shape.move(x,y);
     }
 }

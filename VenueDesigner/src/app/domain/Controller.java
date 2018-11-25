@@ -27,6 +27,7 @@ public class Controller {
 
     public Controller(Collider collider) {
         this.collider = Objects.requireNonNull(collider);
+        this.room = new Room(500, 500, new VitalSpace(1, 1));
     }
 
     public static Controller create(Collider collider) {
@@ -77,16 +78,26 @@ public class Controller {
         int dx = (x - cursor.x);
         int dy = (y - cursor.y);
         cursor.set(x, y);
-        offset.offset(dx, dy);
 
         if (mode == Mode.None) {
-            for (Section s : room.getSections()) {
-                Shape currentShape = s.getShape();
-                if (currentShape.isSelected())
-                {
-                    s.move(x,y);
+            if (room.getStage().isPresent()) {
+                Stage s = room.getStage().get();
+                Shape shape = s.getShape();
+                if (shape.isSelected()) {
+                    shape.move(x, y);
+                    ui.repaint();
+                    return;
                 }
             }
+            for (Section section : room.getSections()) {
+                Shape shape = section.getShape();
+                if (shape.isSelected()) {
+                    section.move(x, y);
+                    ui.repaint();
+                    return;
+                }
+            }
+            offset.offset(dx, dy);
             ui.repaint();
         }
     }
@@ -95,10 +106,9 @@ public class Controller {
             return;
         }
         if (mode == Mode.None) {
-            room.getStage().ifPresent(r -> r.getShape().setSelected(collider.hasCollide(x, y, r.getShape())));
+            room.getStage().ifPresent(r -> r.getShape().setSelected(collider.hasCollide(x - offset.x, y - offset.y, r.getShape())));
             for (Section s : room.getSections()) {
-                Shape currentShape = s.getShape();
-                currentShape.setSelected(collider.hasCollide(x, y, currentShape));
+                s.getShape().setSelected(collider.hasCollide(x - offset.x, y - offset.y, s.getShape()));
             }
             ui.repaint();
             return;
