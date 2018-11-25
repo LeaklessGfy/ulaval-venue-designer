@@ -94,4 +94,8 @@ public final class Room {
     public <T> void accept(T g, Painter<T> painter) {
         painter.draw(g, this);
     }
+
+    public boolean isStageSet(){
+        return !(stage ==  null);
+    }
 }

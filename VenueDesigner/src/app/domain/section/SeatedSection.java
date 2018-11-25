@@ -2,6 +2,7 @@ package app.domain.section;
 
 import app.domain.Seat;
 import app.domain.SelectionVisitor;
+import app.domain.Stage;
 import app.domain.VitalSpace;
 import app.domain.shape.Painter;
 import app.domain.shape.Point;
@@ -32,22 +33,46 @@ public final class SeatedSection extends AbstractSection {
         this.seats = seats;
     }
 
-    public static SeatedSection create(int x, int y, int columns, int rows, VitalSpace vitalSpace) {
+    public static SeatedSection create(int x, int y, int columns, int rows, VitalSpace vitalSpace, Stage stage) {
         Objects.requireNonNull(vitalSpace);
+        Point stageCenter = stage.getShape().computeCentroid();
+        double dx = x - stageCenter.x;
+        double dy = y - stageCenter.y;
+        double alpha = Math.atan((double)stage.getHeight()/(double)stage.getWidth());
+        double theta;
+        if (dx>0 && dy>=0){
+            theta = Math.atan(dy/dx);
+        } else if (dx>0){
+            theta = Math.atan(dy/dx) + 2 * Math.PI;
+        } else if (dx < 0) {
+            theta = Math.atan(dy/dx) + Math.PI;
+        } else if (x == 0 && y>0){
+            theta = Math.PI/2;
+        } else {
+            theta = 3*Math.PI/2;
+        }
 
+        Zone zone;
         Vector<Point> points = new Vector<>();
-        points.add(new Point(x, y));
-        points.add(new Point(x + (columns * vitalSpace.getWidth()), y));
-        points.add(new Point(x + (columns * vitalSpace.getWidth()), y + (rows * vitalSpace.getHeight())));
-        points.add(new Point(x, y + (rows * vitalSpace.getHeight())));
-        Rectangle rectangle = new Rectangle(points, new int[4]);
+        if (theta >= alpha && theta < Math.PI - alpha){
+            zone = Zone.Bas;
+        } else if (theta >= Math.PI - alpha && theta < Math.PI + alpha){
+            zone = Zone.Gauche;
+        } else if (theta >= Math.PI + alpha && theta < 2*Math.PI - alpha){
+            zone = Zone.Haut;
+        } else {
+            zone = Zone.Droit;
+        }
+
+        Rectangle rectangle = Rectangle.create(x, y,columns*vitalSpace.getWidth(),rows*vitalSpace.getHeight(), new int[4],zone);
+
 
         SeatedSection section = new SeatedSection(null, 0, rectangle, vitalSpace);
         section.seats = new Seat[columns][rows];
 
         for (int i = 0; i < columns; i++) {
             for (int j = 0; j < rows; j++) {
-                section.seats[i][j] = new Seat(i, j, vitalSpace, points.get(0));
+                section.seats[i][j] = new Seat(i, j, vitalSpace, new Point(x,y));
             }
         }
 

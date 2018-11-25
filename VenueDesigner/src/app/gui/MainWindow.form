@@ -22,22 +22,10 @@
               <text value="Stage"/>
             </properties>
           </component>
-          <component id="1c96d" class="javax.swing.JButton" binding="regSeatedSection">
+          <component id="49a81" class="javax.swing.JButton" binding="regSeatedSection">
             <constraints/>
             <properties>
-              <text value="Reg Seated Section"/>
-            </properties>
-          </component>
-          <component id="49a81" class="javax.swing.JButton" binding="regSeatedSection2">
-            <constraints/>
-            <properties>
-              <text value="Reg Seated Section 2"/>
-            </properties>
-          </component>
-          <component id="ad4b5" class="javax.swing.JButton" binding="standingSection">
-            <constraints/>
-            <properties>
-              <text value="Standing Section"/>
+              <text value="Regular Seated Section"/>
             </properties>
           </component>
         </children>

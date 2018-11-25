@@ -207,8 +207,8 @@ public class Controller {
     }
 
     public void createRegularSection(int x, int y, int xInt, int yInt) {
-        if (room != null) {
-            Section section = SeatedSection.create(x - offset.x, y - offset.y, xInt, yInt, room.getVitalSpace());
+        if (room != null && room.getStage().isPresent()) {
+            Section section = SeatedSection.create(x - offset.x, y - offset.y, xInt, yInt, room.getVitalSpace(), room.getStage().get());
             if (!room.validShape(section.getShape(), new Point())) {
                 return;
             }

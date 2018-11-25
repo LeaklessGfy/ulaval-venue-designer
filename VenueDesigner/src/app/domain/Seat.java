@@ -1,5 +1,6 @@
 package app.domain;
 
+import app.domain.section.Zone;
 import app.domain.shape.Point;
 import app.domain.shape.Rectangle;
 import app.domain.shape.Shape;

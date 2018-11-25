@@ -1,5 +1,6 @@
 package app.domain.shape;
 
+import app.domain.section.Zone;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -67,6 +68,37 @@ public final class Rectangle extends AbstractShape {
         points.add(new Point(x + width, y + height));
         points.add(new Point(x, y + height));
 
+        return new Rectangle(points, color);
+    }
+
+    public static Rectangle create(int x, int y, int width, int height, int[] color, Zone zone) {
+        Vector<Point> points = new Vector<>();
+        switch (zone){
+            case Bas:{
+                return Rectangle.create(x,y,width,height,color);
+            }
+            case Gauche:{
+                points.add(new Point(x, y));
+                points.add(new Point(x, y+width));
+                points.add(new Point(x-height, y +width));
+                points.add(new Point(x-height, y ));
+                return new Rectangle(points, color);
+            }
+            case Haut:{
+                points.add(new Point(x, y));
+                points.add(new Point(x-width, y));
+                points.add(new Point(x-width, y -height));
+                points.add(new Point(x, y -height));
+                return new Rectangle(points, color);
+            }
+            case Droit:{
+                points.add(new Point(x, y));
+                points.add(new Point(x, y-width));
+                points.add(new Point(x+height, y -width));
+                points.add(new Point(x+height, y ));
+                return new Rectangle(points, color);
+            }
+        }
         return new Rectangle(points, color);
     }
 
