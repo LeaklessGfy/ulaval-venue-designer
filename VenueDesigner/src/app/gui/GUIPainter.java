@@ -31,14 +31,14 @@ public final class GUIPainter implements Painter<Graphics2D> {
     @Override
     public void draw(Graphics2D g, Room room) {
         room.getShape().accept(g, this);
-        room.getStage().ifPresent(stage -> stage.getShape().accept(g, this));
+        room.getStage().ifPresent(stage -> draw(g, stage));
         room.getSections().forEach(section -> section.accept(g, this));
     }
 
     @Override
     public void draw(Graphics2D g, SeatedSection seatedSection) {
         for (Seat seat : seatedSection.getSeats()) {
-            if (!seat.getShape().isSelected()) {
+            if (!seat.isSelected()) {
                 draw(g, seat);
             } else {
                 drawShapeColor(g, seat.getShape(), Color.GREEN, Color.GREEN);
@@ -49,7 +49,7 @@ public final class GUIPainter implements Painter<Graphics2D> {
 
     @Override
     public void draw(Graphics2D g, StandingSection standingSection) {
-
+        standingSection.getShape().accept(g, this);
     }
 
     @Override
@@ -59,7 +59,7 @@ public final class GUIPainter implements Painter<Graphics2D> {
 
     @Override
     public void draw(Graphics2D g, Stage stage) {
-
+        stage.getShape().accept(g, this);
     }
 
     @Override

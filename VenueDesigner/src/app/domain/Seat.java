@@ -29,6 +29,14 @@ public final class Seat {
         return shape;
     }
 
+    public boolean isSelected() {
+        return shape.isSelected();
+    }
+
+    public void setSelected(boolean selected) {
+        shape.setSelected(selected);
+    }
+
     public void move(int x, int y, Point offset){
         shape.move(x, y, offset);
     }

@@ -28,6 +28,16 @@ abstract class AbstractSection implements Section {
     }
 
     @Override
+    public boolean isSelected() {
+        return shape.isSelected();
+    }
+
+    @Override
+    public void setSelected(boolean selected) {
+        shape.setSelected(selected);
+    }
+
+    @Override
     public Shape getShape() {
         return shape;
     }

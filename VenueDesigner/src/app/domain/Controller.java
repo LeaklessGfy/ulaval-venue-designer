@@ -72,7 +72,7 @@ public class Controller {
             }
             for (Section section : room.getSections()) {
                 Shape shape = section.getShape();
-                if (shape.isSelected()) {
+                if (section.isSelected()) {
                     if (isMovable(shape, x, y)) {
                         section.move(x, y, offset);
                         ui.repaint();
@@ -89,14 +89,14 @@ public class Controller {
             return;
         }
         if (mode == Mode.None) {
-            room.getStage().ifPresent(r -> r.getShape().setSelected(collider.hasCollide(x - offset.x, y - offset.y, r.getShape())));
+            room.getStage().ifPresent(r -> r.setSelected(collider.hasCollide(x - offset.x, y - offset.y, r.getShape())));
             for (Section s : room.getSections()) {
-                for (Seat seat: s.getSeats()){
-                    if (s.getShape().isSelected()) {
-                        seat.getShape().setSelected(collider.hasCollide(x - offset.x, y - offset.y, seat.getShape()));
+                for (Seat seat : s.getSeats()){
+                    if (s.isSelected()) {
+                        seat.setSelected(collider.hasCollide(x - offset.x, y - offset.y, seat.getShape()));
                     }
                 }
-                s.getShape().setSelected(collider.hasCollide(x - offset.x, y - offset.y, s.getShape()));
+                s.setSelected(collider.hasCollide(x - offset.x, y - offset.y, s.getShape()));
             }
             ui.repaint();
             return;
@@ -104,14 +104,11 @@ public class Controller {
         if (current == null) {
             current = ShapeBuilderFactory.create(mode);
         }
-
         current.addPoint(new Point(x, y));
-
         if (current.isComplete()) {
             createShape();
             mode = Mode.None;
         }
-
         ui.repaint();
     }
 
@@ -130,6 +127,11 @@ public class Controller {
             return false;
         }
         this.mode = Objects.requireNonNull(mode);
+        room.getStage().ifPresent(stage -> stage.setSelected(false));
+        room.getSections().forEach(section -> {
+            section.setSelected(false);
+            section.getSeats().forEach(seat -> seat.setSelected(false));
+        });
         return true;
     }
 

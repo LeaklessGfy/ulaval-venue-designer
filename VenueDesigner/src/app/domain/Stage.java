@@ -14,4 +14,12 @@ public final class Stage {
     public Shape getShape() {
         return shape;
     }
+
+    public void setSelected(boolean selected) {
+        shape.setSelected(selected);
+    }
+
+    public boolean isSelected() {
+        return shape.isSelected();
+    }
 }

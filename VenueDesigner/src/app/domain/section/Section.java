@@ -10,6 +10,8 @@ import java.util.Vector;
 public interface Section {
     String getName();
     int getElevation();
+    boolean isSelected();
+    void setSelected(boolean selected);
     Vector<Seat> getSeats();
     Shape getShape();
     void move(int x, int y, Point offset);
