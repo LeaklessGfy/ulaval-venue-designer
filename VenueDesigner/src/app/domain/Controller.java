@@ -63,7 +63,7 @@ public class Controller {
         int dy = (y - cursor.y);
         cursor.set(x, y);
 
-        if (mode == Mode.Selection) {
+        if (mode == Mode.Selection || mode == Mode.None) {
             if (room.getStage().isPresent()) {
                 Shape shape = room.getStage().get().getShape();
                 if (shape.isSelected()) {
