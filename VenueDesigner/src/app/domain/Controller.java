@@ -109,6 +109,7 @@ public class Controller {
 
         if (current.isComplete()) {
             createShape();
+            mode = Mode.None;
         }
 
         ui.repaint();

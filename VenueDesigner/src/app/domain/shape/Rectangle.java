@@ -5,14 +5,15 @@ import java.util.Vector;
 public final class Rectangle extends AbstractShape {
     public static class Builder implements ShapeBuilder {
         private final Vector<Point> points = new Vector<>();
-        private final int[] color = new int[3];
+        private final int[] color = new int[4];
 
         Builder() {}
 
-        Builder(int r, int g, int b) {
+        Builder(int r, int g, int b, int a) {
             color[0] = r;
             color[1] = g;
             color[2] = b;
+            color[3] = a;
         }
 
         @Override

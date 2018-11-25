@@ -17,7 +17,7 @@ public final class SectionSettings extends JFrame {
     private JButton okButton;
     private JButton cancelButton;
 
-    SectionSettings(Controller controller, UIPanel ui, int x, int y) {
+    SectionSettings(Controller controller, UIPanel ui, int x, int y, Runnable onSuccess) {
         Objects.requireNonNull(controller);
         setContentPane(panelMain);
         okButton.addActionListener(e -> {
@@ -31,9 +31,11 @@ public final class SectionSettings extends JFrame {
                         r.addSection(section);
                     }
                 });
+                controller.toggleMode(controller.getMode());
                 setVisible(false);
                 dispose();
                 ui.repaint();
+                onSuccess.run();
             }
         });
 

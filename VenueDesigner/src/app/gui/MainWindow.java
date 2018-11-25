@@ -40,11 +40,12 @@ public final class MainWindow extends Frame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (controller.getMode() == Mode.RegularSeatedSection2) {
-                    JFrame sectionSettings = new SectionSettings(controller, drawingPanel, e.getX(), e.getY());
+                    JFrame sectionSettings = new SectionSettings(controller, drawingPanel, e.getX(), e.getY(), () -> reset());
                     sectionSettings.setSize(300,400);
                     sectionSettings.setVisible(true);
                 } else {
                     controller.mouseClicked(e.getX(), e.getY());
+                    reset();
                 }
             }
         });
@@ -133,6 +134,17 @@ public final class MainWindow extends Frame {
         painter = new GUIPainter(controller);
         drawingPanel = new DrawingPanel(painter);
         controller.setDrawingPanel(drawingPanel);
+    }
+
+    private void reset() {
+        if (controller.getMode() == Mode.None) {
+            stage.setBackground(UIManager.getColor("Button.background"));
+            stage.setForeground(UIManager.getColor("Button.foreground"));
+            regSeatedSection.setBackground(UIManager.getColor("Button.background"));
+            regSeatedSection.setForeground(UIManager.getColor("Button.foreground"));
+            regSeatedSection2.setBackground(UIManager.getColor("Button.background"));
+            regSeatedSection2.setForeground(UIManager.getColor("Button.foreground"));
+        }
     }
 
     private void toggleButton(JButton btn, Mode mode) {

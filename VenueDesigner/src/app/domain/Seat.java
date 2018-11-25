@@ -22,7 +22,7 @@ public final class Seat {
         points.add(new Point(p0.x+(column+1)*vs.getWidth(), p0.y+(row)*vs.getHeight()));
         points.add(new Point(p0.x+(column+1)*vs.getWidth(), p0.y+(row+1)*vs.getHeight()));
         points.add(new Point(p0.x+(column)*vs.getWidth(), p0.y+(row+1)*vs.getHeight()));
-        shape = new Rectangle(points, new int[3]);
+        shape = new Rectangle(points, new int[4]);
     }
 
     public Shape getShape(){

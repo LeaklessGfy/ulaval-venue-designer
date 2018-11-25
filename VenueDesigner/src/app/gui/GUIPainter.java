@@ -1,6 +1,12 @@
 package app.gui;
 
 import app.domain.Controller;
+import app.domain.Room;
+import app.domain.Seat;
+import app.domain.Stage;
+import app.domain.section.SeatedSection;
+import app.domain.section.Section;
+import app.domain.section.StandingSection;
 import app.domain.shape.Painter;
 import app.domain.shape.*;
 
@@ -20,6 +26,40 @@ public final class GUIPainter implements Painter<Graphics2D> {
     void draw(Graphics2D g) {
         controller.getRoom().ifPresent(r -> r.accept(g, this));
         controller.getCurrent().ifPresent(s -> s.accept(g, this));
+    }
+
+    @Override
+    public void draw(Graphics2D g, Room room) {
+        room.getShape().accept(g, this);
+        room.getStage().ifPresent(stage -> stage.getShape().accept(g, this));
+        room.getSections().forEach(section -> section.accept(g, this));
+    }
+
+    @Override
+    public void draw(Graphics2D g, SeatedSection seatedSection) {
+        for (Seat seat : seatedSection.getSeats()) {
+            if (!seat.getShape().isSelected()) {
+                draw(g, seat);
+            } else {
+                drawShapeColor(g, seat.getShape(), Color.GREEN, Color.GREEN);
+            }
+        }
+        seatedSection.getShape().accept(g, this);
+    }
+
+    @Override
+    public void draw(Graphics2D g, StandingSection standingSection) {
+
+    }
+
+    @Override
+    public void draw(Graphics2D g, Seat seat) {
+        seat.getShape().accept(g, this);
+    }
+
+    @Override
+    public void draw(Graphics2D g, Stage stage) {
+
     }
 
     @Override
@@ -72,42 +112,23 @@ public final class GUIPainter implements Painter<Graphics2D> {
     }
 
     private void drawFinal(Graphics2D g, Shape shape) {
+        Color stroke = Color.lightGray;
+        if (shape.isSelected()) {
+            stroke = Color.GREEN;
+        }
+        int[] color = shape.getColor();
+        Color fill = new Color(color[0], color[1], color[2], color[3]);
+        drawShapeColor(g, shape, stroke, fill);
+    }
+
+    private void drawShapeColor(Graphics2D g, Shape shape, Color stroke, Color fill) {
         Coordinates coordinates = GUIUtils.getCoordinates(shape.getPoints(), controller.getOffset());
         java.awt.Polygon polygon = new java.awt.Polygon(coordinates.xCoords, coordinates.yCoords, coordinates.points.size());
 
         g.setStroke(new BasicStroke(2));
-        g.setColor(Color.lightGray);
-
-        int[] color = shape.getColor();
+        g.setColor(stroke);
         g.draw(polygon);
-        g.setColor(new Color(color[0], color[1], color[2]));
+        g.setColor(fill);
         g.fill(polygon);
-        if (shape.isSelected()) {
-            Vector<Point> points = shape.getPoints();
-            Point centroid = shape.computeCentroid();
-            int[] xSel = new int[points.size()];
-            int [] ySel = new int[points.size()];
-            int i=0;
-            for (Point point: points)
-            {
-                if (point.x-centroid.x>0){
-                    xSel[i] = point.x + controller.getOffset().x+2;
-                }
-                else {
-                    xSel[i] = point.x + controller.getOffset().x-2;
-                }
-                if (point.y-centroid.y>0){
-                    ySel[i] = points.elementAt(i).y + controller.getOffset().y+2;
-                }
-                else {
-                    ySel[i] = point.y + controller.getOffset().y-2;
-                }
-                i++;
-            }
-            java.awt.Polygon polygonSel = new java.awt.Polygon(xSel, ySel, points.size());
-            g.setColor(Color.GREEN);
-            g.draw(polygonSel);
-            g.fill(polygonSel);
-        }
     }
 }
