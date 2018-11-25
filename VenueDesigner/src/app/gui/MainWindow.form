@@ -40,6 +40,18 @@
               <text value="Standing Section"/>
             </properties>
           </component>
+          <component id="f7ec" class="javax.swing.JButton" binding="zoomIn">
+            <constraints/>
+            <properties>
+              <text value="Zoom In"/>
+            </properties>
+          </component>
+          <component id="28ca4" class="javax.swing.JButton" binding="zoomOut">
+            <constraints/>
+            <properties>
+              <text value="Zoom Out"/>
+            </properties>
+          </component>
         </children>
       </grid>
       <scrollpane id="79245" binding="mainScrollPane">

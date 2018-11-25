@@ -11,7 +11,6 @@ public final class DrawingPanel extends JPanel implements UIPanel {
 
     DrawingPanel(GUIPainter painter) {
         this.painter = Objects.requireNonNull(painter);
-        setBorder(BorderFactory.createMatteBorder(5, 0, 0, 0, Color.LIGHT_GRAY));
     }
 
     public Dimension getPreferredSize() {

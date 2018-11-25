@@ -7,6 +7,8 @@ import app.domain.shape.ShapeBuilder;
 import app.domain.shape.ShapeBuilderFactory;
 import app.domain.section.SectionFactory;
 
+import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Objects;
@@ -23,6 +25,7 @@ public class Controller {
     private Mode mode = Mode.None;
     private UIPanel ui;
     private ShapeBuilder current;
+    private double scale = 1.0;
 
     public Controller(Collider collider) {
         this.collider = Objects.requireNonNull(collider);
@@ -32,8 +35,6 @@ public class Controller {
     public Optional<Room> getRoom() {
         return Optional.ofNullable(this.room);
     }
-
-    public void setRoom(Room room) {this.room = room; }
 
     public void setDrawingPanel(UIPanel ui) {
         this.ui = Objects.requireNonNull(ui);
@@ -59,17 +60,21 @@ public class Controller {
         return  cursor.y;
     }
 
+    public double getScale() { return this.scale; }
+
     public void mouseDragged(int x, int y) {
-        int dx = (x - cursor.x);
-        int dy = (y - cursor.y);
-        cursor.set(x, y);
+        int scaleX = (int)(x / scale);
+        int scaleY = (int)(y / scale);
+        int dx = (scaleX - cursor.x);
+        int dy = (scaleY - cursor.y);
+        cursor.set(scaleX, scaleY);
 
         if (mode == Mode.None) {
             if (room.getStage().isPresent()) {
                 Shape shape = room.getStage().get().getShape();
                 if (shape.isSelected()) {
-                    if (isMovable(shape, x, y)) {
-                        shape.move(x, y, offset);
+                    if (isMovable(shape, scaleX, scaleY)) {
+                        shape.move(scaleX, scaleY, offset);
                         ui.repaint();
                     }
                     return;
@@ -78,8 +83,8 @@ public class Controller {
             for (Section section : room.getSections()) {
                 Shape shape = section.getShape();
                 if (shape.isSelected()) {
-                    if (isMovable(shape, x, y)) {
-                        section.move(x, y, offset);
+                    if (isMovable(shape, scaleX, scaleY)) {
+                        section.move(scaleX, scaleY, offset);
                         ui.repaint();
                     }
                     return;
@@ -90,13 +95,15 @@ public class Controller {
         }
     }
     public void mouseClicked(int x, int y) {
+        int scaleX = (int)(x / scale);
+        int scaleY = (int)(y / scale);
         if (room == null) {
             return;
         }
         if (mode == Mode.None) {
-            room.getStage().ifPresent(r -> r.getShape().setSelected(collider.hasCollide(x - offset.x, y - offset.y, r.getShape())));
+            room.getStage().ifPresent(r -> r.getShape().setSelected(collider.hasCollide(scaleX - offset.x,scaleY - offset.y, r.getShape())));
             for (Section s : room.getSections()) {
-                s.getShape().setSelected(collider.hasCollide(x - offset.x, y - offset.y, s.getShape()));
+                s.getShape().setSelected(collider.hasCollide(scaleX - offset.x, scaleY - offset.y, s.getShape()));
             }
             ui.repaint();
             return;
@@ -105,7 +112,7 @@ public class Controller {
             current = ShapeBuilderFactory.create(mode);
         }
 
-        current.addPoint(new Point(x, y));
+        current.addPoint(new Point(scaleX, scaleY));
 
         if (current.isComplete()) {
             createShape();
@@ -115,7 +122,19 @@ public class Controller {
     }
 
     public void mouseMoved(int x, int y) {
-        cursor.set(x, y);
+        int scaleX = (int)(x / scale);
+        int scaleY = (int)(y / scale);
+        cursor.set(scaleX, scaleY);
+        ui.repaint();
+    }
+
+    public void mouseWheelMoved(double rotation) {
+        this.scale += (0.1 *-(rotation));
+        ui.repaint();
+    }
+
+    public void zoom(double scale) {
+        this.scale += scale;
         ui.repaint();
     }
 
