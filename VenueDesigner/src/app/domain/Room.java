@@ -24,7 +24,7 @@ public final class Room {
     private Stage stage;
 
     public Room(int width, int height, VitalSpace vitalSpace) {
-        this.shape = Rectangle.create(0, 0, width, height);
+        this.shape = Rectangle.create(0, 0, width, height, new int[]{20, 38, 52});
         this.width = width;
         this.height = height;
         this.vitalSpace = Objects.requireNonNull(vitalSpace);

@@ -5,23 +5,33 @@ import java.util.Vector;
 
 abstract class AbstractShape implements Shape {
     private final Vector<Point> points;
+    private final int[] color;
     private boolean selected;
 
-    public AbstractShape(Vector<Point> points) {
+    AbstractShape(Vector<Point> points, int[] color) {
         this.points = Objects.requireNonNull(points);
+        this.color = Objects.requireNonNull(color);
         this.selected = false;
     }
 
+    @Override
     public void setSelected(boolean bool) {
         selected = bool;
     }
 
+    @Override
     public boolean isSelected() {
         return selected;
     }
 
+    @Override
     public Vector<Point> getPoints() {
         return points;
+    }
+
+    @Override
+    public int[] getColor() {
+        return color;
     }
 
     public float Area(){ // Polygon Area Calculation
@@ -36,6 +46,7 @@ abstract class AbstractShape implements Shape {
         return area;
     }
 
+    @Override
     public Point computeCentroid() {
         double cx =0.0;
         double cy =0.0;
@@ -64,9 +75,9 @@ abstract class AbstractShape implements Shape {
         cy /= (6.0*signedArea);
 
         return new Point((int) cx,(int)cy);
-
     }
 
+    @Override
     public void move(int x, int y) {
         Point centroid = this.computeCentroid();
         for (Point p : points) {
@@ -86,5 +97,4 @@ abstract class AbstractShape implements Shape {
         }
         return points;
     }
-    
 }

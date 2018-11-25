@@ -80,8 +80,9 @@ public final class GUIPainter implements Painter<Graphics2D> {
         } else {
             g.setColor(Color.GREEN);
         }
+        int[] color = shape.getColor();
         g.draw(polygon);
-        g.setColor(Color.darkGray);
+        g.setColor(new Color(color[0], color[1], color[2]));
         g.fill(polygon);
     }
 }

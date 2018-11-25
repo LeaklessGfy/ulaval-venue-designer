@@ -30,25 +30,6 @@ public class Controller {
         this.room = new Room(500, 500, new VitalSpace(1, 1));
     }
 
-    public static Controller create(Collider collider) {
-        Controller controller = new Controller(collider);
-        controller.clickActions.put(Mode.Stage, (x, y) -> {
-            if (controller.current == null) {
-                controller.current = new Rectangle.Builder();
-            }
-
-            controller.current.addPoint(new Point(x, y));
-            if (controller.current.isComplete()) {
-
-                /* TODO: check for room existence ? */
-                controller.room.setStage(new Stage(controller.current.build()));
-                controller.current = null;
-            }
-        });
-
-        return controller;
-    }
-
     public Optional<Room> getRoom() {
         return Optional.ofNullable(this.room);
     }

@@ -28,7 +28,7 @@ public final class SeatedSection extends AbstractSection {
         points.add(new Point(x + (column * vitalSpace.getWidth()), y));
         points.add(new Point(x + (column * vitalSpace.getWidth()), y + (row * vitalSpace.getHeight())));
         points.add(new Point(x, y + (row * vitalSpace.getHeight())));
-        Rectangle rectangle = new Rectangle(points);
+        Rectangle rectangle = new Rectangle(points, new int[3]);
 
         SeatedSection section = new SeatedSection(null, 0, rectangle, vitalSpace);
 
@@ -39,10 +39,6 @@ public final class SeatedSection extends AbstractSection {
         }
 
         return section;
-    }
-
-    public Vector<Seat> getSeats() {
-        return seats;
     }
 
     @Override
