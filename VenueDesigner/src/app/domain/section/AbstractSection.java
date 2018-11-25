@@ -28,6 +28,11 @@ abstract class AbstractSection implements Section {
     }
 
     @Override
+    public void setElevation(int elevation) {
+        this.elevation = elevation;
+    }
+
+    @Override
     public Shape getShape() {
         return shape;
     }

@@ -41,7 +41,7 @@ public final class Room {
     public VitalSpace getVitalSpace() { return vitalSpace; }
 
     public void setStage(Stage stage) {
-        this.stage = Objects.requireNonNull(stage);
+        this.stage = stage;
     }
 
     public Optional<Stage> getStage() {
@@ -53,7 +53,7 @@ public final class Room {
     }
 
     public List<Section> getSections() {
-        return Collections.unmodifiableList(sections);
+        return sections;
     }
 
     public boolean validShape(Shape s, Point offset) {

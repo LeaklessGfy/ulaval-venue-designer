@@ -2,6 +2,10 @@ package app.gui;
 
 import app.domain.Controller;
 import app.domain.Mode;
+import app.domain.SelectionVisitor;
+import app.domain.Stage;
+import app.domain.section.SeatedSection;
+import app.domain.section.Section;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,6 +25,8 @@ public final class MainWindow extends Frame {
     private JButton regSeatedSection;
     private JButton standingSection;
     private JButton regSeatedSection2;
+    private JButton editButton;
+    private JButton removeButton;
     private JMenu file;
     private JMenuItem newItem;
     private JMenuItem openItem;
@@ -71,6 +77,28 @@ public final class MainWindow extends Frame {
 
         regSeatedSection2.addActionListener(e -> {
             toggleButton(regSeatedSection2, Mode.RegularSeatedSection2);
+        });
+
+        editButton.addActionListener(e -> {
+            controller.editSelected(new SelectionVisitor() {
+                @Override
+                public void visit(Stage stage) {
+                    JFrame stageEdition = new StageEdition(stage, drawingPanel);
+                    stageEdition.setSize(300,400);
+                    stageEdition.setVisible(true);
+                }
+
+                @Override
+                public void visit(SeatedSection section) {
+                    JFrame sectionEdition = new SectionEdition(section, drawingPanel);
+                    sectionEdition.setSize(300, 400);
+                    sectionEdition.setVisible(true);
+                }
+            });
+        });
+
+        removeButton.addActionListener(e -> {
+            controller.removeSelected();
         });
         
         JMenuBar menuBar = new JMenuBar();

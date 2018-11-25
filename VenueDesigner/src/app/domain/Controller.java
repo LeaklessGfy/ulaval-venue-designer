@@ -139,6 +139,50 @@ public class Controller {
         return offset;
     }
 
+    public void editSelected(SelectionVisitor visitor) {
+        if (room == null) {
+            return;
+        }
+        if (room.getStage().isPresent()) {
+            Stage stage = room.getStage().get();
+            if (stage.getShape().isSelected()) {
+                visitor.visit(stage);
+                return;
+            }
+        }
+        for (Section section : room.getSections()) {
+            if (section.getShape().isSelected()) {
+                section.accept(visitor);
+                return;
+            }
+        }
+    }
+
+    public void removeSelected() {
+        if (room == null) {
+            return;
+        }
+        if (room.getStage().isPresent()) {
+            Stage stage = room.getStage().get();
+            if (stage.getShape().isSelected()) {
+                room.setStage(null);
+                ui.repaint();
+                return;
+            }
+        }
+        Section toRemove = null;
+        for (Section section : room.getSections()) {
+            if (section.getShape().isSelected()) {
+                toRemove = section;
+                break;
+            }
+        }
+        if (toRemove != null) {
+            room.getSections().remove(toRemove);
+            ui.repaint();
+        }
+    }
+
     private void createShape() {
         current.correctLastPoint();
         Shape shape = current.build();
