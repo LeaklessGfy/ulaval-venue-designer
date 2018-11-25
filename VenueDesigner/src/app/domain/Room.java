@@ -1,6 +1,9 @@
 package app.domain;
 
 import app.domain.section.Section;
+import app.domain.shape.Point;
+import app.domain.shape.Rectangle;
+import app.domain.shape.Shape;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,6 +13,7 @@ import java.util.Optional;
 
 public final class Room {
     private final ArrayList<Section> sections = new ArrayList<>();
+    private final Shape shape;
 
     private int width;
     private int height;
@@ -19,6 +23,7 @@ public final class Room {
     private Stage stage;
 
     public Room(int width, int height, VitalSpace vitalSpace) {
+        this.shape = Rectangle.create(0, 0, width, height);
         this.width = width;
         this.height = height;
         this.vitalSpace = Objects.requireNonNull(vitalSpace);
@@ -48,5 +53,24 @@ public final class Room {
 
     public List<Section> getSections() {
         return Collections.unmodifiableList(sections);
+    }
+
+    public Shape getShape() {
+        return shape;
+    }
+
+    public boolean validShape(Shape s) {
+        int x = shape.getPoints().firstElement().x;
+        int y = shape.getPoints().firstElement().y;
+        for (Point p : s.getPoints()) {
+            if (p.x < x || p.x > x + width) {
+                return false;
+            }
+            if (p.y < y || p.y > y + height) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

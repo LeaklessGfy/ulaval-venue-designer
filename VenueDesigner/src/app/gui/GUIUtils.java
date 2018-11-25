@@ -6,7 +6,7 @@ import app.domain.shape.Shape;
 import java.util.Vector;
 
 final class GUIUtils {
-    static Coordinates getCoordinates(Shape shape) {
+    static Coordinates getCoordinates(Shape shape, Point offset) {
         Vector<Point> points = shape.getPoints();
 
         int size = points.size();
@@ -15,8 +15,8 @@ final class GUIUtils {
         int i = 0;
 
         for (Point point : points) {
-            xCoords[i] = point.x;
-            yCoords[i] = point.y;
+            xCoords[i] = point.x + offset.x;
+            yCoords[i] = point.y + offset.y;
             i++;
         }
 

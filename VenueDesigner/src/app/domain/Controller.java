@@ -17,6 +17,7 @@ import java.util.function.BiConsumer;
 public class Controller {
     private final Collider collider;
     private final Point cursor = new Point(-1, -1);
+    private final Point offset = new Point(0, 0);
     private final HashMap<Mode, BiConsumer<Integer, Integer>> clickActions = new HashMap<>();
 
     private Room room;
@@ -73,6 +74,11 @@ public class Controller {
     }
 
     public void mouseDragged(int x, int y) {
+        int dx = (x - cursor.x);
+        int dy = (y - cursor.y);
+        cursor.set(x, y);
+        offset.offset(dx, dy);
+
         if (mode == Mode.None) {
             for (Section s : room.getSections()) {
                 Shape currentShape = s.getShape();
@@ -136,13 +142,25 @@ public class Controller {
         return mode;
     }
 
+    public Point getOffset() {
+        return offset;
+    }
+
     private void createShape() {
         current.correctLastPoint();
-        if (mode == Mode.Stage) {
-            room.setStage(new Stage(current.build()));
-        } else {
-            room.addSection(SectionFactory.create(mode, current.build()));
-        }
+        Shape shape = current.build();
         current = null;
+        for (Point p : shape.getPoints()) {
+            p.x -= offset.x;
+            p.y -= offset.y;
+        }
+        if (!room.validShape(shape)) {
+            return;
+        }
+        if (mode == Mode.Stage) {
+            room.setStage(new Stage(shape));
+        } else {
+            room.addSection(SectionFactory.create(mode, shape));
+        }
     }
 }

@@ -61,6 +61,16 @@ public final class Rectangle extends AbstractShape {
         super(points);
     }
 
+    public static Rectangle create(int x, int y, int width, int height) {
+        Vector<Point> points = new Vector<>();
+        points.add(new Point(x, y));
+        points.add(new Point(x + width, y));
+        points.add(new Point(x + width, y + height));
+        points.add(new Point(x, y + height));
+
+        return new Rectangle(points);
+    }
+
     @Override
     public <T> void accept(T g, Painter<T> painter) {
         painter.draw(g, this);
