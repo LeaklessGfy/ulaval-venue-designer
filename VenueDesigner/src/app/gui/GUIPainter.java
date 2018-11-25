@@ -5,7 +5,6 @@ import app.domain.Room;
 import app.domain.Seat;
 import app.domain.Stage;
 import app.domain.section.SeatedSection;
-import app.domain.section.Section;
 import app.domain.section.StandingSection;
 import app.domain.shape.Painter;
 import app.domain.shape.*;
@@ -14,7 +13,6 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.Objects;
-import java.util.Vector;
 
 public final class GUIPainter implements Painter<Graphics2D> {
     private final Controller controller;
@@ -37,11 +35,13 @@ public final class GUIPainter implements Painter<Graphics2D> {
 
     @Override
     public void draw(Graphics2D g, SeatedSection seatedSection) {
-        for (Seat seat : seatedSection.getSeats()) {
-            if (!seat.isSelected()) {
-                draw(g, seat);
-            } else {
-                drawShapeColor(g, seat.getShape(), Color.GREEN, Color.GREEN);
+        for (Seat[] seats : seatedSection.getSeats()) {
+            for (Seat seat : seats) {
+                if (!seat.isSelected()) {
+                    draw(g, seat);
+                } else {
+                    drawShapeColor(g, seat.getShape(), Color.GREEN, Color.GREEN);
+                }
             }
         }
         seatedSection.getShape().accept(g, this);

@@ -1,10 +1,14 @@
 package app.domain;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public final class VitalSpace {
     private int width;
     private int height;
 
-    public VitalSpace(int width, int height) {
+    @JsonCreator
+    public VitalSpace(@JsonProperty("width") int width, @JsonProperty("height") int height) {
         this.width = width;
         this.height = height;
     }
@@ -23,5 +27,9 @@ public final class VitalSpace {
 
     public void setHeight(int height) {
         this.height = height;
+    }
+
+    public VitalSpace clone() {
+        return new VitalSpace(width, height);
     }
 }

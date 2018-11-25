@@ -2,10 +2,16 @@ package app.gui;
 
 import app.domain.Controller;
 import app.domain.Mode;
+import app.domain.SelectionVisitor;
+import app.domain.Stage;
+import app.domain.section.SeatedSection;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.*;
+import javax.swing.filechooser.*;
+import javax.swing.filechooser.FileFilter;
 
 public final class MainWindow extends Frame {
     private Controller controller;
@@ -21,6 +27,8 @@ public final class MainWindow extends Frame {
     private JButton regSeatedSection;
     private JButton standingSection;
     private JButton regSeatedSection2;
+    private JButton editButton;
+    private JButton removeButton;
     private JMenu file;
     private JMenuItem newItem;
     private JMenuItem openItem;
@@ -29,10 +37,13 @@ public final class MainWindow extends Frame {
     private JMenuItem room;
     private JMenuItem offers;
     private JMenuItem grid;
+    private JButton seatedSectionButton;
+    private JButton standingSectionButton;
 
     private MainWindow(JFrame frame) {
         tablePanel.setBackground(new Color(20, 38, 52));
         tablePanel.setBorder(BorderFactory.createMatteBorder(5, 5, 0, 0, Color.LIGHT_GRAY));
+        tablePanel.setVisible(false);
         buttonTopPanel.setBackground(new Color(20, 38, 52));
         mainScrollPane.setBorder(BorderFactory.createEmptyBorder());
 
@@ -46,6 +57,7 @@ public final class MainWindow extends Frame {
                 } else {
                     controller.mouseClicked(e.getX(), e.getY());
                     reset();
+                    tablePanel.setVisible(controller.getMode() == Mode.Selection);
                 }
             }
         });
@@ -73,12 +85,64 @@ public final class MainWindow extends Frame {
         regSeatedSection2.addActionListener(e -> {
             toggleButton(regSeatedSection2, Mode.RegularSeatedSection2);
         });
+
+        editButton.addActionListener(e -> {
+            controller.editSelected(new SelectionVisitor() {
+                @Override
+                public void visit(Stage stage) {
+                    JFrame stageEdition = new StageEdition(stage, drawingPanel);
+                    stageEdition.setSize(300,400);
+                    stageEdition.setVisible(true);
+                }
+
+                @Override
+                public void visit(SeatedSection section) {
+                    JFrame sectionEdition = new SectionEdition(section, drawingPanel);
+                    sectionEdition.setSize(300, 400);
+                    sectionEdition.setVisible(true);
+                }
+            });
+        });
+
+        removeButton.addActionListener(e -> {
+            controller.removeSelected();
+            tablePanel.setVisible(controller.getMode()==Mode.Selection);
+        });
         
         JMenuBar menuBar = new JMenuBar();
         file = new JMenu("File");
         newItem = new JMenuItem("New");
         openItem = new JMenuItem("Open");
         saveItem = new JMenuItem("Save");
+
+        openItem.addActionListener( e -> {
+            JFileChooser fileChooser = new JFileChooser();
+            FileFilter filter = new FileNameExtensionFilter("JSON files", "json");
+            fileChooser.setFileFilter(filter);
+            int result = fileChooser.showOpenDialog(this);
+            if (result == JFileChooser.APPROVE_OPTION) {
+                String filename = fileChooser.getSelectedFile().toString();
+                this.controller.load(filename);
+            }
+        });
+
+        saveItem.addActionListener( e -> {
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setSelectedFile(new File("room.json"));
+            FileFilter filter = new FileNameExtensionFilter("JSON files", "json");
+            fileChooser.setFileFilter(filter);
+            int result = fileChooser.showSaveDialog(this);
+            if (result == JFileChooser.APPROVE_OPTION) {
+                if (this.controller.getRoom().isPresent()) {
+                    String filename = fileChooser.getSelectedFile().toString();
+                    if (!filename.endsWith(".json")) {
+                        filename += ".json";
+                    }
+                    this.controller.save(filename);
+                }
+            }
+        });
+
         file.add(newItem);
         file.add(openItem);
         file.add(saveItem);

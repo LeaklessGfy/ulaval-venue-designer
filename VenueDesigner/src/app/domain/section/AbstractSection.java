@@ -1,7 +1,16 @@
 package app.domain.section;
 
 import app.domain.shape.Shape;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
+@JsonTypeInfo(
+    use = JsonTypeInfo.Id.NAME
+)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = SeatedSection.class, name = "SeatedSection"),
+        @JsonSubTypes.Type(value = StandingSection.class, name = "StandingSection")
+})
 abstract class AbstractSection implements Section {
     private String name;
     private int elevation;
@@ -25,6 +34,11 @@ abstract class AbstractSection implements Section {
     @Override
     public int getElevation() {
         return elevation;
+    }
+
+    @Override
+    public void setElevation(int elevation) {
+        this.elevation = elevation;
     }
 
     @Override

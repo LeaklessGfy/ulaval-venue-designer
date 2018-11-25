@@ -1,5 +1,8 @@
 package app.domain.shape;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Vector;
 
 public final class Polygon extends AbstractShape {
@@ -56,9 +59,8 @@ public final class Polygon extends AbstractShape {
         }
     }
 
-    private Polygon(Vector<Point> points, int[] color) {
-        super(points, color);
-    }
+    @JsonCreator
+    public Polygon(@JsonProperty("points") Vector<Point> points, @JsonProperty("color") int[] color) { super(points, color); }
 
     @Override
     public <T> void accept(T g, Painter<T> painter) {
