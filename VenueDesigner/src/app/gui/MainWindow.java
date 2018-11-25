@@ -2,8 +2,9 @@ package app.gui;
 
 import app.domain.Controller;
 import app.domain.Mode;
-import app.domain.Room;
-import app.domain.VitalSpace;
+import app.domain.SelectionVisitor;
+import app.domain.Stage;
+import app.domain.section.SeatedSection;
 
 import javax.swing.*;
 import java.awt.*;
@@ -26,6 +27,8 @@ public final class MainWindow extends Frame {
     private JButton regSeatedSection;
     private JButton standingSection;
     private JButton regSeatedSection2;
+    private JButton editButton;
+    private JButton removeButton;
     private JMenu file;
     private JMenuItem newItem;
     private JMenuItem openItem;
@@ -40,6 +43,7 @@ public final class MainWindow extends Frame {
     private MainWindow(JFrame frame) {
         tablePanel.setBackground(new Color(20, 38, 52));
         tablePanel.setBorder(BorderFactory.createMatteBorder(5, 5, 0, 0, Color.LIGHT_GRAY));
+        tablePanel.setVisible(false);
         buttonTopPanel.setBackground(new Color(20, 38, 52));
         mainScrollPane.setBorder(BorderFactory.createEmptyBorder());
 
@@ -52,6 +56,7 @@ public final class MainWindow extends Frame {
                     sectionSettings.setVisible(true);
                 } else {
                     controller.mouseClicked(e.getX(), e.getY());
+                    tablePanel.setVisible(controller.getMode()==Mode.Selection);
                 }
             }
         });
@@ -80,6 +85,29 @@ public final class MainWindow extends Frame {
             toggleButton(regSeatedSection2, Mode.RegularSeatedSection2);
         });
 
+        editButton.addActionListener(e -> {
+            controller.editSelected(new SelectionVisitor() {
+                @Override
+                public void visit(Stage stage) {
+                    JFrame stageEdition = new StageEdition(stage, drawingPanel);
+                    stageEdition.setSize(300,400);
+                    stageEdition.setVisible(true);
+                }
+
+                @Override
+                public void visit(SeatedSection section) {
+                    JFrame sectionEdition = new SectionEdition(section, drawingPanel);
+                    sectionEdition.setSize(300, 400);
+                    sectionEdition.setVisible(true);
+                }
+            });
+        });
+
+        removeButton.addActionListener(e -> {
+            controller.removeSelected();
+            tablePanel.setVisible(controller.getMode()==Mode.Selection);
+        });
+        
         JMenuBar menuBar = new JMenuBar();
         file = new JMenu("File");
         newItem = new JMenuItem("New");

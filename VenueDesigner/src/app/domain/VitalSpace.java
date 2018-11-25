@@ -28,4 +28,8 @@ public final class VitalSpace {
     public void setHeight(int height) {
         this.height = height;
     }
+
+    public VitalSpace clone() {
+        return new VitalSpace(width, height);
+    }
 }

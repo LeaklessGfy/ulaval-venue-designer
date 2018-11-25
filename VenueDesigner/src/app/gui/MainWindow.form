@@ -58,9 +58,17 @@
         <properties/>
         <border type="none"/>
         <children>
-          <component id="43450" class="javax.swing.JTable" binding="propertyTable" custom-create="true">
+          <component id="35280" class="javax.swing.JButton" binding="editButton" default-binding="true">
             <constraints/>
-            <properties/>
+            <properties>
+              <text value="Edit"/>
+            </properties>
+          </component>
+          <component id="7a83a" class="javax.swing.JButton" binding="removeButton" default-binding="true">
+            <constraints/>
+            <properties>
+              <text value="Remove"/>
+            </properties>
           </component>
         </children>
       </grid>
