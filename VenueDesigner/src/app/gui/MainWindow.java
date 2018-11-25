@@ -2,6 +2,8 @@ package app.gui;
 
 import app.domain.Controller;
 import app.domain.Mode;
+import app.domain.Room;
+import app.domain.VitalSpace;
 
 import javax.swing.*;
 import java.awt.*;
@@ -86,26 +88,28 @@ public final class MainWindow extends Frame {
 
         openItem.addActionListener( e -> {
             JFileChooser fileChooser = new JFileChooser();
-            fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
             FileFilter filter = new FileNameExtensionFilter("JSON files", "json");
             fileChooser.setFileFilter(filter);
             int result = fileChooser.showOpenDialog(this);
             if (result == JFileChooser.APPROVE_OPTION) {
-                File selectedFile = fileChooser.getSelectedFile();
-                this.controller.getRoom().get().save(selectedFile.toString());
+                String filename = fileChooser.getSelectedFile().toString();
+                this.controller.load(filename);
             }
         });
 
         saveItem.addActionListener( e -> {
             JFileChooser fileChooser = new JFileChooser();
-            fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+            fileChooser.setSelectedFile(new File("room.json"));
             FileFilter filter = new FileNameExtensionFilter("JSON files", "json");
             fileChooser.setFileFilter(filter);
             int result = fileChooser.showSaveDialog(this);
             if (result == JFileChooser.APPROVE_OPTION) {
-                File selectedFile = fileChooser.getSelectedFile();
-                if(this.controller.getRoom().isPresent()) {
-                    this.controller.getRoom().get().save(selectedFile.toString());
+                if (this.controller.getRoom().isPresent()) {
+                    String filename = fileChooser.getSelectedFile().toString();
+                    if (!filename.endsWith(".json")) {
+                        filename += ".json";
+                    }
+                    this.controller.save(filename);
                 }
             }
         });
