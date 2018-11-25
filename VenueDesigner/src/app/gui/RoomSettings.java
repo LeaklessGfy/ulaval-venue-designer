@@ -1,12 +1,15 @@
 package app.gui;
 
 import app.domain.Controller;
+import app.domain.Room;
+import app.domain.UIPanel;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
+import java.util.Objects;
+import java.util.Optional;
 
 public final class RoomSettings extends JFrame {
-    private Controller controller;
     private JPanel panelMain;
     private JTextField roomWidthTextField;
     private JTextField roomHeightTextField;
@@ -15,44 +18,42 @@ public final class RoomSettings extends JFrame {
     private JButton oKButton;
     private JButton cancelButton;
 
-    public RoomSettings(Controller controller, ActionEvent event) {
-        this.controller = controller;
+    RoomSettings(Controller controller, UIPanel ui, ActionEvent event) {
+        Objects.requireNonNull(controller);
         setContentPane(panelMain);
+        Optional<Room> room = controller.getRoom();
 
-        app.domain.Room room = controller.getRoom();
-
-        if (event.getActionCommand().equals("New")) {
+        if (event.getActionCommand().equals("New") || !room.isPresent()) {
             vitalSpaceWidthTextField.setText("1");
             vitalSpaceHeightTextField.setText("1");
-
-        }
-        else {
-            roomWidthTextField.setText(Integer.toString(room.getWidth()));
-            roomHeightTextField.setText(Integer.toString(room.getHeight()));
-            vitalSpaceWidthTextField.setText(Integer.toString(room.getVitalSpace().getWidth()));
-            vitalSpaceHeightTextField.setText(Integer.toString(room.getVitalSpace().getHeight()));
+        } else {
+            Room r = room.get();
+            roomWidthTextField.setText(Integer.toString(r.getWidth()));
+            roomHeightTextField.setText(Integer.toString(r.getHeight()));
+            vitalSpaceWidthTextField.setText(Integer.toString(r.getVitalSpace().getWidth()));
+            vitalSpaceHeightTextField.setText(Integer.toString(r.getVitalSpace().getHeight()));
         }
 
         oKButton.addActionListener(e -> {
-            if(ValidateForm()) {
-                if (event.getActionCommand().equals("New")) {
+            if (validateForm()) {
+                if (event.getActionCommand().equals("New") || !room.isPresent()) {
                     int roomWidth = Integer.parseInt(roomWidthTextField.getText());
                     int roomHeight = Integer.parseInt(roomHeightTextField.getText());
                     int vitalSpaceWidth = Integer.parseInt(vitalSpaceWidthTextField.getText());
                     int vitalSpaceHeight = Integer.parseInt(vitalSpaceHeightTextField.getText());
-                    controller.create(roomWidth, roomHeight, vitalSpaceWidth, vitalSpaceHeight);
+                    controller.createRoom(roomWidth, roomHeight, vitalSpaceWidth, vitalSpaceHeight);
                     setVisible(false);
                     dispose();
-                    controller.getDrawingPanel().repaint();
-                }
-                else {
-                    room.setWidth(Integer.parseInt(roomWidthTextField.getText()));
-                    room.setHeight(Integer.parseInt(roomHeightTextField.getText()));
-                    room.getVitalSpace().setWidth(Integer.parseInt(vitalSpaceWidthTextField.getText()));
-                    room.getVitalSpace().setHeight(Integer.parseInt(vitalSpaceHeightTextField.getText()));
+                    ui.repaint();
+                } else {
+                    Room r = room.get();
+                    r.setWidth(Integer.parseInt(roomWidthTextField.getText()));
+                    r.setHeight(Integer.parseInt(roomHeightTextField.getText()));
+                    r.getVitalSpace().setWidth(Integer.parseInt(vitalSpaceWidthTextField.getText()));
+                    r.getVitalSpace().setHeight(Integer.parseInt(vitalSpaceHeightTextField.getText()));
                     setVisible(false);
                     dispose();
-                    controller.getDrawingPanel().repaint();
+                    ui.repaint();
                 }
             }
         });
@@ -63,28 +64,36 @@ public final class RoomSettings extends JFrame {
         });
     }
 
-    private boolean IsInteger(String text) {
+    private boolean isNotInteger(String text) {
         try {
             Integer.parseInt(text);
         } catch (NumberFormatException e) {
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 
-    private boolean ValidateForm() {
-        boolean val = false;
-        if(roomWidthTextField.getText().isEmpty() == true || roomHeightTextField.getText().isEmpty() == true || vitalSpaceWidthTextField.getText().isEmpty() == true || vitalSpaceHeightTextField.getText().isEmpty() == true) {
+    private boolean validateForm() {
+        if(
+                roomWidthTextField.getText().isEmpty() ||
+                roomHeightTextField.getText().isEmpty() ||
+                vitalSpaceWidthTextField.getText().isEmpty() ||
+                vitalSpaceHeightTextField.getText().isEmpty()
+        ) {
             JOptionPane.showMessageDialog(null, "One or more fields are empty", "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
         }
-        else {
-            if(IsInteger(roomWidthTextField.getText()) == false || IsInteger(roomHeightTextField.getText()) == false || IsInteger(vitalSpaceWidthTextField.getText()) == false || IsInteger(vitalSpaceHeightTextField.getText()) == false) {
-                JOptionPane.showMessageDialog(null, "One or more fields are not an integer", "Error", JOptionPane.ERROR_MESSAGE);
-            }
-            else {
-                val = true;
-            }
+
+        if (
+                isNotInteger(roomWidthTextField.getText()) ||
+                        isNotInteger(roomHeightTextField.getText()) ||
+                        isNotInteger(vitalSpaceWidthTextField.getText()) ||
+                        isNotInteger(vitalSpaceHeightTextField.getText())
+        ) {
+            JOptionPane.showMessageDialog(null, "One or more fields are not an integer", "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
         }
-        return val;
+
+        return true;
     }
 }

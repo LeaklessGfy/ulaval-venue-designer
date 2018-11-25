@@ -1,9 +1,6 @@
 package app.gui;
 
 import app.domain.Controller;
-import app.domain.Seat;
-import app.domain.Room;
-import app.domain.section.Section;
 import app.domain.shape.Painter;
 import app.domain.shape.*;
 
@@ -15,38 +12,26 @@ import java.util.Objects;
 public final class GUIPainter implements Painter<Graphics2D> {
     private final Controller controller;
 
-    GUIPainter(Controller controller) {
+    GUIPainter(Controller controller, DrawingPanel panel) {
         this.controller = Objects.requireNonNull(controller);
     }
 
-    void draw(Graphics2D g) {
+    void draw(Graphics2D g, int width, int height) {
         controller.getCurrent().ifPresent(s -> s.accept(g, this));
+        controller.getRoom().ifPresent(r -> {
+            int startX = (width / 2) - (r.getWidth() / 2);
+            int startY = (height / 2) - (r.getHeight() / 2);
+            g.setColor(Color.WHITE);
+            g.drawRect(startX, startY, r.getWidth(), r.getHeight());
 
-        if (controller.getRoom() != null) {
-            draw(g, controller.getRoom());
-        }
-
-        // TODO: Delete get shapes because it's not on controller to do that
-        for (Shape shape : controller.getShapes()) {
-            shape.accept(g, this);
-        }
-
-        controller.getStage().ifPresent(s -> s.getShape().accept(g, this));
-
-        for (Section section : controller.getSections()) {
-            section.getShape().accept(g, this);
-            for (Seat seat: section.getSeats()) {
-                seat.getShape().accept(g,this);
-            }
-        }
-    }
-
-    @Override
-    public void draw(Graphics2D g, Room room) {
-        DrawingPanel drawingPanel = (DrawingPanel)controller.getDrawingPanel();
-        int startX = (drawingPanel.getWidth()/ 2) - (room.getWidth() / 2);
-        int startY = (drawingPanel.getHeight() / 2) - (room.getHeight() / 2);
-        g.drawRect(startX, startY, room.getWidth(), room.getHeight());
+            r.getStage().ifPresent(s -> s.getShape().accept(g, this));
+            r.getSections().forEach(section -> {
+                section.getShape().accept(g, this);
+                section.getSeats().forEach(seat -> {
+                    seat.getShape().accept(g, this);
+                });
+            });
+        });
     }
 
     @Override

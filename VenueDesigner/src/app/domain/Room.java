@@ -35,18 +35,18 @@ public final class Room {
     public VitalSpace getVitalSpace() { return this.vitalSpace; }
 
     public void setStage(Stage stage) {
-        this.stage = stage;
+        this.stage = Objects.requireNonNull(stage);
     }
 
     public Optional<Stage> getStage() {
         return Optional.ofNullable(stage);
     }
 
-    public void addSection(Section section) {sections.add(section); }
+    public void addSection(Section section) {
+        sections.add(Objects.requireNonNull(section));
+    }
 
     public List<Section> getSections() {
         return Collections.unmodifiableList(sections);
     }
-
-    public void addSection(Section section){ sections.add(section);}
 }

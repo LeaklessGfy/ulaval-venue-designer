@@ -1,6 +1,5 @@
 package app.domain;
 
-import app.domain.section.SeatedSection;
 import app.domain.section.Section;
 import app.domain.shape.Point;
 import app.domain.shape.Rectangle;
@@ -8,17 +7,12 @@ import app.domain.shape.Shape;
 import app.domain.shape.ShapeBuilder;
 import app.domain.shape.ShapeBuilderFactory;
 import app.domain.section.SectionFactory;
-import app.gui.SectionInfoDialog;
 
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiConsumer;
-
 
 public class Controller {
     private final Collider collider;
@@ -31,7 +25,6 @@ public class Controller {
     private ShapeBuilder current;
 
     public Controller(Collider collider) {
-        create(500,500,new VitalSpace());// creation d une room manuellement
         this.collider = Objects.requireNonNull(collider);
     }
 
@@ -54,15 +47,15 @@ public class Controller {
         return controller;
     }
 
-    public UIPanel getDrawingPanel() {return  this.ui; }
-
-    public Room getRoom() {return this.room; }
+    public Optional<Room> getRoom() {
+        return Optional.ofNullable(this.room);
+    }
 
     public void setDrawingPanel(UIPanel ui) {
         this.ui = Objects.requireNonNull(ui);
     }
 
-    public void create(int roomWidth, int roomHeight, int vitalSpaceWidth, int vitalSpaceHeight) {
+    public void createRoom(int roomWidth, int roomHeight, int vitalSpaceWidth, int vitalSpaceHeight) {
         VitalSpace vitalSpace = new VitalSpace(vitalSpaceWidth, vitalSpaceHeight);
         this.room = new Room(roomWidth, roomHeight, vitalSpace);
     }
@@ -89,11 +82,14 @@ public class Controller {
                 }
             }
             ui.repaint();
-            return;
         }
     }
     public void mouseClicked(int x, int y) {
+        if (room == null) {
+            return;
+        }
         if (mode == Mode.None) {
+            room.getStage().ifPresent(r -> r.getShape().setSelected(collider.hasCollide(x, y, r.getShape())));
             for (Section s : room.getSections()) {
                 Shape currentShape = s.getShape();
                 currentShape.setSelected(collider.hasCollide(x, y, currentShape));
@@ -101,27 +97,14 @@ public class Controller {
             ui.repaint();
             return;
         }
-
         if (current == null) {
-            if (mode == Mode.RegularSeatedSection2) {
-                int[] values = SectionInfoDialog.show();
-                if(values[0]<1){ return; }
-                VitalSpace vs= new VitalSpace();
-                vs.setHeight(20);
-                vs.setWidth(20);
-                room.addSection(SeatedSection.create(x,y,values[0],values[1],vs));
-                ui.repaint();
-                return;
-            }
             current = ShapeBuilderFactory.create(mode);
         }
 
-
         current.addPoint(new Point(x, y));
+
         if (current.isComplete()) {
-            current.correctLastPoint();
-            room.addSection(SectionFactory.create(mode,current.build()));
-            current = null;
+            createShape();
         }
 
         ui.repaint();
@@ -133,6 +116,9 @@ public class Controller {
     }
 
     public boolean toggleMode(Mode mode) {
+        if (room == null) {
+            return false;
+        }
         current = null;
         if (this.mode == mode) {
             this.mode = Mode.None;
@@ -146,18 +132,17 @@ public class Controller {
         return Optional.ofNullable(current);
     }
 
-
-    public Optional<Stage> getStage() {
-        if (room != null) {
-            return room.getStage();
-        }
-        return Optional.empty();
+    public Mode getMode() {
+        return mode;
     }
 
-    public List<Section> getSections() {
-        if (room != null) {
-            return room.getSections();
+    private void createShape() {
+        current.correctLastPoint();
+        if (mode == Mode.Stage) {
+            room.setStage(new Stage(current.build()));
+        } else {
+            room.addSection(SectionFactory.create(mode, current.build()));
         }
-        return Collections.emptyList();
+        current = null;
     }
 }

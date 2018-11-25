@@ -17,9 +17,9 @@ public final class MainWindow extends Frame {
     private JTable propertyTable;
     private JPanel tablePanel;
     private JButton stage;
-    private JButton regSeatedSectionButton;
-    private JButton standingSectionButton;
-    private JButton regSeat2;
+    private JButton regSeatedSection;
+    private JButton standingSection;
+    private JButton regSeatedSection2;
     private JMenu file;
     private JMenuItem newItem;
     private JMenuItem openItem;
@@ -38,8 +38,13 @@ public final class MainWindow extends Frame {
         drawingPanel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                controller.mouseClicked(e.getX(), e.getY());
-
+                if (controller.getMode() == Mode.RegularSeatedSection2) {
+                    JFrame sectionSettings = new SectionSettings(controller, drawingPanel, e.getX(), e.getY());
+                    sectionSettings.setSize(300,400);
+                    sectionSettings.setVisible(true);
+                } else {
+                    controller.mouseClicked(e.getX(), e.getY());
+                }
             }
         });
 
@@ -55,38 +60,19 @@ public final class MainWindow extends Frame {
             }
         });
 
-
         stage.addActionListener(e -> {
-            controller.toggleMode(Mode.Stage);
+            toggleButton(stage, Mode.Stage);
         });
 
-        // LISTENER ANTHONY
-        regSeatedSectionButton.addActionListener(e ->{
-            boolean isEnabled = controller.toggleMode(Mode.RegularSeatedSection);
-
-            if(isEnabled){
-                regSeatedSectionButton.setBackground(Color.BLUE);
-                regSeatedSectionButton.setForeground(Color.WHITE);
-            } else {
-                regSeatedSectionButton.setBackground(Color.DARK_GRAY);
-                regSeatedSectionButton.setForeground(Color.LIGHT_GRAY);
-            }
+        regSeatedSection.addActionListener(e -> {
+            toggleButton(regSeatedSection, Mode.RegularSeatedSection);
         });
-        // FIN DU LISTENER ANTHONY
-        regSeat2.addActionListener(e ->{
-            boolean isEnabled = controller.toggleMode(Mode.RegularSeatedSection2);
 
-            if(isEnabled){
-                regSeat2.setBackground(Color.BLUE);
-                regSeat2.setForeground(Color.WHITE);
-            } else {
-                regSeat2.setBackground(Color.DARK_GRAY);
-                regSeat2.setForeground(Color.LIGHT_GRAY);
-            }
+        regSeatedSection2.addActionListener(e -> {
+            toggleButton(regSeatedSection2, Mode.RegularSeatedSection2);
         });
         
         JMenuBar menuBar = new JMenuBar();
-
         file = new JMenu("File");
         newItem = new JMenuItem("New");
         openItem = new JMenuItem("Open");
@@ -96,7 +82,7 @@ public final class MainWindow extends Frame {
         file.add(saveItem);
 
         newItem.addActionListener( e -> {
-            JFrame roomSettings = new RoomSettings(this.controller, e);
+            JFrame roomSettings = new RoomSettings(controller, drawingPanel, e);
             roomSettings.setSize(300,400);
             roomSettings.setVisible(true);
         });
@@ -110,12 +96,11 @@ public final class MainWindow extends Frame {
         edition.add(grid);
 
         room.addActionListener( e -> {
-            if (this.controller.getRoom() != null) {
-                JFrame roomSettings = new RoomSettings(this.controller, e);
+            if (controller.getRoom().isPresent()) {
+                JFrame roomSettings = new RoomSettings(controller, drawingPanel, e);
                 roomSettings.setSize(300, 400);
                 roomSettings.setVisible(true);
-            }
-            else {
+            } else {
                 JOptionPane.showMessageDialog(null, "No room defined", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
@@ -144,8 +129,27 @@ public final class MainWindow extends Frame {
         };
         propertyTable = new JTable(data, columnNames);
         controller = new Controller(new GUICollider());
-        drawingPanel = new DrawingPanel(new GUIPainter(controller));
+        drawingPanel = new DrawingPanel(new GUIPainter(controller, drawingPanel));
         controller.setDrawingPanel(drawingPanel);
+    }
+
+    private void toggleButton(JButton btn, Mode mode) {
+        boolean isEnabled = controller.toggleMode(mode);
+
+        stage.setBackground(UIManager.getColor("Button.background"));
+        stage.setForeground(UIManager.getColor("Button.foreground"));
+        regSeatedSection.setBackground(UIManager.getColor("Button.background"));
+        regSeatedSection.setForeground(UIManager.getColor("Button.foreground"));
+        regSeatedSection2.setBackground(UIManager.getColor("Button.background"));
+        regSeatedSection2.setForeground(UIManager.getColor("Button.foreground"));
+
+        if (isEnabled) {
+            btn.setBackground(Color.BLUE);
+            btn.setForeground(Color.WHITE);
+        } else {
+            btn.setBackground(UIManager.getColor("Button.background"));
+            btn.setForeground(UIManager.getColor("Button.foreground"));
+        }
     }
 }
 

@@ -7,6 +7,7 @@ public final class ShapeBuilderFactory {
         switch (mode) {
             case Polygon:
                 return new Polygon.Builder();
+            case Stage:
             case RegularSeatedSection:
                 return new Rectangle.Builder();
         }

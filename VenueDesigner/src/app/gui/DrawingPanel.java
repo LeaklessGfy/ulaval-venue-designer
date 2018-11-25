@@ -22,6 +22,6 @@ public final class DrawingPanel extends JPanel implements UIPanel {
         g.clearRect(0, 0, getWidth(), getHeight());
         g.setColor(new Color(20, 38, 52));
         g.fillRect(0,0,getWidth(),getHeight());
-        painter.draw((Graphics2D) g);
+        painter.draw((Graphics2D) g, getWidth(), getHeight());
     }
 }

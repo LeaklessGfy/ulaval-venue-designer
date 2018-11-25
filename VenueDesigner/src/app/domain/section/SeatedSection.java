@@ -10,12 +10,13 @@ import java.util.Objects;
 import java.util.Vector;
 
 public final class SeatedSection extends AbstractSection {
-    private VitalSpace vitalSpace;
-    private Vector<Seat> seats;
+    private final VitalSpace vitalSpace;
+    private final Vector<Seat> seats;
 
     SeatedSection(String name, int elevation, Shape shape, VitalSpace vitalSpace) {
         super(name, elevation, shape);
         this.vitalSpace = vitalSpace;
+        this.seats = new Vector<>();
     }
 
     public static SeatedSection create(int x, int y, int column, int row, VitalSpace vitalSpace) {
@@ -29,11 +30,10 @@ public final class SeatedSection extends AbstractSection {
         Rectangle rectangle = new Rectangle(points);
 
         SeatedSection section = new SeatedSection(null, 0, rectangle, vitalSpace);
-        section.seats = new Vector<Seat>();
 
         for (int i = 0; i < column; i++) {
             for (int j = 0; j < row; j++) {
-                section.seats.add( new Seat(i, j, vitalSpace, points.elementAt(0)));
+                section.seats.add(new Seat(i, j, vitalSpace, points.elementAt(0)));
             }
         }
 
