@@ -3,11 +3,15 @@ package app.domain.section;
 import app.domain.shape.Painter;
 import app.domain.shape.Point;
 import app.domain.shape.Shape;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public final class StandingSection extends AbstractSection {
+    @JsonProperty
     private int max;
 
-    StandingSection(String name, int elevation, Shape shape, int max) {
+    @JsonCreator
+    StandingSection(@JsonProperty("name") String name, @JsonProperty("elevation") int elevation, @JsonProperty("shape") Shape shape, @JsonProperty("max") int max) {
         super(name, elevation, shape);
         this.max = max;
     }

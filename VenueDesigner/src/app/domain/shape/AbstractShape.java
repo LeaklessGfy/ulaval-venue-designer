@@ -1,8 +1,19 @@
 package app.domain.shape;
 
+import app.domain.section.SeatedSection;
+import app.domain.section.StandingSection;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
 import java.util.Objects;
 import java.util.Vector;
 
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        include = JsonTypeInfo.As.PROPERTY)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = Polygon.class, name = "Polygon"),
+        @JsonSubTypes.Type(value = Rectangle.class, name = "Rectangle")})
 abstract class AbstractShape implements Shape {
     private final Vector<Point> points;
     private final int[] color;

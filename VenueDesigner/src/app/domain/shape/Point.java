@@ -1,10 +1,14 @@
 package app.domain.shape;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public final class Point {
     public int x;
     public int y;
 
-    public Point(int x, int y) {
+    @JsonCreator
+    public Point(@JsonProperty("x") int x, @JsonProperty("y") int y) {
         this.x = x;
         this.y = y;
     }

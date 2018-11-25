@@ -1,5 +1,8 @@
 package app.domain.shape;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Vector;
 
 public final class Rectangle extends AbstractShape {
@@ -49,10 +52,8 @@ public final class Rectangle extends AbstractShape {
             painter.draw(g, this);
         }
     }
-
-    public Rectangle(Vector<Point> points, int[] color) {
-        super(points, color);
-    }
+    @JsonCreator
+    public Rectangle(@JsonProperty("points") Vector<Point> points,  @JsonProperty("color") int[] color) { super(points, color); }
 
     private Rectangle(Rectangle rectangle) {
         super(rectangle);
