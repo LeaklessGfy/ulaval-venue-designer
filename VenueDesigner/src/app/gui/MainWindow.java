@@ -43,6 +43,7 @@ public final class MainWindow extends Frame {
     private MainWindow(JFrame frame) {
         tablePanel.setBackground(new Color(20, 38, 52));
         tablePanel.setBorder(BorderFactory.createMatteBorder(5, 5, 0, 0, Color.LIGHT_GRAY));
+        tablePanel.setVisible(false);
         buttonTopPanel.setBackground(new Color(20, 38, 52));
         mainScrollPane.setBorder(BorderFactory.createEmptyBorder());
 
@@ -55,6 +56,7 @@ public final class MainWindow extends Frame {
                     sectionSettings.setVisible(true);
                 } else {
                     controller.mouseClicked(e.getX(), e.getY());
+                    tablePanel.setVisible(controller.getMode()==Mode.Selection);
                 }
             }
         });
@@ -103,6 +105,7 @@ public final class MainWindow extends Frame {
 
         removeButton.addActionListener(e -> {
             controller.removeSelected();
+            tablePanel.setVisible(controller.getMode()==Mode.Selection);
         });
         
         JMenuBar menuBar = new JMenuBar();

@@ -24,9 +24,8 @@ public final class SectionSettings extends JFrame {
             if (validateForm()) {
                 int xInt = Integer.parseInt(columns.getText());
                 int yInt = Integer.parseInt(rows.getText());
-                VitalSpace vs = new VitalSpace(20, 20);
                 controller.getRoom().ifPresent(r -> {
-                    Section section = SeatedSection.create(x - controller.getOffset().x, y - controller.getOffset().y, xInt, yInt, vs);
+                    Section section = SeatedSection.create(x - controller.getOffset().x, y - controller.getOffset().y, xInt, yInt, r.getVitalSpace());
                     if (r.validShape(section.getShape(), new Point())) {
                         r.addSection(section);
                     }
