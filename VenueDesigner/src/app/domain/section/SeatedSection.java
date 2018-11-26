@@ -33,6 +33,7 @@ public final class SeatedSection extends AbstractSection {
         super(name, elevation, shape);
         this.vitalSpace = vitalSpace;
         this.seats = seats;
+        this.zone = zone;
     }
 
     public static SeatedSection create(int x, int y, int columns, int rows, VitalSpace vitalSpace, Stage stage) {
