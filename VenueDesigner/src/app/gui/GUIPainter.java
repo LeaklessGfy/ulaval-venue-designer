@@ -22,6 +22,7 @@ public final class GUIPainter implements Painter<Graphics2D> {
     }
 
     void draw(Graphics2D g) {
+        g.scale(controller.getScale(), controller.getScale());
         controller.getRoom().ifPresent(r -> r.accept(g, this));
         controller.getCurrent().ifPresent(s -> s.accept(g, this));
     }

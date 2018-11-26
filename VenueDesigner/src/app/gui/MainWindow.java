@@ -28,6 +28,8 @@ public final class MainWindow extends Frame {
     private JButton regSeatedSection;
     private JButton standingSection;
     private JButton regSeatedSection2;
+    private JButton zoomIn;
+    private JButton zoomOut;
     private JButton editButton;
     private JButton removeButton;
     private JMenu file;
@@ -42,7 +44,7 @@ public final class MainWindow extends Frame {
     private JButton standingSectionButton;
 
     private MainWindow(JFrame frame) {
-        tablePanel.setBackground(new Color(20, 38, 52));
+        buttonTopPanel.setBackground(Color.LIGHT_GRAY);
         tablePanel.setBorder(BorderFactory.createMatteBorder(5, 5, 0, 0, Color.LIGHT_GRAY));
         tablePanel.setVisible(false);
         buttonTopPanel.setBackground(new Color(20, 38, 52));
@@ -52,7 +54,13 @@ public final class MainWindow extends Frame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (controller.getMode() == Mode.RegularSeatedSection2) {
-                    JFrame sectionSettings = new SectionSettings(controller, drawingPanel, e.getX(), e.getY(), () -> reset());
+                    JFrame sectionSettings = new SectionSettings(
+                            controller,
+                            drawingPanel,
+                            (int)(e.getX() / controller.getScale()),
+                            (int)(e.getY() / controller.getScale()),
+                            () -> reset()
+                    );
                     sectionSettings.setSize(300,400);
                     sectionSettings.setVisible(true);
                 } else {
@@ -75,6 +83,14 @@ public final class MainWindow extends Frame {
             }
         });
 
+        drawingPanel.addMouseWheelListener(new MouseAdapter() {
+            @Override
+            public void mouseWheelMoved(MouseWheelEvent e) {
+                super.mouseWheelMoved(e);
+                controller.mouseWheelMoved(e.getPreciseWheelRotation());
+            }
+        });
+
         stage.addActionListener(e -> {
             toggleButton(stage, Mode.Stage);
         });
@@ -85,6 +101,14 @@ public final class MainWindow extends Frame {
 
         regSeatedSection2.addActionListener(e -> {
             toggleButton(regSeatedSection2, Mode.RegularSeatedSection2);
+        });
+
+        zoomIn.addActionListener( e -> {
+            controller.zoom(0.1);
+        });
+
+        zoomOut.addActionListener( e -> {
+            controller.zoom(-0.1);
         });
 
         editButton.addActionListener(e -> {
