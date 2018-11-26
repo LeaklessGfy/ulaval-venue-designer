@@ -141,27 +141,27 @@ public final class GUIPainter implements Painter<Graphics2D> {
                 RenderingHints.VALUE_FRACTIONALMETRICS_ON
                 );
         Font font = Font.decode("Arial");
-        int maxWidth = section.getVitalSpace().getWidth()-2;
+        int maxWidth = section.getVitalSpace().getWidth()-4;
         int i=1;
         int j = 1;
         for (Seat[] row : section.getSeats()) {
             Point p = new Point(0,0);
             switch (section.getZone()){
                 case Bas:
-                    p = new Point(row[0].getShape().getPoints().elementAt(3).x+1-section.getVitalSpace().getWidth(),
-                            row[0].getShape().getPoints().elementAt(3).y-1);
+                    p = new Point(row[0].getShape().getPoints().elementAt(3).x+2-section.getVitalSpace().getWidth(),
+                            row[0].getShape().getPoints().elementAt(3).y-2);
                     break;
                 case Gauche:
-                    p = new Point(row[0].getShape().getPoints().elementAt(2).x+1,
-                            row[0].getShape().getPoints().elementAt(2).y-1-section.getVitalSpace().getWidth());
+                    p = new Point(row[0].getShape().getPoints().elementAt(2).x+2,
+                            row[0].getShape().getPoints().elementAt(2).y-2-section.getVitalSpace().getWidth());
                     break;
                 case Haut:
-                    p = new Point(row[0].getShape().getPoints().elementAt(1).x+1+section.getVitalSpace().getWidth(),
-                            row[0].getShape().getPoints().elementAt(1).y-1);
+                    p = new Point(row[0].getShape().getPoints().elementAt(1).x+2+section.getVitalSpace().getWidth(),
+                            row[0].getShape().getPoints().elementAt(1).y-2);
                     break;
                 case Droit:
-                    p = new Point(row[0].getShape().getPoints().elementAt(0).x+1,
-                            row[0].getShape().getPoints().elementAt(0).y-1+section.getVitalSpace().getWidth());}
+                    p = new Point(row[0].getShape().getPoints().elementAt(0).x+2,
+                            row[0].getShape().getPoints().elementAt(0).y-2+section.getVitalSpace().getWidth());}
             String rowNumber = String.valueOf(j);
             Rectangle2D bounds = g.getFontMetrics(font).getStringBounds(rowNumber,g);
             font = font.deriveFont((float)(font.getSize2D()*maxWidth/Math.max(bounds.getWidth(),bounds.getHeight())));
@@ -171,16 +171,16 @@ public final class GUIPainter implements Painter<Graphics2D> {
                 Point p0 = new Point(0,0);
                 switch (section.getZone()){
                     case Bas:
-                        p0 = new Point(seat.getShape().getPoints().elementAt(3).x+1,seat.getShape().getPoints().elementAt(3).y-1);
+                        p0 = new Point(seat.getShape().getPoints().elementAt(3).x+2,seat.getShape().getPoints().elementAt(3).y-2);
                         break;
                     case Gauche:
-                        p0 = new Point(seat.getShape().getPoints().elementAt(2).x+1,seat.getShape().getPoints().elementAt(2).y-1);
+                        p0 = new Point(seat.getShape().getPoints().elementAt(2).x+2,seat.getShape().getPoints().elementAt(2).y-2);
                         break;
                     case Haut:
-                        p0 = new Point(seat.getShape().getPoints().elementAt(1).x+1,seat.getShape().getPoints().elementAt(1).y-1);
+                        p0 = new Point(seat.getShape().getPoints().elementAt(1).x+2,seat.getShape().getPoints().elementAt(1).y-2);
                         break;
                     case Droit:
-                        p0 = new Point(seat.getShape().getPoints().elementAt(0).x+1,seat.getShape().getPoints().elementAt(0).y-1);
+                        p0 = new Point(seat.getShape().getPoints().elementAt(0).x+2,seat.getShape().getPoints().elementAt(0).y-2);
                 }
                 String seatNumber = String.valueOf(i);
                 bounds = g.getFontMetrics(font).getStringBounds(seatNumber,g);
