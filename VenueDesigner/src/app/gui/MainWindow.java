@@ -22,12 +22,9 @@ public final class MainWindow extends Frame {
     private JPanel buttonTopPanel;
     private JScrollPane mainScrollPane;
     private DrawingPanel drawingPanel;
-    private JTable propertyTable;
     private JPanel tablePanel;
     private JButton stage;
     private JButton regSeatedSection;
-    private JButton standingSection;
-    private JButton regSeatedSection2;
     private JButton zoomIn;
     private JButton zoomOut;
     private JButton editButton;
@@ -40,8 +37,7 @@ public final class MainWindow extends Frame {
     private JMenuItem room;
     private JMenuItem offers;
     private JMenuItem grid;
-    private JButton seatedSectionButton;
-    private JButton standingSectionButton;
+
 
     private MainWindow(JFrame frame) {
         buttonTopPanel.setBackground(Color.LIGHT_GRAY);
@@ -67,6 +63,9 @@ public final class MainWindow extends Frame {
                     controller.mouseClicked(e.getX(), e.getY());
                     reset();
                     tablePanel.setVisible(controller.getMode() == Mode.Selection);
+                    if (controller.getRoom().isPresent()) {
+                        regSeatedSection.setVisible(controller.getRoom().get().isStageSet());
+                    }
                 }
             }
         });
@@ -95,12 +94,9 @@ public final class MainWindow extends Frame {
             toggleButton(stage, Mode.Stage);
         });
 
+        regSeatedSection.setVisible(controller.getRoom().get().isStageSet());
         regSeatedSection.addActionListener(e -> {
-            toggleButton(regSeatedSection, Mode.RegularSeatedSection);
-        });
-
-        regSeatedSection2.addActionListener(e -> {
-            toggleButton(regSeatedSection2, Mode.RegularSeatedSection2);
+            toggleButton(regSeatedSection, Mode.RegularSeatedSection2);
         });
 
         zoomIn.addActionListener( e -> {
@@ -139,6 +135,9 @@ public final class MainWindow extends Frame {
         removeButton.addActionListener(e -> {
             controller.removeSelected();
             tablePanel.setVisible(controller.getMode()==Mode.Selection);
+            if (controller.getRoom().isPresent()) {
+                regSeatedSection.setVisible(controller.getRoom().get().isStageSet());
+            }
         });
         
         JMenuBar menuBar = new JMenuBar();
@@ -156,6 +155,9 @@ public final class MainWindow extends Frame {
                 String filename = fileChooser.getSelectedFile().toString();
                 this.controller.load(filename);
             }
+            if (controller.getRoom().isPresent()) {
+                regSeatedSection.setVisible(controller.getRoom().get().isStageSet());
+            }
         });
 
         saveItem.addActionListener( e -> {
@@ -165,12 +167,12 @@ public final class MainWindow extends Frame {
             fileChooser.setFileFilter(filter);
             int result = fileChooser.showSaveDialog(this);
             if (result == JFileChooser.APPROVE_OPTION) {
-                if (this.controller.getRoom().isPresent()) {
+                if (controller.getRoom().isPresent()) {
                     String filename = fileChooser.getSelectedFile().toString();
                     if (!filename.endsWith(".json")) {
                         filename += ".json";
                     }
-                    this.controller.save(filename);
+                    controller.save(filename);
                 }
             }
         });
@@ -225,7 +227,6 @@ public final class MainWindow extends Frame {
                 {"une", "table"},
                 {"temporaire", "."}
         };
-        propertyTable = new JTable(data, columnNames);
         controller = new Controller(new GUICollider());
         painter = new GUIPainter(controller);
         drawingPanel = new DrawingPanel(painter);
@@ -238,8 +239,6 @@ public final class MainWindow extends Frame {
             stage.setForeground(UIManager.getColor("Button.foreground"));
             regSeatedSection.setBackground(UIManager.getColor("Button.background"));
             regSeatedSection.setForeground(UIManager.getColor("Button.foreground"));
-            regSeatedSection2.setBackground(UIManager.getColor("Button.background"));
-            regSeatedSection2.setForeground(UIManager.getColor("Button.foreground"));
         }
     }
 
@@ -250,8 +249,6 @@ public final class MainWindow extends Frame {
         stage.setForeground(UIManager.getColor("Button.foreground"));
         regSeatedSection.setBackground(UIManager.getColor("Button.background"));
         regSeatedSection.setForeground(UIManager.getColor("Button.foreground"));
-        regSeatedSection2.setBackground(UIManager.getColor("Button.background"));
-        regSeatedSection2.setForeground(UIManager.getColor("Button.foreground"));
 
         if (isEnabled) {
             btn.setBackground(Color.BLUE);

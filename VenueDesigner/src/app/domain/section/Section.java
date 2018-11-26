@@ -24,6 +24,7 @@ public interface Section {
     void setSelected(boolean selected);
     Seat[][] getSeats();
     Shape getShape();
+    void setShape(Shape shape);
     void move(int x, int y, Point offset);
     <T> void accept(T g, Painter<T> painter);
     void accept(SelectionVisitor visitor);
