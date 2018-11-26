@@ -23,6 +23,7 @@ public class Controller {
     private Mode mode = Mode.None;
     private UIPanel ui;
     private ShapeBuilder current;
+    private double scale = 1.0;
 
     public Controller(Collider collider) {
         this.collider = Objects.requireNonNull(collider);
@@ -32,7 +33,7 @@ public class Controller {
     public Optional<Room> getRoom() {
         return Optional.ofNullable(this.room);
     }
-    
+
     public void setDrawingPanel(UIPanel ui) {
         this.ui = Objects.requireNonNull(ui);
     }
@@ -59,17 +60,21 @@ public class Controller {
         return  cursor.y;
     }
 
+    public double getScale() { return this.scale; }
+
     public void mouseDragged(int x, int y) {
-        int dx = (x - cursor.x);
-        int dy = (y - cursor.y);
-        cursor.set(x, y);
+        int scaleX = (int)(x / scale);
+        int scaleY = (int)(y / scale);
+        int dx = (scaleX - cursor.x);
+        int dy = (scaleY - cursor.y);
+        cursor.set(scaleX, scaleY);
 
         if (mode == Mode.Selection || mode == Mode.None) {
             if (room.getStage().isPresent()) {
                 Shape shape = room.getStage().get().getShape();
                 if (shape.isSelected()) {
-                    if (isMovable(shape, x, y)) {
-                        shape.move(x, y, offset);
+                    if (isMovable(shape, scaleX, scaleY)) {
+                        shape.move(scaleX, scaleY, offset);
                         ui.repaint();
                     }
                     return;
@@ -77,9 +82,9 @@ public class Controller {
             }
             for (Section section : room.getSections()) {
                 Shape shape = section.getShape();
-                if (section.isSelected()) {
-                    if (isMovable(shape, x, y)) {
-                        section.move(x, y, offset);
+                if (shape.isSelected()) {
+                    if (isMovable(shape, scaleX, scaleY)) {
+                        section.move(scaleX, scaleY, offset);
                         ui.repaint();
                     }
                     return;
@@ -90,13 +95,14 @@ public class Controller {
         }
     }
     public void mouseClicked(int x, int y) {
+        int scaleX = (int)(x / scale);
+        int scaleY = (int)(y / scale);
         if (room == null) {
             return;
         }
-
         if (mode == Mode.None || mode == Mode.Selection) {
             mode = Mode.None;
-            room.getStage().ifPresent(r -> selectionCheck(x,y, r.getShape()));
+            room.getStage().ifPresent(r -> selectionCheck(scaleX, scaleY, r.getShape()));
             for (Section s : room.getSections()) {
                 if (s.isSelected()) {
                     for (Seat[] seats : s.getSeats()) {
@@ -104,20 +110,19 @@ public class Controller {
                             if (seat.isSelected()) {
                                 // select line
                             }
-                            selectionCheck(x, y, seat.getShape());
+                            selectionCheck(scaleX, scaleY, seat.getShape());
                         }
                     }
                 }
-                selectionCheck(x, y, s.getShape());
+                selectionCheck(scaleX, scaleY, s.getShape());
             }
             ui.repaint();
             return;
         }
-
         if (current == null) {
             current = ShapeBuilderFactory.create(mode);
         }
-        current.addPoint(new Point(x, y));
+        current.addPoint(new Point(scaleX, scaleY));
         if (current.isComplete()) {
             createShape();
         }
@@ -125,7 +130,19 @@ public class Controller {
     }
 
     public void mouseMoved(int x, int y) {
-        cursor.set(x, y);
+        int scaleX = (int)(x / scale);
+        int scaleY = (int)(y / scale);
+        cursor.set(scaleX, scaleY);
+        ui.repaint();
+    }
+
+    public void mouseWheelMoved(double rotation) {
+        this.scale += (0.1 *-(rotation));
+        ui.repaint();
+    }
+
+    public void zoom(double scale) {
+        this.scale += scale;
         ui.repaint();
     }
 
