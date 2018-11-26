@@ -55,7 +55,9 @@ public final class MainWindow extends Frame {
                     controller.mouseClicked(e.getX(), e.getY());
                     reset();
                     tablePanel.setVisible(controller.getMode() == Mode.Selection);
-                    regSeatedSection.setVisible(controller.getRoom().get().isStageSet());
+                    if (controller.getRoom().isPresent()) {
+                        regSeatedSection.setVisible(controller.getRoom().get().isStageSet());
+                    }
                 }
             }
         });
@@ -109,7 +111,9 @@ public final class MainWindow extends Frame {
         removeButton.addActionListener(e -> {
             controller.removeSelected();
             tablePanel.setVisible(controller.getMode()==Mode.Selection);
-            regSeatedSection.setVisible(controller.getRoom().get().isStageSet());
+            if (controller.getRoom().isPresent()) {
+                regSeatedSection.setVisible(controller.getRoom().get().isStageSet());
+            }
         });
         
         JMenuBar menuBar = new JMenuBar();
@@ -127,7 +131,9 @@ public final class MainWindow extends Frame {
                 String filename = fileChooser.getSelectedFile().toString();
                 this.controller.load(filename);
             }
-            regSeatedSection.setVisible(controller.getRoom().get().isStageSet());
+            if (controller.getRoom().isPresent()) {
+                regSeatedSection.setVisible(controller.getRoom().get().isStageSet());
+            }
         });
 
         saveItem.addActionListener( e -> {
@@ -137,12 +143,12 @@ public final class MainWindow extends Frame {
             fileChooser.setFileFilter(filter);
             int result = fileChooser.showSaveDialog(this);
             if (result == JFileChooser.APPROVE_OPTION) {
-                if (this.controller.getRoom().isPresent()) {
+                if (controller.getRoom().isPresent()) {
                     String filename = fileChooser.getSelectedFile().toString();
                     if (!filename.endsWith(".json")) {
                         filename += ".json";
                     }
-                    this.controller.save(filename);
+                    controller.save(filename);
                 }
             }
         });
