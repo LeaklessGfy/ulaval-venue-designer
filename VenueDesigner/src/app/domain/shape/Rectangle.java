@@ -74,24 +74,24 @@ public final class Rectangle extends AbstractShape {
     public static Rectangle create(int x, int y, int width, int height, int[] color, Zone zone) {
         Vector<Point> points = new Vector<>();
         switch (zone){
-            case Bas:{
+            case Down:{
                 return Rectangle.create(x,y,width,height,color);
             }
-            case Gauche:{
+            case Left:{
                 points.add(new Point(x, y));
                 points.add(new Point(x, y+width));
                 points.add(new Point(x-height, y +width));
                 points.add(new Point(x-height, y ));
                 break;
             }
-            case Haut:{
+            case Up:{
                 points.add(new Point(x, y));
                 points.add(new Point(x-width, y));
                 points.add(new Point(x-width, y -height));
                 points.add(new Point(x, y -height));
                 break;
             }
-            case Droit:{
+            case Right:{
                 points.add(new Point(x, y));
                 points.add(new Point(x, y-width));
                 points.add(new Point(x+height, y -width));

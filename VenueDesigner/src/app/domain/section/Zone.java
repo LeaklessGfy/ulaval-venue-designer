@@ -1,8 +1,8 @@
 package app.domain.section;
 
 public enum Zone {
-    Gauche,
-    Haut,
-    Bas,
-    Droit
+    Left,
+    Up,
+    Down,
+    Right
 }

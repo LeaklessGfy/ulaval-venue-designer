@@ -7,7 +7,6 @@ import app.domain.Stage;
 import app.domain.section.SeatedSection;
 import app.domain.section.StandingSection;
 import app.domain.shape.Painter;
-import app.domain.shape.*;
 import app.domain.shape.Point;
 import app.domain.shape.Polygon;
 import app.domain.shape.Rectangle;
@@ -147,19 +146,19 @@ public final class GUIPainter implements Painter<Graphics2D> {
         for (Seat[] row : section.getSeats()) {
             Point p = new Point(0,0);
             switch (section.getZone()){
-                case Bas:
+                case Down:
                     p = new Point(row[0].getShape().getPoints().elementAt(3).x+2-section.getVitalSpace().getWidth(),
                             row[0].getShape().getPoints().elementAt(3).y-2);
                     break;
-                case Gauche:
+                case Left:
                     p = new Point(row[0].getShape().getPoints().elementAt(2).x+2,
                             row[0].getShape().getPoints().elementAt(2).y-2-section.getVitalSpace().getWidth());
                     break;
-                case Haut:
+                case Up:
                     p = new Point(row[0].getShape().getPoints().elementAt(1).x+2+section.getVitalSpace().getWidth(),
                             row[0].getShape().getPoints().elementAt(1).y-2);
                     break;
-                case Droit:
+                case Right:
                     p = new Point(row[0].getShape().getPoints().elementAt(0).x+2,
                             row[0].getShape().getPoints().elementAt(0).y-2+section.getVitalSpace().getWidth());}
             String rowNumber = String.valueOf(j);
@@ -170,16 +169,16 @@ public final class GUIPainter implements Painter<Graphics2D> {
                 //print seat number
                 Point p0 = new Point(0,0);
                 switch (section.getZone()){
-                    case Bas:
+                    case Down:
                         p0 = new Point(seat.getShape().getPoints().elementAt(3).x+2,seat.getShape().getPoints().elementAt(3).y-2);
                         break;
-                    case Gauche:
+                    case Left:
                         p0 = new Point(seat.getShape().getPoints().elementAt(2).x+2,seat.getShape().getPoints().elementAt(2).y-2);
                         break;
-                    case Haut:
+                    case Up:
                         p0 = new Point(seat.getShape().getPoints().elementAt(1).x+2,seat.getShape().getPoints().elementAt(1).y-2);
                         break;
-                    case Droit:
+                    case Right:
                         p0 = new Point(seat.getShape().getPoints().elementAt(0).x+2,seat.getShape().getPoints().elementAt(0).y-2);
                 }
                 String seatNumber = String.valueOf(i);

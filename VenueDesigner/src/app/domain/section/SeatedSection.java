@@ -58,13 +58,13 @@ public final class SeatedSection extends AbstractSection {
         Zone zone;
         Vector<Point> points = new Vector<>();
         if (theta >= alpha && theta < Math.PI - alpha){
-            zone = Zone.Bas;
+            zone = Zone.Down;
         } else if (theta >= Math.PI - alpha && theta < Math.PI + alpha){
-            zone = Zone.Gauche;
+            zone = Zone.Left;
         } else if (theta >= Math.PI + alpha && theta < 2*Math.PI - alpha){
-            zone = Zone.Haut;
+            zone = Zone.Up;
         } else {
-            zone = Zone.Droit;
+            zone = Zone.Right;
         }
 
         Rectangle rectangle = Rectangle.create(x, y,columns*vitalSpace.getWidth(),rows*vitalSpace.getHeight(), new int[4],zone);

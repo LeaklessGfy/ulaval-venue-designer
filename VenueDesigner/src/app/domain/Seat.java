@@ -7,7 +7,6 @@ import app.domain.shape.Shape;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.awt.*;
 import java.util.Vector;
 
 public final class Seat {
@@ -36,22 +35,22 @@ public final class Seat {
         int x=0;
         int y=0;
         switch (zone){
-            case Bas:{
+            case Down:{
                 x= p0.x+(column)*vs.getWidth();
                 y=p0.y+(row)*vs.getHeight();
                 break;
             }
-            case Gauche:{
+            case Left:{
                 x= p0.x-(row)*vs.getHeight();
                 y=p0.y+(column)*vs.getWidth();
                 break;
             }
-            case Haut:{
+            case Up:{
                 x= p0.x-(column)*vs.getWidth();
                 y=p0.y-(row)*vs.getHeight();
                 break;
             }
-            case Droit:{
+            case Right:{
                 x= p0.x+(row)*vs.getHeight();
                 y=p0.y-(column)*vs.getWidth();
                 break;
