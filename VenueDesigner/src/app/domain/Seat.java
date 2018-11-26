@@ -7,6 +7,7 @@ import app.domain.shape.Shape;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.awt.*;
 import java.util.Vector;
 
 public final class Seat {
@@ -56,7 +57,8 @@ public final class Seat {
                 break;
             }
         }
-        shape = Rectangle.create(x,y,vs.getWidth(),vs.getHeight(), new int[4], zone);
+        int[] color = {0,0,0,255};
+        shape = Rectangle.create(x,y,vs.getWidth(),vs.getHeight(), color, zone);
     }
 
     @JsonCreator

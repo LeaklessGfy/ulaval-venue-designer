@@ -127,6 +127,7 @@ public final class MainWindow extends Frame {
                 String filename = fileChooser.getSelectedFile().toString();
                 this.controller.load(filename);
             }
+            regSeatedSection.setVisible(controller.getRoom().get().isStageSet());
         });
 
         saveItem.addActionListener( e -> {

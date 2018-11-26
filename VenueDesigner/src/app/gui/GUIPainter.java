@@ -38,7 +38,6 @@ public final class GUIPainter implements Painter<Graphics2D> {
 
     @Override
     public void draw(Graphics2D g, SeatedSection seatedSection) {
-        numberSeats(g, seatedSection);
         for (Seat[] seats : seatedSection.getSeats()) {
             for (Seat seat : seats) {
                 if (!seat.isSelected()) {
@@ -48,6 +47,7 @@ public final class GUIPainter implements Painter<Graphics2D> {
                 }
             }
         }
+        numberSeats(g, seatedSection);
         seatedSection.getShape().accept(g, this);
     }
 
@@ -142,7 +142,6 @@ public final class GUIPainter implements Painter<Graphics2D> {
                 );
         Font font = Font.decode("Arial");
         int maxWidth = section.getVitalSpace().getWidth()-2;
-        int maxHeight = section.getVitalSpace().getHeight()-2;
         int i=1;
         int j = 1;
         for (Seat[] row : section.getSeats()) {
