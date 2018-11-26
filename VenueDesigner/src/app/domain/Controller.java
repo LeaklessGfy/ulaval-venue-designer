@@ -101,6 +101,9 @@ public class Controller {
                 if (s.isSelected()) {
                     for (Seat[] seats : s.getSeats()) {
                         for (Seat seat : seats) {
+                            if (seat.isSelected()) {
+                                // select line
+                            }
                             selectionCheck(x, y, seat.getShape());
                         }
                     }
@@ -166,13 +169,21 @@ public class Controller {
         }
         if (room.getStage().isPresent()) {
             Stage stage = room.getStage().get();
-            if (stage.getShape().isSelected()) {
+            if (stage.isSelected()) {
                 visitor.visit(stage);
                 return;
             }
         }
         for (Section section : room.getSections()) {
-            if (section.getShape().isSelected()) {
+            if (section.isSelected()) {
+                for (Seat[] seats : section.getSeats()) {
+                    for (Seat seat : seats) {
+                        if (seat.isSelected()) {
+                            seat.accept(visitor);
+                            return;
+                        }
+                    }
+                }
                 section.accept(visitor);
                 return;
             }
@@ -259,7 +270,20 @@ public class Controller {
     private boolean isMovable(Shape shape, int x, int y) {
         Shape predict = shape.clone();
         predict.move(x, y, offset);
-        return room.validShape(predict, new Point());
+        if (!room.validShape(predict, new Point())) {
+            return false;
+        }
+        if (room.getStage().isPresent() && shape != room.getStage().get().getShape()) {
+            if (collider.hasCollide(room.getStage().get().getShape(), predict)) {
+                return false;
+            }
+        }
+        for (Section section : room.getSections()) {
+            if (section.getShape() != shape && collider.hasCollide(section.getShape(), predict)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private void selectionCheck(int x, int y, Shape shape){

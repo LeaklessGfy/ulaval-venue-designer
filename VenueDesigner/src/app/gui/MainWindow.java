@@ -2,6 +2,7 @@ package app.gui;
 
 import app.domain.Controller;
 import app.domain.Mode;
+import app.domain.Seat;
 import app.domain.SelectionVisitor;
 import app.domain.Stage;
 import app.domain.section.SeatedSection;
@@ -94,6 +95,13 @@ public final class MainWindow extends Frame {
                     JFrame sectionEdition = new SectionEdition(section, drawingPanel);
                     sectionEdition.setSize(300, 400);
                     sectionEdition.setVisible(true);
+                }
+
+                @Override
+                public void visit(Seat seat) {
+                    JFrame seatEdition = new SeatEdition(seat, drawingPanel);
+                    seatEdition.setSize(300, 400);
+                    seatEdition.setVisible(true);
                 }
             });
         });
