@@ -82,21 +82,21 @@ public final class Rectangle extends AbstractShape {
                 points.add(new Point(x, y+width));
                 points.add(new Point(x-height, y +width));
                 points.add(new Point(x-height, y ));
-                return new Rectangle(points, color);
+                break;
             }
             case Haut:{
                 points.add(new Point(x, y));
                 points.add(new Point(x-width, y));
                 points.add(new Point(x-width, y -height));
                 points.add(new Point(x, y -height));
-                return new Rectangle(points, color);
+                break;
             }
             case Droit:{
                 points.add(new Point(x, y));
                 points.add(new Point(x, y-width));
                 points.add(new Point(x+height, y -width));
                 points.add(new Point(x+height, y ));
-                return new Rectangle(points, color);
+                break;
             }
         }
         return new Rectangle(points, color);

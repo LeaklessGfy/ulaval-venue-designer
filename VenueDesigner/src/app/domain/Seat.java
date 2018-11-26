@@ -28,6 +28,37 @@ public final class Seat {
         shape = new Rectangle(points, new int[4]);
     }
 
+    public Seat(int column, int row, VitalSpace vs, Point p0, Zone zone) {
+        this.column = column;
+        this.row = row;
+        Vector<Point> points = new Vector<>();
+        int x=0;
+        int y=0;
+        switch (zone){
+            case Bas:{
+                x= p0.x+(row)*vs.getWidth();
+                y=p0.y+(column)*vs.getHeight();
+                break;
+            }
+            case Gauche:{
+                x= p0.x-(column)*vs.getHeight();
+                y=p0.y+(row)*vs.getWidth();
+                break;
+            }
+            case Haut:{
+                x= p0.x-(row)*vs.getWidth();
+                y=p0.y-(column)*vs.getHeight();
+                break;
+            }
+            case Droit:{
+                x= p0.x+(column)*vs.getHeight();
+                y=p0.y-(row)*vs.getWidth();
+                break;
+            }
+        }
+        shape = Rectangle.create(x,y,vs.getWidth(),vs.getHeight(), new int[4], zone);
+    }
+
     @JsonCreator
     public Seat(@JsonProperty("column") int column, @JsonProperty("row") int row, @JsonProperty("shape") Shape shape) {
         this.column = column;

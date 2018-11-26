@@ -72,7 +72,7 @@ public final class SeatedSection extends AbstractSection {
 
         for (int i = 0; i < columns; i++) {
             for (int j = 0; j < rows; j++) {
-                section.seats[i][j] = new Seat(i, j, vitalSpace, new Point(x,y));
+                section.seats[i][j] = new Seat(i, j, vitalSpace, new Point(x,y),zone);
             }
         }
 
