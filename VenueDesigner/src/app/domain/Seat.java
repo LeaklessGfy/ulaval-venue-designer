@@ -24,7 +24,7 @@ public final class Seat {
         points.add(new Point(p0.x+(column+1)*vs.getWidth(), p0.y+(row)*vs.getHeight()));
         points.add(new Point(p0.x+(column+1)*vs.getWidth(), p0.y+(row+1)*vs.getHeight()));
         points.add(new Point(p0.x+(column)*vs.getWidth(), p0.y+(row+1)*vs.getHeight()));
-        shape = new Rectangle(points, new int[3]);
+        shape = new Rectangle(points, new int[4]);
     }
 
     @JsonCreator
@@ -34,11 +34,31 @@ public final class Seat {
         this.shape = shape;
     }
 
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
+
     public Shape getShape(){
         return shape;
     }
 
+    public boolean isSelected() {
+        return shape.isSelected();
+    }
+
+    public void setSelected(boolean selected) {
+        shape.setSelected(selected);
+    }
+
     public void move(int x, int y, Point offset){
         shape.move(x, y, offset);
+    }
+
+    public void accept(SelectionVisitor visitor) {
+        visitor.visit(this);
     }
 }

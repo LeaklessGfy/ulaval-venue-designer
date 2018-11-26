@@ -13,7 +13,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 public final class Room {
-    private ArrayList<Section> sections = new ArrayList<>();
+    private final ArrayList<Section> sections;
     @JsonProperty
     private final Shape shape;
 
@@ -26,10 +26,11 @@ public final class Room {
     private Stage stage;
 
     public Room(int width, int height, VitalSpace vitalSpace) {
-        this.shape = Rectangle.create(0, 0, width, height, new int[]{20, 38, 52});
+        this.shape = Rectangle.create(0, 0, width, height, new int[]{20, 38, 52, 255});
         this.width = width;
         this.height = height;
         this.vitalSpace = Objects.requireNonNull(vitalSpace);
+        this.sections = new ArrayList<>();
     }
 
     @JsonCreator
@@ -57,8 +58,12 @@ public final class Room {
 
     public VitalSpace getVitalSpace() { return vitalSpace; }
 
+    public Shape getShape() {
+        return shape;
+    }
+
     public void setStage(Stage stage) {
-        this.stage = Objects.requireNonNull(stage);
+        this.stage = stage;
     }
 
     @JsonIgnore
@@ -69,7 +74,7 @@ public final class Room {
     }
 
     public List<Section> getSections() {
-        return Collections.unmodifiableList(sections);
+        return sections;
     }
 
     public boolean validShape(Shape s, Point offset) {
@@ -87,12 +92,6 @@ public final class Room {
     }
 
     public <T> void accept(T g, Painter<T> painter) {
-        shape.accept(g, painter);
-        if (stage != null) {
-            stage.getShape().accept(g, painter);
-        }
-        for (Section s : sections) {
-            s.accept(g, painter);
-        }
+        painter.draw(g, this);
     }
 }

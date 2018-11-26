@@ -2,6 +2,10 @@ package app.gui;
 
 import app.domain.Controller;
 import app.domain.Mode;
+import app.domain.Seat;
+import app.domain.SelectionVisitor;
+import app.domain.Stage;
+import app.domain.section.SeatedSection;
 
 import javax.swing.*;
 import java.awt.*;
@@ -26,7 +30,8 @@ public final class MainWindow extends Frame {
     private JButton regSeatedSection2;
     private JButton zoomIn;
     private JButton zoomOut;
-
+    private JButton editButton;
+    private JButton removeButton;
     private JMenu file;
     private JMenuItem newItem;
     private JMenuItem openItem;
@@ -39,20 +44,29 @@ public final class MainWindow extends Frame {
     private JButton standingSectionButton;
 
     private MainWindow(JFrame frame) {
-        tablePanel.setBackground(new Color(20, 38, 52));
-        tablePanel.setBorder(BorderFactory.createMatteBorder(0, 5, 0, 0, Color.LIGHT_GRAY));
         buttonTopPanel.setBackground(Color.LIGHT_GRAY);
+        tablePanel.setBorder(BorderFactory.createMatteBorder(5, 5, 0, 0, Color.LIGHT_GRAY));
+        tablePanel.setVisible(false);
+        buttonTopPanel.setBackground(new Color(20, 38, 52));
         mainScrollPane.setBorder(BorderFactory.createEmptyBorder());
 
         drawingPanel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (controller.getMode() == Mode.RegularSeatedSection2) {
-                    JFrame sectionSettings = new SectionSettings(controller, drawingPanel, (int)(e.getX() / controller.getScale()), (int)(e.getY() / controller.getScale()));
+                    JFrame sectionSettings = new SectionSettings(
+                            controller,
+                            drawingPanel,
+                            (int)(e.getX() / controller.getScale()),
+                            (int)(e.getY() / controller.getScale()),
+                            () -> reset()
+                    );
                     sectionSettings.setSize(300,400);
                     sectionSettings.setVisible(true);
                 } else {
                     controller.mouseClicked(e.getX(), e.getY());
+                    reset();
+                    tablePanel.setVisible(controller.getMode() == Mode.Selection);
                 }
             }
         });
@@ -97,6 +111,36 @@ public final class MainWindow extends Frame {
             controller.zoom(-0.1);
         });
 
+        editButton.addActionListener(e -> {
+            controller.editSelected(new SelectionVisitor() {
+                @Override
+                public void visit(Stage stage) {
+                    JFrame stageEdition = new StageEdition(stage, drawingPanel);
+                    stageEdition.setSize(300,400);
+                    stageEdition.setVisible(true);
+                }
+
+                @Override
+                public void visit(SeatedSection section) {
+                    JFrame sectionEdition = new SectionEdition(section, drawingPanel);
+                    sectionEdition.setSize(300, 400);
+                    sectionEdition.setVisible(true);
+                }
+
+                @Override
+                public void visit(Seat seat) {
+                    JFrame seatEdition = new SeatEdition(seat, drawingPanel);
+                    seatEdition.setSize(300, 400);
+                    seatEdition.setVisible(true);
+                }
+            });
+        });
+
+        removeButton.addActionListener(e -> {
+            controller.removeSelected();
+            tablePanel.setVisible(controller.getMode()==Mode.Selection);
+        });
+        
         JMenuBar menuBar = new JMenuBar();
         file = new JMenu("File");
         newItem = new JMenuItem("New");
@@ -186,6 +230,17 @@ public final class MainWindow extends Frame {
         painter = new GUIPainter(controller);
         drawingPanel = new DrawingPanel(painter);
         controller.setDrawingPanel(drawingPanel);
+    }
+
+    private void reset() {
+        if (controller.getMode() == Mode.None) {
+            stage.setBackground(UIManager.getColor("Button.background"));
+            stage.setForeground(UIManager.getColor("Button.foreground"));
+            regSeatedSection.setBackground(UIManager.getColor("Button.background"));
+            regSeatedSection.setForeground(UIManager.getColor("Button.foreground"));
+            regSeatedSection2.setBackground(UIManager.getColor("Button.background"));
+            regSeatedSection2.setForeground(UIManager.getColor("Button.foreground"));
+        }
     }
 
     private void toggleButton(JButton btn, Mode mode) {
