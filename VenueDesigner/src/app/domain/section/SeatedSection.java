@@ -71,10 +71,10 @@ public final class SeatedSection extends AbstractSection {
 
         SeatedSection section = new SeatedSection(null, 0, rectangle, vitalSpace);
         section.zone = zone;
-        section.seats = new Seat[columns][rows];
+        section.seats = new Seat[rows][columns];
 
-        for (int i = 0; i < columns; i++) {
-            for (int j = 0; j < rows; j++) {
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
                 section.seats[i][j] = new Seat(i, j, vitalSpace, new Point(x,y),zone);
             }
         }
@@ -113,12 +113,12 @@ public final class SeatedSection extends AbstractSection {
     }
 
     @JsonIgnore
-    public int getColumns() {
+    public int getRows() {
         return seats.length;
     }
 
     @JsonIgnore
-    public int getRows() {
+    public int getColumns() {
         if (seats.length < 1) {
             return 0;
         }
@@ -139,20 +139,24 @@ public final class SeatedSection extends AbstractSection {
         int x = points.firstElement().x;
         int y = points.firstElement().y;
         this.setShape(Rectangle.create(x, y,getColumns()*vitalSpace.getWidth(),getRows()*vitalSpace.getHeight(), new int[4],zone));
-        for (int i = 0; i < getColumns(); i++) {
-            for (int j = 0; j < getRows(); j++) {
+        for (int i = 0; i < getRows(); i++) {
+            for (int j = 0; j < getColumns(); j++) {
                 seats[i][j] = new Seat(i, j, vitalSpace, getShape().getPoints().get(0),zone);
             }
         }
     }
 
     public void setDimensions(int columns, int rows) {
-        seats = new Seat[columns][rows];
-        for (int i = 0; i < columns; i++) {
-            for (int j = 0; j < rows; j++) {
+        seats = new Seat[rows][columns];
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
                 seats[i][j] = new Seat(i, j, vitalSpace, getShape().getPoints().get(0),zone);
             }
         }
         refresh();
+    }
+
+    public Zone getZone() {
+        return zone;
     }
 }

@@ -28,7 +28,7 @@ public final class Seat {
         shape = new Rectangle(points, new int[4]);
     }
 
-    public Seat(int column, int row, VitalSpace vs, Point p0, Zone zone) {
+    public Seat(int row, int column, VitalSpace vs, Point p0, Zone zone) {
         this.column = column;
         this.row = row;
         Vector<Point> points = new Vector<>();

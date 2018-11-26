@@ -8,10 +8,13 @@ import app.domain.section.SeatedSection;
 import app.domain.section.StandingSection;
 import app.domain.shape.Painter;
 import app.domain.shape.*;
+import app.domain.shape.Point;
+import app.domain.shape.Polygon;
+import app.domain.shape.Rectangle;
+import app.domain.shape.Shape;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Graphics2D;
+import java.awt.*;
+import java.awt.geom.Rectangle2D;
 import java.util.Objects;
 
 public final class GUIPainter implements Painter<Graphics2D> {
@@ -35,6 +38,7 @@ public final class GUIPainter implements Painter<Graphics2D> {
 
     @Override
     public void draw(Graphics2D g, SeatedSection seatedSection) {
+        numberSeats(g, seatedSection);
         for (Seat[] seats : seatedSection.getSeats()) {
             for (Seat seat : seats) {
                 if (!seat.isSelected()) {
@@ -130,5 +134,67 @@ public final class GUIPainter implements Painter<Graphics2D> {
         g.draw(polygon);
         g.setColor(fill);
         g.fill(polygon);
+    }
+    private void numberSeats(Graphics2D g, SeatedSection section) {
+        g.setRenderingHint(
+                RenderingHints.KEY_FRACTIONALMETRICS,
+                RenderingHints.VALUE_FRACTIONALMETRICS_ON
+                );
+        Font font = Font.decode("Arial");
+        int maxWidth = section.getVitalSpace().getWidth()-2;
+        int maxHeight = section.getVitalSpace().getHeight()-2;
+        int i=1;
+        int j = 1;
+        for (Seat[] row : section.getSeats()) {
+            Point p = new Point(0,0);
+            switch (section.getZone()){
+                case Bas:
+                    p = new Point(row[0].getShape().getPoints().elementAt(3).x+1-section.getVitalSpace().getWidth(),
+                            row[0].getShape().getPoints().elementAt(3).y-1);
+                    break;
+                case Gauche:
+                    p = new Point(row[0].getShape().getPoints().elementAt(2).x+1,
+                            row[0].getShape().getPoints().elementAt(2).y-1-section.getVitalSpace().getWidth());
+                    break;
+                case Haut:
+                    p = new Point(row[0].getShape().getPoints().elementAt(1).x+1+section.getVitalSpace().getWidth(),
+                            row[0].getShape().getPoints().elementAt(1).y-1);
+                    break;
+                case Droit:
+                    p = new Point(row[0].getShape().getPoints().elementAt(0).x+1,
+                            row[0].getShape().getPoints().elementAt(0).y-1+section.getVitalSpace().getWidth());}
+            String rowNumber = String.valueOf(j);
+            Rectangle2D bounds = g.getFontMetrics(font).getStringBounds(rowNumber,g);
+            font = font.deriveFont((float)(font.getSize2D()*maxWidth/Math.max(bounds.getWidth(),bounds.getHeight())));
+            drawText(g, p, rowNumber, Color.WHITE, font);
+            for (Seat seat : row) {
+                //print seat number
+                Point p0 = new Point(0,0);
+                switch (section.getZone()){
+                    case Bas:
+                        p0 = new Point(seat.getShape().getPoints().elementAt(3).x+1,seat.getShape().getPoints().elementAt(3).y-1);
+                        break;
+                    case Gauche:
+                        p0 = new Point(seat.getShape().getPoints().elementAt(2).x+1,seat.getShape().getPoints().elementAt(2).y-1);
+                        break;
+                    case Haut:
+                        p0 = new Point(seat.getShape().getPoints().elementAt(1).x+1,seat.getShape().getPoints().elementAt(1).y-1);
+                        break;
+                    case Droit:
+                        p0 = new Point(seat.getShape().getPoints().elementAt(0).x+1,seat.getShape().getPoints().elementAt(0).y-1);
+                }
+                String seatNumber = String.valueOf(i);
+                bounds = g.getFontMetrics(font).getStringBounds(seatNumber,g);
+                font = font.deriveFont((float)(font.getSize2D()*maxWidth/Math.max(bounds.getWidth(),bounds.getHeight())));
+                drawText(g, p0, seatNumber, Color.WHITE, font);
+                i++;
+            }
+            j++;
+        }
+    }
+    private void drawText(Graphics2D g, Point point, String string, Color color, Font font){
+        g.setFont(font);
+        g.setColor(color);
+        g.drawString(string, point.x+controller.getOffset().x, point.y+controller.getOffset().y);
     }
 }
