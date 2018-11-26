@@ -36,23 +36,23 @@ public final class Seat {
         int y=0;
         switch (zone){
             case Bas:{
-                x= p0.x+(row)*vs.getWidth();
-                y=p0.y+(column)*vs.getHeight();
+                x= p0.x+(column)*vs.getWidth();
+                y=p0.y+(row)*vs.getHeight();
                 break;
             }
             case Gauche:{
-                x= p0.x-(column)*vs.getHeight();
-                y=p0.y+(row)*vs.getWidth();
+                x= p0.x-(row)*vs.getHeight();
+                y=p0.y+(column)*vs.getWidth();
                 break;
             }
             case Haut:{
-                x= p0.x-(row)*vs.getWidth();
-                y=p0.y-(column)*vs.getHeight();
+                x= p0.x-(column)*vs.getWidth();
+                y=p0.y-(row)*vs.getHeight();
                 break;
             }
             case Droit:{
-                x= p0.x+(column)*vs.getHeight();
-                y=p0.y-(row)*vs.getWidth();
+                x= p0.x+(row)*vs.getHeight();
+                y=p0.y-(column)*vs.getWidth();
                 break;
             }
         }

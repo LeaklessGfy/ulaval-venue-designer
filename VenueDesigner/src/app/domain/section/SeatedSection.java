@@ -19,6 +19,8 @@ public final class SeatedSection extends AbstractSection {
     @JsonProperty
     private VitalSpace vitalSpace;
     @JsonProperty
+    private Zone zone;
+    @JsonProperty
     private Seat[][] seats = new Seat[0][0];
 
     SeatedSection(String name, int elevation,Shape shape, VitalSpace vitalSpace) {
@@ -27,7 +29,7 @@ public final class SeatedSection extends AbstractSection {
     }
 
     @JsonCreator
-    SeatedSection(@JsonProperty("name") String name, @JsonProperty("elevation") int elevation, @JsonProperty("shape") Shape shape, @JsonProperty("vitalSpace") VitalSpace vitalSpace, @JsonProperty("seats") Seat[][] seats) {
+    SeatedSection(@JsonProperty("name") String name, @JsonProperty("elevation") int elevation, @JsonProperty("shape") Shape shape, @JsonProperty("vitalSpace") VitalSpace vitalSpace, @JsonProperty("seats") Seat[][] seats, @JsonProperty("zone") Zone zone) {
         super(name, elevation, shape);
         this.vitalSpace = vitalSpace;
         this.seats = seats;
@@ -68,6 +70,7 @@ public final class SeatedSection extends AbstractSection {
 
 
         SeatedSection section = new SeatedSection(null, 0, rectangle, vitalSpace);
+        section.zone = zone;
         section.seats = new Seat[columns][rows];
 
         for (int i = 0; i < columns; i++) {
@@ -135,13 +138,10 @@ public final class SeatedSection extends AbstractSection {
         Vector<Point> points = getShape().getPoints();
         int x = points.firstElement().x;
         int y = points.firstElement().y;
-        points.get(1).x = x + (getColumns() * vitalSpace.getWidth());
-        points.get(2).x = x + (getColumns() * vitalSpace.getWidth());
-        points.get(2).y = y + (getRows() * vitalSpace.getHeight());
-        points.get(3).y = y + (getRows() * vitalSpace.getHeight());
+        this.setShape(Rectangle.create(x, y,getColumns()*vitalSpace.getWidth(),getRows()*vitalSpace.getHeight(), new int[4],zone));
         for (int i = 0; i < getColumns(); i++) {
             for (int j = 0; j < getRows(); j++) {
-                seats[i][j] = new Seat(i, j, vitalSpace, getShape().getPoints().get(0));
+                seats[i][j] = new Seat(i, j, vitalSpace, getShape().getPoints().get(0),zone);
             }
         }
     }
@@ -150,7 +150,7 @@ public final class SeatedSection extends AbstractSection {
         seats = new Seat[columns][rows];
         for (int i = 0; i < columns; i++) {
             for (int j = 0; j < rows; j++) {
-                seats[i][j] = new Seat(i, j, vitalSpace, getShape().getPoints().get(0));
+                seats[i][j] = new Seat(i, j, vitalSpace, getShape().getPoints().get(0),zone);
             }
         }
         refresh();

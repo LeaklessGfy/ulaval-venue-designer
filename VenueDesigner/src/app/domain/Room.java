@@ -95,6 +95,7 @@ public final class Room {
         painter.draw(g, this);
     }
 
+    @JsonIgnore
     public boolean isStageSet(){
         return !(stage ==  null);
     }

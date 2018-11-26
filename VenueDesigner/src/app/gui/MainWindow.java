@@ -101,6 +101,7 @@ public final class MainWindow extends Frame {
         removeButton.addActionListener(e -> {
             controller.removeSelected();
             tablePanel.setVisible(controller.getMode()==Mode.Selection);
+            regSeatedSection.setVisible(controller.getRoom().get().isStageSet());
         });
         
         JMenuBar menuBar = new JMenuBar();
