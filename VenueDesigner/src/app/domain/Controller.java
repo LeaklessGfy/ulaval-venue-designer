@@ -156,6 +156,7 @@ public class Controller {
         }
         this.mode = Objects.requireNonNull(mode);
         resetSelection();
+        ui.repaint();
         return true;
     }
 
@@ -235,6 +236,7 @@ public class Controller {
                         if (selectionCheck(x, y, seat.getShape())) {
                             selection = seat;
                             selection.setSelected(true);
+                            preSelection.setSelected(true);
                         }
                     });
                 }
@@ -246,6 +248,7 @@ public class Controller {
                         if (selectionCheck(x, y, s.getShape())) {
                             selection = new SeatSection(seats);
                             selection.setSelected(true);
+                            preSelection.setSelected(true);
                         }
                     }
                 }

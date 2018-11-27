@@ -3,6 +3,7 @@ package app.gui;
 import app.domain.Controller;
 import app.domain.Mode;
 import app.domain.Seat;
+import app.domain.SeatSection;
 import app.domain.selection.SelectionAdapter;
 import app.domain.Stage;
 import app.domain.section.SeatedSection;
@@ -90,11 +91,13 @@ public final class MainWindow extends Frame {
 
         stage.addActionListener(e -> {
             toggleButton(stage, Mode.Stage);
+            tablePanel.setVisible(false);
         });
 
         regSeatedSection.setVisible(controller.getRoom().isStageSet());
         regSeatedSection.addActionListener(e -> {
             toggleButton(regSeatedSection, Mode.RegularSeatedSection2);
+            tablePanel.setVisible(false);
         });
 
         zoomIn.addActionListener( e -> {
@@ -126,6 +129,13 @@ public final class MainWindow extends Frame {
                     JFrame seatEdition = new SeatEdition(seat, drawingPanel);
                     seatEdition.setSize(300, 400);
                     seatEdition.setVisible(true);
+                }
+
+                @Override
+                public void visit(SeatSection seatSection) {
+                    JFrame seatSectionEdition = new SeatSectionEdition(seatSection, drawingPanel);
+                    seatSectionEdition.setSize(300, 400);
+                    seatSectionEdition.setVisible(true);
                 }
             });
         });
