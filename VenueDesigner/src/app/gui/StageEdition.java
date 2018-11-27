@@ -1,5 +1,6 @@
 package app.gui;
 
+import app.domain.Controller;
 import app.domain.Stage;
 import app.domain.UIPanel;
 
@@ -15,7 +16,7 @@ public final class StageEdition extends JFrame {
     private JButton cancelButton;
     private JPanel panelMain;
 
-    StageEdition(Stage stage, UIPanel panel) {
+    StageEdition(Controller controller, Stage stage, UIPanel panel) {
         setContentPane(panelMain);
         width.setText(stage.getWidth() + "");
         height.setText(stage.getHeight() + "");
@@ -25,12 +26,18 @@ public final class StageEdition extends JFrame {
             if (!isValidForm()) {
                 return;
             }
-            stage.setWidth(Integer.parseInt(width.getText()));
-            stage.setHeight(Integer.parseInt(height.getText()));
-            stage.setElevation(Integer.parseInt(elevation.getText()));
-            setVisible(false);
-            dispose();
-            panel.repaint();
+            int stageWidth = Integer.parseInt(width.getText());
+            int stageHeight = Integer.parseInt(height.getText());
+            if (controller.validateStageDimensions(stage, stageWidth, stageHeight)) {
+                stage.setWidth(stageWidth);
+                stage.setHeight(stageHeight);
+                stage.setElevation(Integer.parseInt(elevation.getText()));
+                setVisible(false);
+                dispose();
+                panel.repaint();
+            } else {
+                JOptionPane.showMessageDialog(null, "Inconsistent dimensions.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
         });
 
         cancelButton.addActionListener(e -> {

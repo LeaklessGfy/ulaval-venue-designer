@@ -1,8 +1,9 @@
 package app.gui;
 
-import app.domain.UIPanel;
-import app.domain.VitalSpace;
+import app.domain.Controller;
 import app.domain.section.SeatedSection;
+import app.domain.VitalSpace;
+import app.domain.UIPanel;
 
 import javax.swing.*;
 
@@ -19,7 +20,7 @@ public final class SectionEdition extends JFrame {
     private JTextField vitalSpaceHeight;
     private JTextField price;
 
-    SectionEdition(SeatedSection section, UIPanel panel) {
+    SectionEdition(Controller controller, SeatedSection section, UIPanel panel) {
         setContentPane(panelMain);
         VitalSpace vitalSpace = section.getVitalSpace();
         columns.setText(section.getColumns() + "");
@@ -32,19 +33,25 @@ public final class SectionEdition extends JFrame {
             if (!isValidForm()) {
                 return;
             }
-            section.setDimensions(Integer.parseInt(columns.getText()), Integer.parseInt(rows.getText()));
-            section.setElevation(Integer.parseInt(elevation.getText()));
+            int nbColums = Integer.parseInt(columns.getText());
+            int nbRows = Integer.parseInt(rows.getText());
             int spaceWidth = Integer.parseInt(vitalSpaceWidth.getText());
             int spaceHeight = Integer.parseInt(vitalSpaceHeight.getText());
-            if (spaceWidth != vitalSpace.getWidth() || spaceHeight != vitalSpace.getHeight()) {
-                section.setVitalSpace(new VitalSpace(spaceWidth, spaceHeight));
+            if (controller.validateSectionDimensions(section, nbColums, nbRows, spaceWidth, spaceHeight)) {
+                section.setDimensions(nbColums, nbRows);
+                section.setElevation(Integer.parseInt(elevation.getText()));
+                if (spaceWidth != vitalSpace.getWidth() || spaceHeight != vitalSpace.getHeight()) {
+                    section.setVitalSpace(new VitalSpace(spaceWidth, spaceHeight));
+                }
+                section.forEachSeats(seat -> {
+                    seat.setPrice(Integer.parseInt(price.getText()));
+                });
+                setVisible(false);
+                dispose();
+                panel.repaint();
+            } else {
+                JOptionPane.showMessageDialog(null, "Inconsistent dimensions.", "Error", JOptionPane.ERROR_MESSAGE);
             }
-            section.forEachSeats(seat -> {
-                seat.setPrice(Integer.parseInt(price.getText()));
-            });
-            setVisible(false);
-            dispose();
-            panel.repaint();
         });
 
         cancelButton.addActionListener(e -> {
@@ -62,7 +69,7 @@ public final class SectionEdition extends JFrame {
                         isNotInteger(vitalSpaceHeight.getText()) ||
                         isNotInteger(price.getText())
         ) {
-            JOptionPane.showMessageDialog(null, "One or more fields are not an integer", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "One or more fields are not an integer.", "Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }
 
