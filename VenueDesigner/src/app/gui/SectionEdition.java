@@ -1,8 +1,8 @@
 package app.gui;
 
-import app.domain.UIPanel;
-import app.domain.VitalSpace;
-import app.domain.section.SeatedSection;
+import app.domain.*;
+import app.domain.section.*;
+import app.domain.shape.*;
 
 import javax.swing.*;
 
@@ -19,7 +19,7 @@ public final class SectionEdition extends JFrame {
     private JTextField vitalSpaceHeight;
     private JTextField price;
 
-    SectionEdition(SeatedSection section, UIPanel panel) {
+    SectionEdition(Controller controller, SeatedSection section, UIPanel panel) {
         setContentPane(panelMain);
         VitalSpace vitalSpace = section.getVitalSpace();
         columns.setText(section.getColumns() + "");
@@ -32,25 +32,54 @@ public final class SectionEdition extends JFrame {
             if (!isValidForm()) {
                 return;
             }
-            section.setDimensions(Integer.parseInt(columns.getText()), Integer.parseInt(rows.getText()));
-            section.setElevation(Integer.parseInt(elevation.getText()));
+            int nbColums = Integer.parseInt(columns.getText());
+            int nbRows = Integer.parseInt(rows.getText());
             int spaceWidth = Integer.parseInt(vitalSpaceWidth.getText());
             int spaceHeight = Integer.parseInt(vitalSpaceHeight.getText());
-            if (spaceWidth != vitalSpace.getWidth() || spaceHeight != vitalSpace.getHeight()) {
-                section.setVitalSpace(new VitalSpace(spaceWidth, spaceHeight));
+            if (validateDimensions(controller, section, nbColums, nbRows, spaceWidth, spaceHeight)) {
+                section.setDimensions(nbColums, nbRows);
+                section.setElevation(Integer.parseInt(elevation.getText()));
+                if (spaceWidth != vitalSpace.getWidth() || spaceHeight != vitalSpace.getHeight()) {
+                    section.setVitalSpace(new VitalSpace(spaceWidth, spaceHeight));
+                }
+                section.forEachSeats(seat -> {
+                    seat.setPrice(Integer.parseInt(price.getText()));
+                });
+                setVisible(false);
+                dispose();
+                panel.repaint();
             }
-            section.forEachSeats(seat -> {
-                seat.setPrice(Integer.parseInt(price.getText()));
-            });
-            setVisible(false);
-            dispose();
-            panel.repaint();
         });
 
         cancelButton.addActionListener(e -> {
             setVisible(false);
             dispose();
         });
+    }
+
+    private boolean validateDimensions(Controller controller, Section section, int nbColums, int nbRows, int spaceWidth, int spaceHeight) {
+        Room room = controller.getRoom();
+        VitalSpace vs = new VitalSpace(spaceWidth, spaceHeight);
+        Section predict = SeatedSection.create(section.getShape().getPoints().firstElement().x, section.getShape().getPoints().firstElement().y, nbColums, nbRows, vs, room.getStage().get());
+        if (!room.validShape(predict.getShape(), new Point())) {
+            JOptionPane.showMessageDialog(null, "Inconsistent dimensions.", "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        if (room.getStage().isPresent()) {
+            if (controller.getCollider().hasCollide(room.getStage().get().getShape(), predict.getShape())) {
+                JOptionPane.showMessageDialog(null, "Collision with stage.", "Error", JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+        }
+        for (Section s : room.getSections()) {
+            if (!s.equals(section)) {
+                if (controller.getCollider().hasCollide(s.getShape(), predict.getShape())) {
+                    JOptionPane.showMessageDialog(null, "Collision with other sections.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     private boolean isValidForm() {
@@ -62,7 +91,7 @@ public final class SectionEdition extends JFrame {
                         isNotInteger(vitalSpaceHeight.getText()) ||
                         isNotInteger(price.getText())
         ) {
-            JOptionPane.showMessageDialog(null, "One or more fields are not an integer", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "One or more fields are not an integer.", "Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }
 

@@ -119,7 +119,7 @@ public final class MainWindow extends Frame {
 
                 @Override
                 public void visit(SeatedSection section) {
-                    JFrame sectionEdition = new SectionEdition(section, drawingPanel);
+                    JFrame sectionEdition = new SectionEdition(controller, section, drawingPanel);
                     sectionEdition.setSize(300, 400);
                     sectionEdition.setVisible(true);
                 }

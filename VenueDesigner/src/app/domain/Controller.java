@@ -40,6 +40,8 @@ public class Controller {
         return room;
     }
 
+    public Collider getCollider() { return collider; }
+
     public void setDrawingPanel(UIPanel ui) {
         this.ui = Objects.requireNonNull(ui);
     }
