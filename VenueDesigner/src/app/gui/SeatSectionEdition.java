@@ -1,27 +1,28 @@
 package app.gui;
 
 import app.domain.Seat;
+import app.domain.SeatSection;
 import app.domain.UIPanel;
 
 import javax.swing.*;
 
 import static app.gui.GUIUtils.isNotInteger;
 
-public final class SeatEdition extends JFrame {
-    private JPanel panelMain;
+public final class SeatSectionEdition extends JFrame {
     private JTextField price;
     private JButton okButton;
     private JButton cancelButton;
+    private JPanel panelMain;
 
-    SeatEdition(Seat seat, UIPanel panel) {
+    SeatSectionEdition(SeatSection seatSection, UIPanel panel) {
         setContentPane(panelMain);
-        price.setText(seat.getPrice() + "");
-
         okButton.addActionListener(e -> {
             if (!isValidForm()) {
                 return;
             }
-            seat.setPrice(Integer.parseInt(price.getText()));
+            for (Seat seat : seatSection.getSeats()) {
+                seat.setPrice(Integer.parseInt(price.getText()));
+            }
             setVisible(false);
             dispose();
             panel.repaint();

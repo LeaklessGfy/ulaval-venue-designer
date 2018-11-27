@@ -7,10 +7,10 @@ import app.domain.shape.Shape;
 
 import java.util.Objects;
 
-public class SeatSection implements Selection {
+public final class SeatSection implements Selection {
     private final Seat[] seats;
 
-    public SeatSection(Seat[] seats) {
+    SeatSection(Seat[] seats) {
         this.seats = Objects.requireNonNull(seats);
     }
 
@@ -42,5 +42,9 @@ public class SeatSection implements Selection {
     @Override
     public void accept(SelectionVisitor visitor) {
         visitor.visit(this);
+    }
+
+    public Seat[] getSeats() {
+        return seats;
     }
 }
