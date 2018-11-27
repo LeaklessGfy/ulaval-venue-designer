@@ -15,7 +15,7 @@ import java.util.Optional;
 public final class Room {
     private final ArrayList<Section> sections;
     @JsonProperty
-    private final Shape shape;
+    private Shape shape;
 
     private int width;
     private int height;
@@ -53,6 +53,12 @@ public final class Room {
     public int getHeight() { return this.height; }
 
     public void setWidth(int width) { this.width = width; }
+
+    public void setDimensions(int width, int height) {
+        this.width = width;
+        this.height = height;
+        this.shape = Rectangle.create(0, 0, width, height, new int[]{20, 38, 52, 255});
+    }
 
     public void setHeight(int height) { this.height = height; }
 
