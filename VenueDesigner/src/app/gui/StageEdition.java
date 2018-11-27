@@ -1,7 +1,9 @@
 package app.gui;
 
-import app.domain.Stage;
-import app.domain.UIPanel;
+import app.domain.*;
+import app.domain.shape.Shape;
+import app.domain.section.Section;
+import app.domain.shape.Point;
 
 import javax.swing.*;
 
@@ -15,7 +17,7 @@ public final class StageEdition extends JFrame {
     private JButton cancelButton;
     private JPanel panelMain;
 
-    StageEdition(Stage stage, UIPanel panel) {
+    StageEdition(Controller controller, Stage stage, UIPanel panel) {
         setContentPane(panelMain);
         width.setText(stage.getWidth() + "");
         height.setText(stage.getHeight() + "");
@@ -25,18 +27,41 @@ public final class StageEdition extends JFrame {
             if (!isValidForm()) {
                 return;
             }
-            stage.setWidth(Integer.parseInt(width.getText()));
-            stage.setHeight(Integer.parseInt(height.getText()));
-            stage.setElevation(Integer.parseInt(elevation.getText()));
-            setVisible(false);
-            dispose();
-            panel.repaint();
+            int stageWidth = Integer.parseInt(width.getText());
+            int stageHeight = Integer.parseInt(height.getText());
+            if (validateDimensions(controller, stage, stageWidth, stageHeight)) {
+                stage.setWidth(stageWidth);
+                stage.setHeight(stageHeight);
+                stage.setElevation(Integer.parseInt(elevation.getText()));
+                setVisible(false);
+                dispose();
+                panel.repaint();
+            }
         });
 
         cancelButton.addActionListener(e -> {
             setVisible(false);
             dispose();
         });
+    }
+
+    private boolean validateDimensions(Controller controller, Stage stage, int width, int height) {
+        Room room = controller.getRoom();
+        Shape shape = stage.getShape().clone();
+        Stage predict = new Stage(shape);
+        predict.setWidth(width);
+        predict.setHeight(height);
+        if (!room.validShape(predict.getShape(), new Point())) {
+            JOptionPane.showMessageDialog(null, "Inconsistent dimensions.", "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        for (Section s : room.getSections()) {
+            if (controller.getCollider().hasCollide(s.getShape(), predict.getShape())) {
+                JOptionPane.showMessageDialog(null, "Collision with other sections.", "Error", JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+        }
+        return true;
     }
 
     private boolean isValidForm() {

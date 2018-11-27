@@ -112,7 +112,7 @@ public final class MainWindow extends Frame {
             controller.editSelected(new SelectionAdapter() {
                 @Override
                 public void visit(Stage stage) {
-                    JFrame stageEdition = new StageEdition(stage, drawingPanel);
+                    JFrame stageEdition = new StageEdition(controller, stage, drawingPanel);
                     stageEdition.setSize(300,400);
                     stageEdition.setVisible(true);
                 }
