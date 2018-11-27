@@ -5,6 +5,8 @@ import app.domain.UIPanel;
 
 import javax.swing.*;
 
+import static app.gui.GUIUtils.isNotInteger;
+
 public class SeatEdition extends JFrame {
     private JPanel panelMain;
     private JTextField price;
@@ -26,5 +28,14 @@ public class SeatEdition extends JFrame {
             setVisible(false);
             dispose();
         });
+    }
+
+    private boolean isValidForm() {
+        if (isNotInteger(price.getText())) {
+            JOptionPane.showMessageDialog(null, "One or more fields are not an integer", "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        return true;
     }
 }

@@ -6,6 +6,8 @@ import app.domain.UIPanel;
 import javax.swing.*;
 import java.util.Objects;
 
+import static app.gui.GUIUtils.isNotInteger;
+
 public final class SectionSettings extends JFrame {
     private JPanel panelMain;
     private JTextField columns;
@@ -32,15 +34,6 @@ public final class SectionSettings extends JFrame {
             setVisible(false);
             dispose();
         });
-    }
-
-    private boolean isNotInteger(String text) {
-        try {
-            Integer.parseInt(text);
-        } catch (NumberFormatException e) {
-            return true;
-        }
-        return false;
     }
 
     private boolean validateForm() {

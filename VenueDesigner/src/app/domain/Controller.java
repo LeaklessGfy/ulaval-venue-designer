@@ -2,6 +2,10 @@ package app.domain;
 
 import app.domain.section.SeatedSection;
 import app.domain.section.Section;
+import app.domain.section.StandingSection;
+import app.domain.selection.Selection;
+import app.domain.selection.SelectionAdapter;
+import app.domain.selection.SelectionVisitor;
 import app.domain.shape.Point;
 import app.domain.shape.Shape;
 import app.domain.shape.ShapeBuilder;
@@ -24,14 +28,16 @@ public class Controller {
     private UIPanel ui;
     private ShapeBuilder current;
     private double scale = 1.0;
+    private Selection selection;
+    private Section preSelection;
 
     public Controller(Collider collider) {
         this.collider = Objects.requireNonNull(collider);
-        this.room = new Room(500, 500, new VitalSpace(10, 10));
+        this.room = new Room(500, 500, new VitalSpace(30, 30));
     }
 
-    public Optional<Room> getRoom() {
-        return Optional.ofNullable(this.room);
+    public Room getRoom() {
+        return room;
     }
 
     public void setDrawingPanel(UIPanel ui) {
@@ -39,16 +45,15 @@ public class Controller {
     }
 
     public void createRoom(int roomWidth, int roomHeight, int vitalSpaceWidth, int vitalSpaceHeight) {
-        VitalSpace vitalSpace = new VitalSpace(vitalSpaceWidth, vitalSpaceHeight);
-        this.room = new Room(roomWidth, roomHeight, vitalSpace);
+        room = new Room(roomWidth, roomHeight, new VitalSpace(vitalSpaceWidth, vitalSpaceHeight));
     }
 
     public void save(String path) {
-        JSONSerialize.serializeToJson(this.room, path);
+        JSONSerialize.serializeToJson(room, path);
     }
 
     public void load(String path) {
-        this.room = JSONSerialize.deserializeFromJson(path);
+        room = JSONSerialize.deserializeFromJson(path);
         ui.repaint();
     }
 
@@ -60,7 +65,9 @@ public class Controller {
         return  cursor.y;
     }
 
-    public double getScale() { return this.scale; }
+    public double getScale() {
+        return scale;
+    }
 
     public void mouseDragged(int x, int y) {
         int scaleX = (int)(x / scale);
@@ -69,62 +76,54 @@ public class Controller {
         int dy = (scaleY - cursor.y);
         cursor.set(scaleX, scaleY);
 
-        if (mode == Mode.Selection || mode == Mode.None) {
-            if (room.getStage().isPresent()) {
-                Shape shape = room.getStage().get().getShape();
-                if (shape.isSelected()) {
-                    if (isMovable(shape, scaleX, scaleY)) {
-                        shape.move(scaleX, scaleY, offset);
-                        ui.repaint();
-                    }
-                    return;
+        if (selection != null) {
+            selection.accept(new SelectionVisitor() {
+                @Override
+                public void visit(Stage stage) {
+                    move(stage);
                 }
-            }
-            for (Section section : room.getSections()) {
-                Shape shape = section.getShape();
-                if (shape.isSelected()) {
-                    if (isMovable(shape, scaleX, scaleY)) {
-                        section.move(scaleX, scaleY, offset);
-                        ui.repaint();
-                    }
-                    return;
+
+                @Override
+                public void visit(SeatedSection section) {
+                    move(section);
                 }
-            }
+
+                @Override
+                public void visit(StandingSection section) {
+                    move(section);
+                }
+
+                @Override
+                public void visit(Seat seat) {
+                    move(preSelection);
+                }
+
+                @Override
+                public void visit(SeatSection seatSection) {
+                    move(preSelection);
+                }
+
+                private void move(Selection selection) {
+                    if (isMovable(selection.getShape(), scaleX, scaleY)) {
+                        selection.move(scaleX, scaleY, offset);
+                    }
+                }
+            });
+        } else {
             offset.offset(dx, dy);
-            ui.repaint();
         }
+        ui.repaint();
     }
     public void mouseClicked(int x, int y) {
-        int scaleX = (int)(x / scale);
-        int scaleY = (int)(y / scale);
         if (room == null) {
             return;
         }
+        int scaleX = (int)(x / scale);
+        int scaleY = (int)(y / scale);
         if (mode == Mode.None || mode == Mode.Selection) {
-            mode = Mode.None;
-            room.getStage().ifPresent(r -> selectionCheck(scaleX, scaleY, r.getShape()));
-            for (Section s : room.getSections()) {
-                if (s.isSelected()) {
-                    for (Seat[] seats : s.getSeats()) {
-                        for (Seat seat : seats) {
-                            if (seat.isSelected()) {
-                                // select line
-                            }
-                            selectionCheck(scaleX, scaleY, seat.getShape());
-                        }
-                    }
-                }
-                selectionCheck(scaleX, scaleY, s.getShape());
-            }
-            ui.repaint();
-            return;
-        }
-        if (current == null) {
-            current = ShapeBuilderFactory.create(mode);
-        }
-        current.addPoint(new Point(scaleX, scaleY));
-        if (current.isComplete()) {
-            createShape();
+            doSelection(scaleX, scaleY);
+        } else {
+            doShape(scaleX, scaleY);
         }
         ui.repaint();
     }
@@ -156,15 +155,7 @@ public class Controller {
             return false;
         }
         this.mode = Objects.requireNonNull(mode);
-        room.getStage().ifPresent(stage -> stage.setSelected(false));
-        room.getSections().forEach(section -> {
-            section.setSelected(false);
-            for (Seat[] seats : section.getSeats()) {
-                for (Seat seat : seats) {
-                    seat.setSelected(false);
-                }
-            }
-        });
+        resetSelection();
         return true;
     }
 
@@ -181,57 +172,34 @@ public class Controller {
     }
 
     public void editSelected(SelectionVisitor visitor) {
-        if (room == null) {
+        if (selection == null) {
             return;
         }
-        if (room.getStage().isPresent()) {
-            Stage stage = room.getStage().get();
-            if (stage.isSelected()) {
-                visitor.visit(stage);
-                return;
-            }
-        }
-        for (Section section : room.getSections()) {
-            if (section.isSelected()) {
-                for (Seat[] seats : section.getSeats()) {
-                    for (Seat seat : seats) {
-                        if (seat.isSelected()) {
-                            seat.accept(visitor);
-                            return;
-                        }
-                    }
-                }
-                section.accept(visitor);
-                return;
-            }
-        }
+        selection.accept(visitor);
     }
 
     public void removeSelected() {
-        if (room == null) {
+        if (selection == null) {
             return;
         }
-        if (room.getStage().isPresent()) {
-            Stage stage = room.getStage().get();
-            if (stage.getShape().isSelected()) {
+        selection.accept(new SelectionAdapter() {
+            @Override
+            public void visit(Stage stage) {
                 room.setStage(null);
-                mode =  Mode.None;
-                ui.repaint();
-                return;
+                mode = Mode.None;
             }
-        }
-        Section toRemove = null;
-        for (Section section : room.getSections()) {
-            if (section.getShape().isSelected()) {
-                toRemove = section;
-                break;
+
+            @Override
+            public void visit(SeatedSection section) {
+                room.getSections().remove(section);
             }
-        }
-        if (toRemove != null) {
-            room.getSections().remove(toRemove);
-            mode =  Mode.None;
-            ui.repaint();
-        }
+
+            @Override
+            public void visit(StandingSection section) {
+                room.getSections().remove(section);
+            }
+        });
+        ui.repaint();
     }
 
     public void createRegularSection(int x, int y, int xInt, int yInt) {
@@ -252,6 +220,64 @@ public class Controller {
             }
             room.addSection(section);
             mode = Mode.None;
+        }
+    }
+
+    private void doSelection(int x, int y) {
+        mode = Mode.None;
+        Selection s = selection;
+        resetSelection();
+        if (s != null) {
+            s.accept(new SelectionAdapter() {
+                @Override
+                public void visit(SeatedSection section) {
+                    section.forEachSeats(seat -> {
+                        if (selectionCheck(x, y, seat.getShape())) {
+                            selection = seat;
+                            selection.setSelected(true);
+                        }
+                    });
+                }
+
+                @Override
+                public void visit(Seat seat) {
+                    Seat[] seats = preSelection.getSeats()[seat.getRow()];
+                    for (Seat s : seats) {
+                        if (selectionCheck(x, y, s.getShape())) {
+                            selection = new SeatSection(seats);
+                            selection.setSelected(true);
+                        }
+                    }
+                }
+            });
+            return;
+        }
+        Optional<Stage> opt = room.getStage();
+        if (opt.isPresent()) {
+            Stage stage = opt.get();
+            if (selectionCheck(x, y, stage.getShape())) {
+                selection = stage;
+                selection.setSelected(true);
+                return;
+            }
+        }
+        for (Section section : room.getSections()) {
+            if (selectionCheck(x, y, section.getShape())) {
+                selection = section;
+                selection.setSelected(true);
+                preSelection = section;
+                return;
+            }
+        }
+    }
+
+    private void doShape(int x, int y) {
+        if (current == null) {
+            current = ShapeBuilderFactory.create(mode);
+        }
+        current.addPoint(new Point(x, y));
+        if (current.isComplete()) {
+            createShape();
         }
     }
 
@@ -303,12 +329,23 @@ public class Controller {
         return true;
     }
 
-    private void selectionCheck(int x, int y, Shape shape){
+    private boolean selectionCheck(int x, int y, Shape shape){
         if (collider.hasCollide(x - offset.x, y - offset.y, shape)){
-            shape.setSelected(true);
             mode = Mode.Selection;
-        } else {
-            shape.setSelected(false);
+            return true;
         }
+        return false;
+    }
+
+    private void resetSelection() {
+        if (selection != null) {
+            selection.setSelected(false);
+            selection = null;
+        }
+        room.getStage().ifPresent(stage -> stage.setSelected(false));
+        room.getSections().forEach(section -> {
+            section.setSelected(false);
+            section.forEachSeats(seat -> seat.setSelected(false));
+        });
     }
 }

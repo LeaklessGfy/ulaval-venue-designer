@@ -1,7 +1,7 @@
 package app.domain.section;
 
 import app.domain.Seat;
-import app.domain.SelectionVisitor;
+import app.domain.selection.SelectionVisitor;
 import app.domain.Stage;
 import app.domain.VitalSpace;
 import app.domain.shape.Painter;
@@ -14,6 +14,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
 import java.util.Vector;
+import java.util.function.Consumer;
 
 public final class SeatedSection extends AbstractSection {
     @JsonProperty
@@ -84,6 +85,11 @@ public final class SeatedSection extends AbstractSection {
     }
 
     @Override
+    public void move(int x, int y) {
+        move(x, y, new Point());
+    }
+
+    @Override
     public  void move(int x, int y, Point offset) {
         Shape shape = getShape();
         for (Seat[] seatRow : seats) {
@@ -106,6 +112,15 @@ public final class SeatedSection extends AbstractSection {
     @Override
     public Seat[][] getSeats() {
         return seats;
+    }
+
+    @Override
+    public void forEachSeats(Consumer<Seat> consumer) {
+        for (Seat[] seatRow : seats) {
+            for (Seat seat : seatRow) {
+                consumer.accept(seat);
+            }
+        }
     }
 
     @Override

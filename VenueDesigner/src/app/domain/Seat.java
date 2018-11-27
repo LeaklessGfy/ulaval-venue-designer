@@ -1,6 +1,8 @@
 package app.domain;
 
 import app.domain.section.Zone;
+import app.domain.selection.Selection;
+import app.domain.selection.SelectionVisitor;
 import app.domain.shape.Point;
 import app.domain.shape.Rectangle;
 import app.domain.shape.Shape;
@@ -9,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Vector;
 
-public final class Seat {
+public final class Seat implements Selection {
     private final int column;
     private final int row;
     private final Shape shape;
@@ -75,22 +77,40 @@ public final class Seat {
         this.price = price;
     }
 
-    public Shape getShape(){
-        return shape;
+    public int getRow() {
+        return row;
     }
 
+    public int getColumn() {
+        return column;
+    }
+
+    @Override
     public boolean isSelected() {
         return shape.isSelected();
     }
 
+    @Override
     public void setSelected(boolean selected) {
         shape.setSelected(selected);
     }
 
+    @Override
+    public void move(int x, int y) {
+        shape.move(x, y);
+    }
+
+    @Override
     public void move(int x, int y, Point offset){
         shape.move(x, y, offset);
     }
 
+    @Override
+    public Shape getShape(){
+        return shape;
+    }
+
+    @Override
     public void accept(SelectionVisitor visitor) {
         visitor.visit(this);
     }
