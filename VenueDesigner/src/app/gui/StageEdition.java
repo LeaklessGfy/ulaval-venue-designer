@@ -1,9 +1,8 @@
 package app.gui;
 
-import app.domain.*;
-import app.domain.shape.Shape;
-import app.domain.section.Section;
-import app.domain.shape.Point;
+import app.domain.Controller;
+import app.domain.Stage;
+import app.domain.UIPanel;
 
 import javax.swing.*;
 
@@ -29,13 +28,15 @@ public final class StageEdition extends JFrame {
             }
             int stageWidth = Integer.parseInt(width.getText());
             int stageHeight = Integer.parseInt(height.getText());
-            if (validateDimensions(controller, stage, stageWidth, stageHeight)) {
+            if (controller.validateStageDimensions(stage, stageWidth, stageHeight)) {
                 stage.setWidth(stageWidth);
                 stage.setHeight(stageHeight);
                 stage.setElevation(Integer.parseInt(elevation.getText()));
                 setVisible(false);
                 dispose();
                 panel.repaint();
+            } else {
+                JOptionPane.showMessageDialog(null, "Inconsistent dimensions.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
 
@@ -43,25 +44,6 @@ public final class StageEdition extends JFrame {
             setVisible(false);
             dispose();
         });
-    }
-
-    private boolean validateDimensions(Controller controller, Stage stage, int width, int height) {
-        Room room = controller.getRoom();
-        Shape shape = stage.getShape().clone();
-        Stage predict = new Stage(shape);
-        predict.setWidth(width);
-        predict.setHeight(height);
-        if (!room.validShape(predict.getShape(), new Point())) {
-            JOptionPane.showMessageDialog(null, "Inconsistent dimensions.", "Error", JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
-        for (Section s : room.getSections()) {
-            if (controller.getCollider().hasCollide(s.getShape(), predict.getShape())) {
-                JOptionPane.showMessageDialog(null, "Collision with other sections.", "Error", JOptionPane.ERROR_MESSAGE);
-                return false;
-            }
-        }
-        return true;
     }
 
     private boolean isValidForm() {

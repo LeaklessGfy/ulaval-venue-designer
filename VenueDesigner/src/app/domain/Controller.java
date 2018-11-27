@@ -40,8 +40,6 @@ public class Controller {
         return room;
     }
 
-    public Collider getCollider() { return collider; }
-
     public void setDrawingPanel(UIPanel ui) {
         this.ui = Objects.requireNonNull(ui);
     }
@@ -352,5 +350,43 @@ public class Controller {
             section.setSelected(false);
             section.forEachSeats(seat -> seat.setSelected(false));
         });
+    }
+
+    public boolean validateSectionDimensions(Section section, int nbColums, int nbRows, int spaceWidth, int spaceHeight) {
+        VitalSpace vs = new VitalSpace(spaceWidth, spaceHeight);
+        Section predict = SeatedSection.create(section.getShape().getPoints().firstElement().x, section.getShape().getPoints().firstElement().y, nbColums, nbRows, vs, room.getStage().get());
+        if (!room.validShape(predict.getShape(), new Point())) {
+            return false;
+        }
+        if (room.getStage().isPresent()) {
+            if (collider.hasCollide(room.getStage().get().getShape(), predict.getShape())) {
+                return false;
+            }
+        }
+        for (Section s : room.getSections()) {
+            if (!s.equals(section)) {
+                if (collider.hasCollide(s.getShape(), predict.getShape())) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+
+    public boolean validateStageDimensions(Stage stage, int width, int height) {
+        Shape shape = stage.getShape().clone();
+        Stage predict = new Stage(shape);
+        predict.setWidth(width);
+        predict.setHeight(height);
+        if (!room.validShape(predict.getShape(), new Point())) {
+            return false;
+        }
+        for (Section s : room.getSections()) {
+            if (collider.hasCollide(s.getShape(), predict.getShape())) {
+                return false;
+            }
+        }
+        return true;
     }
 }

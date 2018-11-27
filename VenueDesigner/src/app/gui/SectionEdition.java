@@ -1,8 +1,9 @@
 package app.gui;
 
-import app.domain.*;
-import app.domain.section.*;
-import app.domain.shape.*;
+import app.domain.Controller;
+import app.domain.section.SeatedSection;
+import app.domain.VitalSpace;
+import app.domain.UIPanel;
 
 import javax.swing.*;
 
@@ -36,7 +37,7 @@ public final class SectionEdition extends JFrame {
             int nbRows = Integer.parseInt(rows.getText());
             int spaceWidth = Integer.parseInt(vitalSpaceWidth.getText());
             int spaceHeight = Integer.parseInt(vitalSpaceHeight.getText());
-            if (validateDimensions(controller, section, nbColums, nbRows, spaceWidth, spaceHeight)) {
+            if (controller.validateSectionDimensions(section, nbColums, nbRows, spaceWidth, spaceHeight)) {
                 section.setDimensions(nbColums, nbRows);
                 section.setElevation(Integer.parseInt(elevation.getText()));
                 if (spaceWidth != vitalSpace.getWidth() || spaceHeight != vitalSpace.getHeight()) {
@@ -48,6 +49,8 @@ public final class SectionEdition extends JFrame {
                 setVisible(false);
                 dispose();
                 panel.repaint();
+            } else {
+                JOptionPane.showMessageDialog(null, "Inconsistent dimensions.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
 
@@ -55,31 +58,6 @@ public final class SectionEdition extends JFrame {
             setVisible(false);
             dispose();
         });
-    }
-
-    private boolean validateDimensions(Controller controller, Section section, int nbColums, int nbRows, int spaceWidth, int spaceHeight) {
-        Room room = controller.getRoom();
-        VitalSpace vs = new VitalSpace(spaceWidth, spaceHeight);
-        Section predict = SeatedSection.create(section.getShape().getPoints().firstElement().x, section.getShape().getPoints().firstElement().y, nbColums, nbRows, vs, room.getStage().get());
-        if (!room.validShape(predict.getShape(), new Point())) {
-            JOptionPane.showMessageDialog(null, "Inconsistent dimensions.", "Error", JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
-        if (room.getStage().isPresent()) {
-            if (controller.getCollider().hasCollide(room.getStage().get().getShape(), predict.getShape())) {
-                JOptionPane.showMessageDialog(null, "Collision with stage.", "Error", JOptionPane.ERROR_MESSAGE);
-                return false;
-            }
-        }
-        for (Section s : room.getSections()) {
-            if (!s.equals(section)) {
-                if (controller.getCollider().hasCollide(s.getShape(), predict.getShape())) {
-                    JOptionPane.showMessageDialog(null, "Collision with other sections.", "Error", JOptionPane.ERROR_MESSAGE);
-                    return false;
-                }
-            }
-        }
-        return true;
     }
 
     private boolean isValidForm() {
