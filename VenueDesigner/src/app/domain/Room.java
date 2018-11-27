@@ -11,14 +11,13 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-public final class Room {
+public final class Room implements Drawable {
     private final ArrayList<Section> sections;
     @JsonProperty
-    private final Shape shape;
+    private Shape shape;
 
     private int width;
     private int height;
-    private double scale = 1.0;
     private VitalSpace vitalSpace;
     private boolean grid;
     @JsonProperty
@@ -45,6 +44,12 @@ public final class Room {
         this.vitalSpace = Objects.requireNonNull(vitalSpace);
         this.sections = sections;
         this.stage = stage;
+    }
+
+    public void setDimensions(int width, int height) {
+        this.width = width;
+        this.height = height;
+        this.shape = Rectangle.create(0, 0, width, height, new int[]{20, 38, 52, 255});
     }
 
     public int getWidth() { return this.width; }
@@ -90,6 +95,7 @@ public final class Room {
         return true;
     }
 
+    @Override
     public <T> void accept(T g, Painter<T> painter) {
         painter.draw(g, this);
     }

@@ -4,10 +4,12 @@ import app.domain.*;
 import app.domain.section.SeatedSection;
 import app.domain.section.Section;
 import app.domain.selection.SelectionAdapter;
+import app.domain.shape.Point;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.util.Objects;
+import java.util.Optional;
 
 import static app.gui.GUIUtils.isNotInteger;
 
@@ -34,17 +36,19 @@ public final class RoomSettings extends JFrame {
             if (!validateForm()) {
                 return;
             }
+            int roomWidth = Integer.parseInt(roomWidthTextField.getText());
+            int roomHeight = Integer.parseInt(roomHeightTextField.getText());
+            int vitalSpaceWidth = Integer.parseInt(vitalSpaceWidthTextField.getText());
+            int vitalSpaceHeight = Integer.parseInt(vitalSpaceHeightTextField.getText());
             if (event.getActionCommand().equals("New")) {
-                int roomWidth = Integer.parseInt(roomWidthTextField.getText());
-                int roomHeight = Integer.parseInt(roomHeightTextField.getText());
-                int vitalSpaceWidth = Integer.parseInt(vitalSpaceWidthTextField.getText());
-                int vitalSpaceHeight = Integer.parseInt(vitalSpaceHeightTextField.getText());
                 controller.createRoom(roomWidth, roomHeight, vitalSpaceWidth, vitalSpaceHeight);
             } else {
-                room.setWidth(Integer.parseInt(roomWidthTextField.getText()));
-                room.setHeight(Integer.parseInt(roomHeightTextField.getText()));
-                room.getVitalSpace().setWidth(Integer.parseInt(vitalSpaceWidthTextField.getText()));
-                room.getVitalSpace().setHeight(Integer.parseInt(vitalSpaceHeightTextField.getText()));
+                if (validateDimensions(room, roomWidth, roomHeight, vitalSpaceWidth, vitalSpaceHeight)) {
+                    return;
+                }
+                room.setDimensions(roomWidth, roomHeight);
+                room.getVitalSpace().setWidth(vitalSpaceWidth);
+                room.getVitalSpace().setHeight(vitalSpaceHeight);
                 for (Section section: room.getSections()){
                     section.accept(new SelectionAdapter() {
                         @Override
@@ -66,6 +70,25 @@ public final class RoomSettings extends JFrame {
         });
     }
 
+    private boolean validateDimensions(Room room, int roomWidth, int roomHeight, int vitalSpaceWidth, int vitalSpaceHeight) {
+        VitalSpace vs = new VitalSpace(vitalSpaceWidth, vitalSpaceHeight);
+        Room predict = new Room(roomWidth, roomHeight, vs);
+        Optional<Stage> opt = room.getStage();
+        if (opt.isPresent()) {
+            if (!predict.validShape(opt.get().getShape(), new Point())) {
+                JOptionPane.showMessageDialog(null, "Inconsistent dimensions.", "Error", JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+            for (Section section : room.getSections()) {
+                if (!predict.validShape(section.getShape(), new Point())) {
+                    JOptionPane.showMessageDialog(null, "Inconsistent dimensions.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     private boolean validateForm() {
         if(
                 roomWidthTextField.getText().isEmpty() ||
@@ -73,7 +96,7 @@ public final class RoomSettings extends JFrame {
                 vitalSpaceWidthTextField.getText().isEmpty() ||
                 vitalSpaceHeightTextField.getText().isEmpty()
         ) {
-            JOptionPane.showMessageDialog(null, "One or more fields are empty", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "One or more fields are empty.", "Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }
 
@@ -83,7 +106,7 @@ public final class RoomSettings extends JFrame {
                         isNotInteger(vitalSpaceWidthTextField.getText()) ||
                         isNotInteger(vitalSpaceHeightTextField.getText())
         ) {
-            JOptionPane.showMessageDialog(null, "One or more fields are not an integer", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "One or more fields are not an integer.", "Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }
 
