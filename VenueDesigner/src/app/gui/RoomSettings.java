@@ -43,7 +43,7 @@ public final class RoomSettings extends JFrame {
             if (event.getActionCommand().equals("New")) {
                 controller.createRoom(roomWidth, roomHeight, vitalSpaceWidth, vitalSpaceHeight);
             } else {
-                if (validateDimensions(room, roomWidth, roomHeight, vitalSpaceWidth, vitalSpaceHeight)) {
+                if (!validateDimensions(room, roomWidth, roomHeight, vitalSpaceWidth, vitalSpaceHeight)) {
                     return;
                 }
                 room.setDimensions(roomWidth, roomHeight);
