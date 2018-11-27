@@ -19,4 +19,13 @@ final class GUIUtils {
 
         return new Coordinates(points, xCoords, yCoords);
     }
+
+    static boolean isNotInteger(String text) {
+        try {
+            Integer.parseInt(text);
+        } catch (NumberFormatException e) {
+            return true;
+        }
+        return false;
+    }
 }

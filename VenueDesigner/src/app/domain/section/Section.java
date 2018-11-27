@@ -1,13 +1,15 @@
 package app.domain.section;
 
+import app.domain.Drawable;
 import app.domain.Seat;
-import app.domain.SelectionVisitor;
-import app.domain.shape.Painter;
+import app.domain.selection.Selection;
 import app.domain.shape.Point;
 import app.domain.shape.Shape;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
+import java.util.function.Consumer;
 
 @JsonTypeInfo(
     use = JsonTypeInfo.Id.NAME,
@@ -16,16 +18,13 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 @JsonSubTypes({
     @JsonSubTypes.Type(value = AbstractSection.class, name = "AbstractSection")
 })
-public interface Section {
+public interface Section extends Drawable, Selection {
     String getName();
     int getElevation();
     void setElevation(int elevation);
-    boolean isSelected();
-    void setSelected(boolean selected);
     Seat[][] getSeats();
     Shape getShape();
     void setShape(Shape shape);
     void move(int x, int y, Point offset);
-    <T> void accept(T g, Painter<T> painter);
-    void accept(SelectionVisitor visitor);
+    void forEachSeats(Consumer<Seat> consumer);
 }

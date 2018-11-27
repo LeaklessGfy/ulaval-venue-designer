@@ -5,6 +5,8 @@ import app.domain.UIPanel;
 
 import javax.swing.*;
 
+import static app.gui.GUIUtils.isNotInteger;
+
 public final class StageEdition extends JFrame {
     private JTextField width;
     private JTextField height;
@@ -20,6 +22,9 @@ public final class StageEdition extends JFrame {
         elevation.setText(stage.getElevation() + "");
 
         okButton.addActionListener(e -> {
+            if (!isValidForm()) {
+                return;
+            }
             stage.setWidth(Integer.parseInt(width.getText()));
             stage.setHeight(Integer.parseInt(height.getText()));
             stage.setElevation(Integer.parseInt(elevation.getText()));
@@ -32,5 +37,18 @@ public final class StageEdition extends JFrame {
             setVisible(false);
             dispose();
         });
+    }
+
+    private boolean isValidForm() {
+        if (
+                isNotInteger(width.getText()) ||
+                        isNotInteger(height.getText()) ||
+                        isNotInteger(elevation.getText())
+        ) {
+            JOptionPane.showMessageDialog(null, "One or more fields are not an integer", "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        return true;
     }
 }

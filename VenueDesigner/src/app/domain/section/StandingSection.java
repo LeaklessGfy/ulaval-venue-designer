@@ -1,12 +1,14 @@
 package app.domain.section;
 
 import app.domain.Seat;
-import app.domain.SelectionVisitor;
+import app.domain.selection.SelectionVisitor;
 import app.domain.shape.Painter;
 import app.domain.shape.Point;
 import app.domain.shape.Shape;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.util.function.Consumer;
 
 public final class StandingSection extends AbstractSection {
     @JsonProperty
@@ -20,6 +22,11 @@ public final class StandingSection extends AbstractSection {
 
     public static StandingSection create(int max, Shape shape) {
         return new StandingSection(null, 0, shape, max);
+    }
+
+    @Override
+    public void move(int x, int y) {
+        getShape().move(x, y);
     }
 
     @Override
@@ -39,5 +46,9 @@ public final class StandingSection extends AbstractSection {
     @Override
     public Seat[][] getSeats() {
         return new Seat[0][0];
+    }
+
+    @Override
+    public void forEachSeats(Consumer<Seat> consumer) {
     }
 }

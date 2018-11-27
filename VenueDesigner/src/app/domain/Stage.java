@@ -1,5 +1,7 @@
 package app.domain;
 
+import app.domain.selection.Selection;
+import app.domain.selection.SelectionVisitor;
 import app.domain.shape.Point;
 import app.domain.shape.Shape;
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -8,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 import java.util.Vector;
 
-public final class Stage {
+public final class Stage implements Selection {
     private final Shape shape;
     private int elevation;
 
@@ -17,16 +19,33 @@ public final class Stage {
         this.shape = Objects.requireNonNull(shape);
     }
 
-    public Shape getShape() {
-        return shape;
+    @Override
+    public boolean isSelected() {
+        return shape.isSelected();
     }
 
+    @Override
     public void setSelected(boolean selected) {
         shape.setSelected(selected);
     }
 
-    public boolean isSelected() {
-        return shape.isSelected();
+    @Override
+    public void move(int x, int y) {
+        shape.move(x, y);
+    }
+
+    @Override
+    public void move(int x, int y, Point offset) {
+        shape.move(x, y, offset);
+    }
+
+    @Override
+    public void accept(SelectionVisitor visitor) {
+        visitor.visit(this);
+    }
+
+    public Shape getShape() {
+        return shape;
     }
 
     public int getWidth() {

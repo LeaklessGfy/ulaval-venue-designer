@@ -3,7 +3,7 @@ package app.gui;
 import app.domain.Controller;
 import app.domain.Mode;
 import app.domain.Seat;
-import app.domain.SelectionVisitor;
+import app.domain.selection.SelectionAdapter;
 import app.domain.Stage;
 import app.domain.section.SeatedSection;
 
@@ -63,9 +63,7 @@ public final class MainWindow extends Frame {
                     controller.mouseClicked(e.getX(), e.getY());
                     reset();
                     tablePanel.setVisible(controller.getMode() == Mode.Selection);
-                    if (controller.getRoom().isPresent()) {
-                        regSeatedSection.setVisible(controller.getRoom().get().isStageSet());
-                    }
+                    regSeatedSection.setVisible(controller.getRoom().isStageSet());
                 }
             }
         });
@@ -94,7 +92,7 @@ public final class MainWindow extends Frame {
             toggleButton(stage, Mode.Stage);
         });
 
-        regSeatedSection.setVisible(controller.getRoom().get().isStageSet());
+        regSeatedSection.setVisible(controller.getRoom().isStageSet());
         regSeatedSection.addActionListener(e -> {
             toggleButton(regSeatedSection, Mode.RegularSeatedSection2);
         });
@@ -108,7 +106,7 @@ public final class MainWindow extends Frame {
         });
 
         editButton.addActionListener(e -> {
-            controller.editSelected(new SelectionVisitor() {
+            controller.editSelected(new SelectionAdapter() {
                 @Override
                 public void visit(Stage stage) {
                     JFrame stageEdition = new StageEdition(stage, drawingPanel);
@@ -135,9 +133,7 @@ public final class MainWindow extends Frame {
         removeButton.addActionListener(e -> {
             controller.removeSelected();
             tablePanel.setVisible(controller.getMode()==Mode.Selection);
-            if (controller.getRoom().isPresent()) {
-                regSeatedSection.setVisible(controller.getRoom().get().isStageSet());
-            }
+            regSeatedSection.setVisible(controller.getRoom().isStageSet());
         });
         
         JMenuBar menuBar = new JMenuBar();
@@ -155,9 +151,7 @@ public final class MainWindow extends Frame {
                 String filename = fileChooser.getSelectedFile().toString();
                 this.controller.load(filename);
             }
-            if (controller.getRoom().isPresent()) {
-                regSeatedSection.setVisible(controller.getRoom().get().isStageSet());
-            }
+            regSeatedSection.setVisible(controller.getRoom().isStageSet());
         });
 
         saveItem.addActionListener( e -> {
@@ -167,13 +161,11 @@ public final class MainWindow extends Frame {
             fileChooser.setFileFilter(filter);
             int result = fileChooser.showSaveDialog(this);
             if (result == JFileChooser.APPROVE_OPTION) {
-                if (controller.getRoom().isPresent()) {
-                    String filename = fileChooser.getSelectedFile().toString();
-                    if (!filename.endsWith(".json")) {
-                        filename += ".json";
-                    }
-                    controller.save(filename);
+                String filename = fileChooser.getSelectedFile().toString();
+                if (!filename.endsWith(".json")) {
+                    filename += ".json";
                 }
+                controller.save(filename);
             }
         });
 
@@ -196,13 +188,9 @@ public final class MainWindow extends Frame {
         edition.add(grid);
 
         room.addActionListener( e -> {
-            if (controller.getRoom().isPresent()) {
-                JFrame roomSettings = new RoomSettings(controller, drawingPanel, e);
-                roomSettings.setSize(300, 400);
-                roomSettings.setVisible(true);
-            } else {
-                JOptionPane.showMessageDialog(null, "No room defined", "Error", JOptionPane.ERROR_MESSAGE);
-            }
+            JFrame roomSettings = new RoomSettings(controller, drawingPanel, e);
+            roomSettings.setSize(300, 400);
+            roomSettings.setVisible(true);
         });
 
         menuBar.add(file);
