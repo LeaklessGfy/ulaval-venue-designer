@@ -15,6 +15,7 @@ public final class SectionEdition extends JFrame {
     private JPanel panelMain;
     private JTextField vitalSpaceWidth;
     private JTextField vitalSpaceHeight;
+    private JTextField name;
 
     SectionEdition(SeatedSection section, UIPanel panel) {
         setContentPane(panelMain);
@@ -24,6 +25,7 @@ public final class SectionEdition extends JFrame {
         elevation.setText(section.getElevation() + "");
         vitalSpaceWidth.setText(vitalSpace.getWidth() + "");
         vitalSpaceHeight.setText(vitalSpace.getHeight() + "");
+        name.setText(section.getName() + "");
 
         okButtton.addActionListener(e -> {
             section.setDimensions(Integer.parseInt(columns.getText()), Integer.parseInt(rows.getText()));

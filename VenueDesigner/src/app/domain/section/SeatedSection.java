@@ -36,7 +36,7 @@ public final class SeatedSection extends AbstractSection {
         this.zone = zone;
     }
 
-    public static SeatedSection create(int x, int y, int columns, int rows, VitalSpace vitalSpace, Stage stage) {
+    public static SeatedSection create(int x, int y, int columns, int rows, VitalSpace vitalSpace, Stage stage, String name) {
         Objects.requireNonNull(vitalSpace);
         Point stageCenter = stage.getShape().computeCentroid();
         double dx = x - stageCenter.x;
@@ -70,7 +70,7 @@ public final class SeatedSection extends AbstractSection {
         Rectangle rectangle = Rectangle.create(x, y,columns*vitalSpace.getWidth(),rows*vitalSpace.getHeight(), new int[4],zone);
 
 
-        SeatedSection section = new SeatedSection(null, 0, rectangle, vitalSpace);
+        SeatedSection section = new SeatedSection(name, 0, rectangle, vitalSpace);
         section.zone = zone;
         section.seats = new Seat[rows][columns];
 

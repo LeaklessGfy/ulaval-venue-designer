@@ -36,7 +36,7 @@ public final class RoomSettings extends JFrame {
 
         oKButton.addActionListener(e -> {
             if (validateForm()) {
-                if (event.getActionCommand().equals("New") || !room.isPresent()) {
+                if (event.getActionCommand().equals("New") || !room.isPresent()) {//
                     int roomWidth = Integer.parseInt(roomWidthTextField.getText());
                     int roomHeight = Integer.parseInt(roomHeightTextField.getText());
                     int vitalSpaceWidth = Integer.parseInt(vitalSpaceWidthTextField.getText());

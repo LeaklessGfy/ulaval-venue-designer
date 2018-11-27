@@ -10,6 +10,7 @@ public final class SectionSettings extends JFrame {
     private JPanel panelMain;
     private JTextField columns;
     private JTextField rows;
+    private JTextField name;
     private JButton okButton;
     private JButton cancelButton;
 
@@ -20,7 +21,7 @@ public final class SectionSettings extends JFrame {
             if (validateForm()) {
                 int xInt = Integer.parseInt(columns.getText());
                 int yInt = Integer.parseInt(rows.getText());
-                controller.createRegularSection(x, y, xInt, yInt);
+                controller.createRegularSection(x, y, xInt, yInt,name.getText());
                 setVisible(false);
                 dispose();
                 ui.repaint();
@@ -61,10 +62,6 @@ public final class SectionSettings extends JFrame {
                     "Error",
                     JOptionPane.ERROR_MESSAGE
             );
-            return false;
-        }
-
-        if (Integer.parseInt(columns.getText()) < 1 || Integer.parseInt(rows.getText()) < 1) {
             return false;
         }
 
