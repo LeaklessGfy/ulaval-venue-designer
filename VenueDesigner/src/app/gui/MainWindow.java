@@ -30,6 +30,7 @@ public final class MainWindow extends Frame {
     private JButton zoomOut;
     private JButton editButton;
     private JButton removeButton;
+    private JButton autoScaling;
     private JMenu file;
     private JMenuItem newItem;
     private JMenuItem openItem;
@@ -106,6 +107,10 @@ public final class MainWindow extends Frame {
 
         zoomOut.addActionListener( e -> {
             controller.zoom(-0.1);
+        });
+
+        autoScaling.addActionListener(e -> {
+            controller.autoScaling(drawingPanel.getWidth(), drawingPanel.getHeight());
         });
 
         editButton.addActionListener(e -> {
