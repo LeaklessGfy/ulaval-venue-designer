@@ -155,16 +155,15 @@ public final class GUIPainter implements Painter<Graphics2D> {
         int i=1;
         int j = 1;
         for (Seat[] row : section.getSeats()) {
-            int x;
-            int y;
-            Point p;
-/*            int x=(int)(row[0].getShape().getPoints().elementAt(0).x+x_space/2.0);
-            int y=(int)(row[0].getShape().getPoints().elementAt(0).y+y_space/2.0);
-            Point p = new Point(x,y);*/
+            int dx = row[0].getShape().getPoints().elementAt(0).x-row[0].getShape().getPoints().elementAt(1).x;
+            int dy = row[0].getShape().getPoints().elementAt(0).y-row[0].getShape().getPoints().elementAt(1).y;
+            int x=(int)(Math.min(row[0].getShape().getPoints().elementAt(0).x,row[0].getShape().getPoints().elementAt(2).x)+x_space/3.0+dx);
+            int y=(int)(Math.min(row[0].getShape().getPoints().elementAt(1).y,row[0].getShape().getPoints().elementAt(3).y)+2*y_space/3.0+dy);
+            Point p = new Point(x,y);
             String rowNumber = String.valueOf(j);
             Rectangle2D bounds = g.getFontMetrics(font).getStringBounds(rowNumber,g);
             font = font.deriveFont((float)(font.getSize2D()*maxWidth/Math.max(bounds.getWidth(),bounds.getHeight())));
-/*            drawText(g, p, rowNumber, Color.WHITE, font);*/
+            drawText(g, p, rowNumber, Color.WHITE, font);
             for (Seat seat : row) {
                 //print seat number
                 x=(int)(Math.min(seat.getShape().getPoints().elementAt(0).x,seat.getShape().getPoints().elementAt(2).x)+x_space/3.0);
