@@ -1,6 +1,5 @@
 package app.domain.shape;
 
-import app.domain.section.Zone;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -71,34 +70,14 @@ public final class Rectangle extends AbstractShape {
         return new Rectangle(points, color);
     }
 
-    public static Rectangle create(int x, int y, int width, int height, int[] color, Zone zone) {
+    public static Rectangle create(int x, int y, int width, int height, int[] color, double theta) {
         Vector<Point> points = new Vector<>();
-        switch (zone){
-            case Down:{
-                return Rectangle.create(x,y,width,height,color);
-            }
-            case Left:{
-                points.add(new Point(x, y));
-                points.add(new Point(x, y+width));
-                points.add(new Point(x-height, y +width));
-                points.add(new Point(x-height, y ));
-                break;
-            }
-            case Up:{
-                points.add(new Point(x, y));
-                points.add(new Point(x-width, y));
-                points.add(new Point(x-width, y -height));
-                points.add(new Point(x, y -height));
-                break;
-            }
-            case Right:{
-                points.add(new Point(x, y));
-                points.add(new Point(x, y-width));
-                points.add(new Point(x+height, y -width));
-                points.add(new Point(x+height, y ));
-                break;
-            }
-        }
+        double diag = Math.sqrt(Math.pow(height,2)+Math.pow(width,2));
+        double alpha = Math.atan((double )height/(double) width);
+        points.add(new Point(x, y));
+        points.add(new Point((int) (x+width*Math.cos(theta-Math.PI/2)), (int) (y+width*Math.sin(theta-Math.PI/2))));
+        points.add(new Point((int) (x+diag*Math.cos(theta-Math.PI/2+alpha)), (int) (y +diag*Math.sin(theta-Math.PI/2+alpha))));
+        points.add(new Point((int) (x+height*Math.cos(theta)), (int) (y+height*Math.sin(theta))));
         return new Rectangle(points, color);
     }
 

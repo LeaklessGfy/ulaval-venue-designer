@@ -20,7 +20,7 @@ public final class SeatedSection extends AbstractSection {
     @JsonProperty
     private VitalSpace vitalSpace;
     @JsonProperty
-    private Zone zone;
+    private double theta;
     @JsonProperty
     private Seat[][] seats = new Seat[0][0];
 
@@ -30,11 +30,11 @@ public final class SeatedSection extends AbstractSection {
     }
 
     @JsonCreator
-    SeatedSection(@JsonProperty("name") String name, @JsonProperty("elevation") int elevation, @JsonProperty("shape") Shape shape, @JsonProperty("vitalSpace") VitalSpace vitalSpace, @JsonProperty("seats") Seat[][] seats, @JsonProperty("zone") Zone zone) {
+    SeatedSection(@JsonProperty("name") String name, @JsonProperty("elevation") int elevation, @JsonProperty("shape") Shape shape, @JsonProperty("vitalSpace") VitalSpace vitalSpace, @JsonProperty("seats") Seat[][] seats, @JsonProperty("theta") double theta) {
         super(name, elevation, shape);
         this.vitalSpace = vitalSpace;
         this.seats = seats;
-        this.zone = zone;
+        this.theta = theta;
     }
 
     public static SeatedSection create(int x, int y, int columns, int rows, VitalSpace vitalSpace, Stage stage) {
@@ -56,28 +56,16 @@ public final class SeatedSection extends AbstractSection {
             theta = 3*Math.PI/2;
         }
 
-        Zone zone;
-        Vector<Point> points = new Vector<>();
-        if (theta >= alpha && theta < Math.PI - alpha){
-            zone = Zone.Down;
-        } else if (theta >= Math.PI - alpha && theta < Math.PI + alpha){
-            zone = Zone.Left;
-        } else if (theta >= Math.PI + alpha && theta < 2*Math.PI - alpha){
-            zone = Zone.Up;
-        } else {
-            zone = Zone.Right;
-        }
-
-        Rectangle rectangle = Rectangle.create(x, y,columns*vitalSpace.getWidth(),rows*vitalSpace.getHeight(), new int[4],zone);
+        Rectangle rectangle = Rectangle.create(x, y,columns*vitalSpace.getWidth(),rows*vitalSpace.getHeight(), new int[4],theta);
 
 
         SeatedSection section = new SeatedSection(null, 0, rectangle, vitalSpace);
-        section.zone = zone;
+        section.theta = theta;
         section.seats = new Seat[rows][columns];
 
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
-                section.seats[i][j] = new Seat(i, j, vitalSpace, new Point(x,y),zone);
+                section.seats[i][j] = new Seat(i, j, vitalSpace, new Point(x,y),theta);
             }
         }
 
@@ -154,10 +142,10 @@ public final class SeatedSection extends AbstractSection {
         Vector<Point> points = getShape().getPoints();
         int x = points.firstElement().x;
         int y = points.firstElement().y;
-        this.setShape(Rectangle.create(x, y,getColumns()*vitalSpace.getWidth(),getRows()*vitalSpace.getHeight(), new int[4],zone));
+        this.setShape(Rectangle.create(x, y,getColumns()*vitalSpace.getWidth(),getRows()*vitalSpace.getHeight(), new int[4],theta));
         for (int i = 0; i < getRows(); i++) {
             for (int j = 0; j < getColumns(); j++) {
-                seats[i][j] = new Seat(i, j, vitalSpace, getShape().getPoints().get(0),zone);
+                seats[i][j] = new Seat(i, j, vitalSpace, getShape().getPoints().get(0),theta);
             }
         }
     }
@@ -166,13 +154,13 @@ public final class SeatedSection extends AbstractSection {
         seats = new Seat[rows][columns];
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
-                seats[i][j] = new Seat(i, j, vitalSpace, getShape().getPoints().get(0),zone);
+                seats[i][j] = new Seat(i, j, vitalSpace, getShape().getPoints().get(0),theta);
             }
         }
         refresh();
     }
 
-    public Zone getZone() {
-        return zone;
+    public double getTheta(){
+        return theta;
     }
 }

@@ -141,51 +141,39 @@ public final class GUIPainter implements Painter<Graphics2D> {
                 RenderingHints.VALUE_FRACTIONALMETRICS_ON
                 );
         Font font = Font.decode("Arial");
-        int maxWidth = section.getVitalSpace().getWidth()-4;
+        double maxWidth = section.getVitalSpace().getWidth()/2.0;
+        double theta = section.getTheta();
+
+        int x_space = Math.max(section.getSeats()[0][0].getShape().getPoints().elementAt(0).x,
+                section.getSeats()[0][0].getShape().getPoints().elementAt(2).x)-
+                Math.min(section.getSeats()[0][0].getShape().getPoints().elementAt(0).x,
+                        section.getSeats()[0][0].getShape().getPoints().elementAt(2).x);
+        int y_space = Math.max(section.getSeats()[0][0].getShape().getPoints().elementAt(1).y,
+                section.getSeats()[0][0].getShape().getPoints().elementAt(3).y)-
+                Math.min(section.getSeats()[0][0].getShape().getPoints().elementAt(1).y,
+                        section.getSeats()[0][0].getShape().getPoints().elementAt(3).y);
         int i=1;
         int j = 1;
         for (Seat[] row : section.getSeats()) {
-            Point p = new Point(0,0);
-            switch (section.getZone()){
-                case Down:
-                    p = new Point(row[0].getShape().getPoints().elementAt(3).x+2-section.getVitalSpace().getWidth(),
-                            row[0].getShape().getPoints().elementAt(3).y-2);
-                    break;
-                case Left:
-                    p = new Point(row[0].getShape().getPoints().elementAt(2).x+2,
-                            row[0].getShape().getPoints().elementAt(2).y-2-section.getVitalSpace().getWidth());
-                    break;
-                case Up:
-                    p = new Point(row[0].getShape().getPoints().elementAt(1).x+2+section.getVitalSpace().getWidth(),
-                            row[0].getShape().getPoints().elementAt(1).y-2);
-                    break;
-                case Right:
-                    p = new Point(row[0].getShape().getPoints().elementAt(0).x+2,
-                            row[0].getShape().getPoints().elementAt(0).y-2+section.getVitalSpace().getWidth());}
+            int x;
+            int y;
+            Point p;
+/*            int x=(int)(row[0].getShape().getPoints().elementAt(0).x+x_space/2.0);
+            int y=(int)(row[0].getShape().getPoints().elementAt(0).y+y_space/2.0);
+            Point p = new Point(x,y);*/
             String rowNumber = String.valueOf(j);
             Rectangle2D bounds = g.getFontMetrics(font).getStringBounds(rowNumber,g);
             font = font.deriveFont((float)(font.getSize2D()*maxWidth/Math.max(bounds.getWidth(),bounds.getHeight())));
-            drawText(g, p, rowNumber, Color.WHITE, font);
+/*            drawText(g, p, rowNumber, Color.WHITE, font);*/
             for (Seat seat : row) {
                 //print seat number
-                Point p0 = new Point(0,0);
-                switch (section.getZone()){
-                    case Down:
-                        p0 = new Point(seat.getShape().getPoints().elementAt(3).x+2,seat.getShape().getPoints().elementAt(3).y-2);
-                        break;
-                    case Left:
-                        p0 = new Point(seat.getShape().getPoints().elementAt(2).x+2,seat.getShape().getPoints().elementAt(2).y-2);
-                        break;
-                    case Up:
-                        p0 = new Point(seat.getShape().getPoints().elementAt(1).x+2,seat.getShape().getPoints().elementAt(1).y-2);
-                        break;
-                    case Right:
-                        p0 = new Point(seat.getShape().getPoints().elementAt(0).x+2,seat.getShape().getPoints().elementAt(0).y-2);
-                }
+                x=(int)(Math.min(seat.getShape().getPoints().elementAt(0).x,seat.getShape().getPoints().elementAt(2).x)+x_space/3.0);
+                y=(int)(Math.min(seat.getShape().getPoints().elementAt(1).y,seat.getShape().getPoints().elementAt(3).y)+2*y_space/3.0);
+                p = new Point(x,y);
                 String seatNumber = String.valueOf(i);
                 bounds = g.getFontMetrics(font).getStringBounds(seatNumber,g);
                 font = font.deriveFont((float)(font.getSize2D()*maxWidth/Math.max(bounds.getWidth(),bounds.getHeight())));
-                drawText(g, p0, seatNumber, Color.WHITE, font);
+                drawText(g, p, seatNumber, Color.WHITE, font);
                 i++;
             }
             j++;

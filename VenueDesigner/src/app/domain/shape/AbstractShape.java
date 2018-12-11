@@ -126,4 +126,9 @@ abstract class AbstractShape implements Shape {
     public Shape clone() {
         return null;
     }
+
+    @Override
+    public void rotate(float radian){
+
+    }
 }

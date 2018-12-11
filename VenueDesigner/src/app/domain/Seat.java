@@ -1,6 +1,5 @@
 package app.domain;
 
-import app.domain.section.Zone;
 import app.domain.selection.Selection;
 import app.domain.selection.SelectionVisitor;
 import app.domain.shape.Point;
@@ -30,36 +29,16 @@ public final class Seat implements Selection {
         shape = new Rectangle(points, new int[4]);
     }
 
-    public Seat(int row, int column, VitalSpace vs, Point p0, Zone zone) {
+    public Seat(int row, int column, VitalSpace vs, Point p0, double theta) {
+
         this.column = column;
         this.row = row;
-        Vector<Point> points = new Vector<>();
-        int x=0;
-        int y=0;
-        switch (zone){
-            case Down:{
-                x= p0.x+(column)*vs.getWidth();
-                y=p0.y+(row)*vs.getHeight();
-                break;
-            }
-            case Left:{
-                x= p0.x-(row)*vs.getHeight();
-                y=p0.y+(column)*vs.getWidth();
-                break;
-            }
-            case Up:{
-                x= p0.x-(column)*vs.getWidth();
-                y=p0.y-(row)*vs.getHeight();
-                break;
-            }
-            case Right:{
-                x= p0.x+(row)*vs.getHeight();
-                y=p0.y-(column)*vs.getWidth();
-                break;
-            }
-        }
+        int x=  (row)*vs.getHeight();
+        int y= (column)*vs.getWidth();
+        int x1=(int) (x*Math.cos(-theta) - y*Math.sin(-theta));
+        int y1=(int) (x*Math.sin(-theta) + y*Math.cos(-theta));
         int[] color = {0,0,0,255};
-        shape = Rectangle.create(x,y,vs.getWidth(),vs.getHeight(), color, zone);
+        shape = Rectangle.create(p0.x+x1,p0.y-y1,vs.getWidth(),vs.getHeight(), color, theta);
     }
 
     @JsonCreator

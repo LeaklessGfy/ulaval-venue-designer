@@ -19,6 +19,7 @@ public interface Shape extends Drawable {
     void setSelected(boolean selected);
     void move(int x, int y);
     void move(int x, int y, Point offset);
+    void rotate(float radian);
     Point computeCentroid();
     Shape clone();
 }
