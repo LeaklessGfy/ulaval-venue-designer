@@ -30,6 +30,8 @@ public final class MainWindow extends Frame {
     private JButton zoomOut;
     private JButton editButton;
     private JButton removeButton;
+    private JButton leftRotateButton;
+    private JButton rightRotateButton;
     private JMenu file;
     private JMenuItem newItem;
     private JMenuItem openItem;
@@ -144,6 +146,14 @@ public final class MainWindow extends Frame {
             controller.removeSelected();
             tablePanel.setVisible(controller.getMode()==Mode.Selection);
             regSeatedSection.setVisible(controller.getRoom().isStageSet());
+        });
+
+        leftRotateButton.addActionListener(e -> {
+            controller.rotateSelected(false);
+        });
+
+        rightRotateButton.addActionListener(e -> {
+            controller.rotateSelected(true);
         });
         
         JMenuBar menuBar = new JMenuBar();

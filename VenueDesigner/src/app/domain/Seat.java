@@ -93,4 +93,8 @@ public final class Seat implements Selection {
     public void accept(SelectionVisitor visitor) {
         visitor.visit(this);
     }
+
+    @Override
+    public void rotate(double thetaRadian){
+    }
 }

@@ -44,6 +44,11 @@ public final class Stage implements Selection {
         visitor.visit(this);
     }
 
+    @Override
+    public void rotate(double thetaRadian){
+        shape.rotate(thetaRadian);
+    }
+
     public Shape getShape() {
         return shape;
     }
@@ -79,4 +84,5 @@ public final class Stage implements Selection {
     public void setElevation(int elevation) {
         this.elevation = elevation;
     }
+
 }

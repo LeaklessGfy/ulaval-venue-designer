@@ -53,21 +53,51 @@
           </component>
         </children>
       </scrollpane>
-      <grid id="46c89" binding="tablePanel" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+      <grid id="46c89" binding="tablePanel" layout-manager="GridLayoutManager" row-count="3" column-count="2" same-size-horizontally="true" same-size-vertically="false" hgap="-1" vgap="-1">
+        <margin top="0" left="0" bottom="0" right="0"/>
         <constraints border-constraint="East"/>
         <properties/>
         <border type="none"/>
         <children>
-          <component id="35280" class="javax.swing.JButton" binding="editButton" default-binding="true">
-            <constraints/>
+          <component id="cdf8c" class="javax.swing.JButton" binding="leftRotateButton">
+            <constraints>
+              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
             <properties>
-              <text value="Edit"/>
+              <icon value="assets/rotate_left.png"/>
+              <text value=""/>
             </properties>
           </component>
+          <component id="35280" class="javax.swing.JButton" binding="editButton" default-binding="true">
+            <constraints>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="   Edit     "/>
+            </properties>
+          </component>
+          <vspacer id="2d0bd">
+            <constraints>
+              <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false">
+                <preferred-size width="11" height="388"/>
+              </grid>
+            </constraints>
+          </vspacer>
           <component id="7a83a" class="javax.swing.JButton" binding="removeButton" default-binding="true">
-            <constraints/>
+            <constraints>
+              <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
             <properties>
               <text value="Remove"/>
+            </properties>
+          </component>
+          <component id="6c5ac" class="javax.swing.JButton" binding="rightRotateButton">
+            <constraints>
+              <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <icon value="assets/rotate_right.png"/>
+              <text value=""/>
             </properties>
           </component>
         </children>

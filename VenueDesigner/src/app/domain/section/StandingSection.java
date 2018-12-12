@@ -51,4 +51,9 @@ public final class StandingSection extends AbstractSection {
     @Override
     public void forEachSeats(Consumer<Seat> consumer) {
     }
+
+    @Override
+    public void rotate(double thetaRadian){
+        super.getShape().rotate(thetaRadian);
+    }
 }

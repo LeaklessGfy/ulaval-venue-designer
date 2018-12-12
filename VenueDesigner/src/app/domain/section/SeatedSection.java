@@ -129,6 +129,16 @@ public final class SeatedSection extends AbstractSection {
         return seats[0].length;
     }
 
+    @Override
+    public void rotate(double thetaRadian){
+        super.getShape().rotate(thetaRadian);
+        theta+=thetaRadian;
+        refresh();
+/*        forEachSeats(seat -> {
+                seat.rotate(thetaRadian);
+            });*/
+    }
+
     public VitalSpace getVitalSpace() {
         return vitalSpace;
     }

@@ -203,6 +203,41 @@ public class Controller {
         ui.repaint();
     }
 
+    public void rotateSelected(boolean direction) {
+        if (selection == null) {
+            return;
+        }
+        selection.accept(new SelectionAdapter() {
+            @Override
+            public void visit(Stage stage) {
+                if (direction){
+                    selection.rotate(Math.PI/32);
+                } else {
+                   selection.rotate(31*Math.PI/32);
+                }
+            }
+
+            @Override
+            public void visit(SeatedSection section) {
+                if (direction){
+                    selection.rotate(Math.PI/16);
+                } else {
+                    selection.rotate(31*Math.PI/16);
+                }
+            }
+
+            @Override
+            public void visit(StandingSection section) {
+                if (direction){
+                    selection.rotate(Math.PI/16);
+                } else {
+                    selection.rotate(31*Math.PI/16);
+                }
+            }
+        });
+        ui.repaint();
+    }
+
     public void createRegularSection(int x, int y, int xInt, int yInt) {
         if (room != null && room.getStage().isPresent()) {
             Section section = SeatedSection.create(x - offset.x, y - offset.y, xInt, yInt, room.getVitalSpace(), room.getStage().get());

@@ -111,15 +111,14 @@ abstract class AbstractShape implements Shape {
         }
     }
 
-    public Vector<Point> Rotation(float degree_angle){
+    @Override
+    public void rotate(double thetaRadian){
         Point gravityPoint = computeCentroid();
-        float theta_radian = degree_angle*0.0174533f; // transform from degrees to radians
         int Gx = gravityPoint.x;
         int Gy = gravityPoint.y;
         for(Point p : points){
-            p.set((int)Math.round(((p.x-Gx)*Math.cos(theta_radian))-((p.y-Gy)*Math.sin(theta_radian)) + Gx),(int)Math.round((p.x-Gx)*Math.sin(theta_radian)+(p.y-Gy)*Math.cos(theta_radian)+ Gy));
+            p.set((int)(((p.x-Gx)*Math.cos(thetaRadian))-((p.y-Gy)*Math.sin(thetaRadian)) + Gx),(int)((p.x-Gx)*Math.sin(thetaRadian)+(p.y-Gy)*Math.cos(thetaRadian)+ Gy));
         }
-        return points;
     }
 
     @Override
@@ -127,8 +126,4 @@ abstract class AbstractShape implements Shape {
         return null;
     }
 
-    @Override
-    public void rotate(float radian){
-
-    }
 }

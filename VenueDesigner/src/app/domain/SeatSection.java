@@ -35,6 +35,10 @@ public final class SeatSection implements Selection {
     }
 
     @Override
+    public void rotate(double theta_radian) {
+    }
+
+    @Override
     public Shape getShape() {
         return seats[0].getShape();
     }
