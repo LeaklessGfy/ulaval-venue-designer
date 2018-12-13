@@ -50,7 +50,7 @@ public final class GUIPainter implements Painter<Graphics2D> {
         numberSeats(g, seatedSection);
         seatedSection.getShape().accept(g, this);
         //TODO: remove next line, tests only
-        // seatedSection.makeBox(seatedSection.stageCenter).accept(g,this);
+        // seatedSection.makeBox(SeatedSection.createTolerantShape(seatedSection.getShape(),1.0),seatedSection.stageCenter).accept(g,this);
     }
 
     @Override
@@ -87,10 +87,10 @@ public final class GUIPainter implements Painter<Graphics2D> {
         g.drawPolyline(coordinates.xCoords, coordinates.yCoords, coordinates.points.size());
         app.domain.shape.Point last = coordinates.points.lastElement();
 
-        int startX = last.x;
-        int startY = last.y;
-        int endX = controller.getXCursor() - last.x;
-        int endY = controller.getYCursor() - last.y;
+        double startX = last.x;
+        double startY = last.y;
+        double endX = controller.getXCursor() - last.x;
+        double endY = controller.getYCursor() - last.y;
 
         if (endX < 0) {
             startX = controller.getXCursor();
@@ -102,7 +102,7 @@ public final class GUIPainter implements Painter<Graphics2D> {
             endY = last.y - controller.getYCursor();
         }
 
-        g.drawRect(startX, startY, endX, endY);
+        g.drawRect((int)Math.round(startX), (int)Math.round(startY), (int)Math.round(endX), (int)Math.round(endY));
     }
 
     @Override
@@ -114,7 +114,7 @@ public final class GUIPainter implements Painter<Graphics2D> {
         g.drawPolyline(coordinates.xCoords, coordinates.yCoords, coordinates.points.size());
         app.domain.shape.Point last = coordinates.points.lastElement();
 
-        g.drawLine(last.x, last.y, controller.getXCursor(), controller.getYCursor());
+        g.drawLine((int)Math.round(last.x), (int)Math.round(last.y), (int)Math.round(controller.getXCursor()), (int)Math.round(controller.getYCursor()));
     }
 
     private void drawFinal(Graphics2D g, Shape shape) {
@@ -146,21 +146,21 @@ public final class GUIPainter implements Painter<Graphics2D> {
         double maxWidth = section.getVitalSpace().getWidth()/2.0;
         double theta = section.getTheta();
 
-        int x_space = Math.max(section.getSeats()[0][0].getShape().getPoints().elementAt(0).x,
+        double x_space = Math.max(section.getSeats()[0][0].getShape().getPoints().elementAt(0).x,
                 section.getSeats()[0][0].getShape().getPoints().elementAt(2).x)-
                 Math.min(section.getSeats()[0][0].getShape().getPoints().elementAt(0).x,
                         section.getSeats()[0][0].getShape().getPoints().elementAt(2).x);
-        int y_space = Math.max(section.getSeats()[0][0].getShape().getPoints().elementAt(1).y,
+        double y_space = Math.max(section.getSeats()[0][0].getShape().getPoints().elementAt(1).y,
                 section.getSeats()[0][0].getShape().getPoints().elementAt(3).y)-
                 Math.min(section.getSeats()[0][0].getShape().getPoints().elementAt(1).y,
                         section.getSeats()[0][0].getShape().getPoints().elementAt(3).y);
         int i=1;
         int j = 1;
         for (Seat[] row : section.getSeats()) {
-            int dx = row[0].getShape().getPoints().elementAt(0).x-row[0].getShape().getPoints().elementAt(1).x;
-            int dy = row[0].getShape().getPoints().elementAt(0).y-row[0].getShape().getPoints().elementAt(1).y;
-            int x=(int)(Math.min(row[0].getShape().getPoints().elementAt(0).x,row[0].getShape().getPoints().elementAt(2).x)+x_space/3.0+dx);
-            int y=(int)(Math.min(row[0].getShape().getPoints().elementAt(1).y,row[0].getShape().getPoints().elementAt(3).y)+2*y_space/3.0+dy);
+            double dx = row[0].getShape().getPoints().elementAt(0).x-row[0].getShape().getPoints().elementAt(1).x;
+            double dy = row[0].getShape().getPoints().elementAt(0).y-row[0].getShape().getPoints().elementAt(1).y;
+            double x=Math.min(row[0].getShape().getPoints().elementAt(0).x,row[0].getShape().getPoints().elementAt(2).x)+x_space/3.0+dx;
+            double y=Math.min(row[0].getShape().getPoints().elementAt(1).y,row[0].getShape().getPoints().elementAt(3).y)+2*y_space/3.0+dy;
             Point p = new Point(x,y);
             String rowNumber = String.valueOf(j);
             Rectangle2D bounds = g.getFontMetrics(font).getStringBounds(rowNumber,g);
@@ -168,8 +168,8 @@ public final class GUIPainter implements Painter<Graphics2D> {
             drawText(g, p, rowNumber, Color.WHITE, font);
             for (Seat seat : row) {
                 //print seat number
-                x=(int)(Math.min(seat.getShape().getPoints().elementAt(0).x,seat.getShape().getPoints().elementAt(2).x)+x_space/3.0);
-                y=(int)(Math.min(seat.getShape().getPoints().elementAt(1).y,seat.getShape().getPoints().elementAt(3).y)+2*y_space/3.0);
+                x=(int)Math.round(Math.min(seat.getShape().getPoints().elementAt(0).x,seat.getShape().getPoints().elementAt(2).x)+x_space/3.0);
+                y=(int)Math.round(Math.min(seat.getShape().getPoints().elementAt(1).y,seat.getShape().getPoints().elementAt(3).y)+2*y_space/3.0);
                 p = new Point(x,y);
                 String seatNumber = String.valueOf(i);
                 bounds = g.getFontMetrics(font).getStringBounds(seatNumber,g);
@@ -183,6 +183,6 @@ public final class GUIPainter implements Painter<Graphics2D> {
     private void drawText(Graphics2D g, Point point, String string, Color color, Font font){
         g.setFont(font);
         g.setColor(color);
-        g.drawString(string, point.x+controller.getOffset().x, point.y+controller.getOffset().y);
+        g.drawString(string, (int)Math.round(point.x+controller.getOffset().x), (int)Math.round(point.y+controller.getOffset().y));
     }
 }

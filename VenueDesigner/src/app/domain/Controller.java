@@ -44,7 +44,7 @@ public class Controller {
         this.ui = Objects.requireNonNull(ui);
     }
 
-    public void createRoom(int roomWidth, int roomHeight, int vitalSpaceWidth, int vitalSpaceHeight) {
+    public void createRoom(double roomWidth, double roomHeight, double vitalSpaceWidth, double vitalSpaceHeight) {
         room = new Room(roomWidth, roomHeight, new VitalSpace(vitalSpaceWidth, vitalSpaceHeight));
     }
 
@@ -57,11 +57,11 @@ public class Controller {
         ui.repaint();
     }
 
-    public int getXCursor () {
+    public double getXCursor () {
         return  cursor.x;
     }
 
-    public int getYCursor () {
+    public double getYCursor () {
         return  cursor.y;
     }
 
@@ -70,10 +70,10 @@ public class Controller {
     }
 
     public void mouseDragged(int x, int y) {
-        int scaleX = (int)(x / scale);
-        int scaleY = (int)(y / scale);
-        int dx = (scaleX - cursor.x);
-        int dy = (scaleY - cursor.y);
+        double scaleX = x / scale;
+        double scaleY = y / scale;
+        double dx = scaleX - cursor.x;
+        double dy = scaleY - cursor.y;
         cursor.set(scaleX, scaleY);
 
         if (selection != null) {
@@ -118,8 +118,8 @@ public class Controller {
         if (room == null) {
             return;
         }
-        int scaleX = (int)(x / scale);
-        int scaleY = (int)(y / scale);
+        double scaleX = x / scale;
+        double scaleY = y / scale;
         if (mode == Mode.None || mode == Mode.Selection) {
             doSelection(scaleX, scaleY);
         } else {
@@ -129,8 +129,8 @@ public class Controller {
     }
 
     public void mouseMoved(int x, int y) {
-        int scaleX = (int)(x / scale);
-        int scaleY = (int)(y / scale);
+        double scaleX = x / scale;
+        double scaleY = y / scale;
         cursor.set(scaleX, scaleY);
         ui.repaint();
     }
@@ -216,7 +216,6 @@ public class Controller {
                    selection.rotate(31*Math.PI/32);
                 }
             }
-
             @Override
             public void visit(SeatedSection section) {
                 if (direction){
@@ -282,7 +281,7 @@ public class Controller {
         }
     }
 
-    private void doSelection(int x, int y) {
+    private void doSelection(double x, double y) {
         mode = Mode.None;
         Selection s = selection;
         resetSelection();
@@ -332,7 +331,7 @@ public class Controller {
         }
     }
 
-    private void doShape(int x, int y) {
+    private void doShape(double x, double y) {
         if (current == null) {
             current = ShapeBuilderFactory.create(mode);
         }
@@ -371,7 +370,7 @@ public class Controller {
         mode = Mode.None;
     }
 
-    private boolean isMovable(Shape shape, int x, int y) {
+    private boolean isMovable(Shape shape, double x, double y) {
         Shape predict = shape.clone();
         predict.move(x, y, offset);
         if (!room.validShape(predict, new Point())) {
@@ -390,7 +389,7 @@ public class Controller {
         return true;
     }
 
-    private boolean selectionCheck(int x, int y, Shape shape){
+    private boolean selectionCheck(double x, double y, Shape shape){
         if (collider.hasCollide(x - offset.x, y - offset.y, shape)){
             mode = Mode.Selection;
             return true;
@@ -410,7 +409,7 @@ public class Controller {
         });
     }
 
-    public boolean validateSectionDimensions(Section section, int nbColums, int nbRows, int spaceWidth, int spaceHeight) {
+    public boolean validateSectionDimensions(Section section, int nbColums, int nbRows, double spaceWidth, double spaceHeight) {
         VitalSpace vs = new VitalSpace(spaceWidth, spaceHeight);
         Section predict = SeatedSection.create(section.getShape().getPoints().firstElement().x, section.getShape().getPoints().firstElement().y, nbColums, nbRows, vs, room.getStage().get());
         if (!room.validShape(predict.getShape(), new Point())) {
@@ -432,7 +431,7 @@ public class Controller {
     }
 
 
-    public boolean validateStageDimensions(Stage stage, int width, int height) {
+    public boolean validateStageDimensions(Stage stage, double width, double height) {
         Shape shape = stage.getShape().clone();
         Stage predict = new Stage(shape);
         predict.setWidth(width);

@@ -15,7 +15,7 @@ public final class Seat implements Selection {
     private final int row;
     private final Shape shape;
 
-    private int price;
+    private double price;
     private int color;
 
     public Seat(int column, int row, VitalSpace vs, Point p0) {
@@ -27,32 +27,37 @@ public final class Seat implements Selection {
         points.add(new Point(p0.x+(column+1)*vs.getWidth(), p0.y+(row+1)*vs.getHeight()));
         points.add(new Point(p0.x+(column)*vs.getWidth(), p0.y+(row+1)*vs.getHeight()));
         shape = new Rectangle(points, new int[4]);
+        price =0.0;
     }
 
     public Seat(int row, int column, VitalSpace vs, Point p0, double theta) {
 
         this.column = column;
         this.row = row;
-        int x=  (row)*vs.getHeight();
-        int y= (column)*vs.getWidth();
-        int x1=(int) (x*Math.cos(-theta) - y*Math.sin(-theta));
-        int y1=(int) (x*Math.sin(-theta) + y*Math.cos(-theta));
+        double x=  (row)*vs.getHeight();
+        double y= (column)*vs.getWidth();
+        double x1=x*Math.cos(-theta) - y*Math.sin(-theta);
+        double y1=x*Math.sin(-theta) + y*Math.cos(-theta);
         int[] color = {0,0,0,255};
         shape = Rectangle.create(p0.x+x1,p0.y-y1,vs.getWidth(),vs.getHeight(), color, theta);
+        price =0.0;
     }
 
     @JsonCreator
-    public Seat(@JsonProperty("column") int column, @JsonProperty("row") int row, @JsonProperty("shape") Shape shape) {
+    public Seat(@JsonProperty("column") int column, @JsonProperty("row") int row, @JsonProperty("shape") Shape shape,
+                @JsonProperty("price") double price)
+    {
         this.column = column;
         this.row = row;
         this.shape = shape;
+        this.price = price;
     }
 
-    public int getPrice() {
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 
@@ -75,12 +80,12 @@ public final class Seat implements Selection {
     }
 
     @Override
-    public void move(int x, int y) {
+    public void move(double x, double y) {
         shape.move(x, y);
     }
 
     @Override
-    public void move(int x, int y, Point offset){
+    public void move(double x, double y, Point offset){
         shape.move(x, y, offset);
     }
 
@@ -96,5 +101,8 @@ public final class Seat implements Selection {
 
     @Override
     public void rotate(double thetaRadian){
+    }
+    public void rotate(double thetaRadian, Point sectionCenter){
+        shape.rotate(thetaRadian, sectionCenter);
     }
 }

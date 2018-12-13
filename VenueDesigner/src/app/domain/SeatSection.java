@@ -27,11 +27,11 @@ public final class SeatSection implements Selection {
     }
 
     @Override
-    public void move(int x, int y) {
+    public void move(double x, double y) {
     }
 
     @Override
-    public void move(int x, int y, Point offset) {
+    public void move(double x, double y, Point offset) {
     }
 
     @Override

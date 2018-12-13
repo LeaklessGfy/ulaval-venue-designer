@@ -5,7 +5,9 @@ import app.domain.UIPanel;
 
 import javax.swing.*;
 
-import static app.gui.GUIUtils.isNotInteger;
+import java.util.Locale;
+
+import static app.gui.GUIUtils.isNotNumber;
 
 public final class SeatEdition extends JFrame {
     private JPanel panelMain;
@@ -15,13 +17,13 @@ public final class SeatEdition extends JFrame {
 
     SeatEdition(Seat seat, UIPanel panel) {
         setContentPane(panelMain);
-        price.setText(seat.getPrice() + "");
+        price.setText(String.format(Locale.ROOT,"%.2f",seat.getPrice()));
 
         okButton.addActionListener(e -> {
             if (!isValidForm()) {
                 return;
             }
-            seat.setPrice(Integer.parseInt(price.getText()));
+            seat.setPrice(Double.parseDouble(price.getText()));
             setVisible(false);
             dispose();
             panel.repaint();
@@ -34,8 +36,8 @@ public final class SeatEdition extends JFrame {
     }
 
     private boolean isValidForm() {
-        if (isNotInteger(price.getText())) {
-            JOptionPane.showMessageDialog(null, "One or more fields are not an integer", "Error", JOptionPane.ERROR_MESSAGE);
+        if (isNotNumber(price.getText())) {
+            JOptionPane.showMessageDialog(null, "One or more fields are not a number", "Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }
 

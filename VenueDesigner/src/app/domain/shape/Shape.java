@@ -17,9 +17,9 @@ public interface Shape extends Drawable {
     int[] getColor();
     boolean isSelected();
     void setSelected(boolean selected);
-    void move(int x, int y);
-    void move(int x, int y, Point offset);
-    void rotate(double thetaRadian);
+    void move(double x, double y);
+    void move(double x, double y, Point offset);
+    void rotate(double thetaRadian, Point rotationCenter);
     Point computeCentroid();
     Shape clone();
 }

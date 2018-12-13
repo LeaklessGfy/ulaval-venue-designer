@@ -50,10 +50,10 @@ public final class Polygon extends AbstractShape {
         }
 
         private double dist(Point p_p1, Point p_p2) {
-            int x1 = p_p1.x;
-            int x2 = p_p2.x;
-            int y1 = p_p1.y;
-            int y2 = p_p2.y;
+            double x1 = p_p1.x;
+            double x2 = p_p2.x;
+            double y1 = p_p1.y;
+            double y2 = p_p2.y;
 
             return Math.sqrt(Math.pow(x2-x1, 2) + Math.pow(y2-y1, 2));
         }

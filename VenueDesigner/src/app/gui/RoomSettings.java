@@ -11,7 +11,8 @@ import java.awt.event.ActionEvent;
 import java.util.Objects;
 import java.util.Optional;
 
-import static app.gui.GUIUtils.isNotInteger;
+import java.util.Locale;
+import static app.gui.GUIUtils.isNotNumber;
 
 public final class RoomSettings extends JFrame {
     private JPanel panelMain;
@@ -27,19 +28,19 @@ public final class RoomSettings extends JFrame {
         setContentPane(panelMain);
         Room room = controller.getRoom();
 
-        roomWidthTextField.setText(Integer.toString(room.getWidth()));
-        roomHeightTextField.setText(Integer.toString(room.getHeight()));
-        vitalSpaceWidthTextField.setText(Integer.toString(room.getVitalSpace().getWidth()));
-        vitalSpaceHeightTextField.setText(Integer.toString(room.getVitalSpace().getHeight()));
+        roomWidthTextField.setText(String.format(Locale.ROOT,"%.2f",room.getWidth()));
+        roomHeightTextField.setText(String.format(Locale.ROOT,"%.2f",room.getHeight()));
+        vitalSpaceWidthTextField.setText(String.format(Locale.ROOT,"%.2f",room.getVitalSpace().getWidth()));
+        vitalSpaceHeightTextField.setText(String.format(Locale.ROOT,"%.2f",room.getVitalSpace().getHeight()));
 
         oKButton.addActionListener(e -> {
             if (!validateForm()) {
                 return;
             }
-            int roomWidth = Integer.parseInt(roomWidthTextField.getText());
-            int roomHeight = Integer.parseInt(roomHeightTextField.getText());
-            int vitalSpaceWidth = Integer.parseInt(vitalSpaceWidthTextField.getText());
-            int vitalSpaceHeight = Integer.parseInt(vitalSpaceHeightTextField.getText());
+            double roomWidth = Double.parseDouble(roomWidthTextField.getText());
+            double roomHeight = Double.parseDouble(roomHeightTextField.getText());
+            double vitalSpaceWidth = Double.parseDouble(vitalSpaceWidthTextField.getText());
+            double vitalSpaceHeight = Double.parseDouble(vitalSpaceHeightTextField.getText());
             if (event.getActionCommand().equals("New")) {
                 controller.createRoom(roomWidth, roomHeight, vitalSpaceWidth, vitalSpaceHeight);
             } else {
@@ -70,7 +71,7 @@ public final class RoomSettings extends JFrame {
         });
     }
 
-    private boolean validateDimensions(Room room, int roomWidth, int roomHeight, int vitalSpaceWidth, int vitalSpaceHeight) {
+    private boolean validateDimensions(Room room, double roomWidth, double roomHeight, double vitalSpaceWidth, double vitalSpaceHeight) {
         VitalSpace vs = new VitalSpace(vitalSpaceWidth, vitalSpaceHeight);
         Room predict = new Room(roomWidth, roomHeight, vs);
         Optional<Stage> opt = room.getStage();
@@ -101,12 +102,12 @@ public final class RoomSettings extends JFrame {
         }
 
         if (
-                isNotInteger(roomWidthTextField.getText()) ||
-                        isNotInteger(roomHeightTextField.getText()) ||
-                        isNotInteger(vitalSpaceWidthTextField.getText()) ||
-                        isNotInteger(vitalSpaceHeightTextField.getText())
+                        isNotNumber(roomWidthTextField.getText()) ||
+                        isNotNumber(roomHeightTextField.getText()) ||
+                        isNotNumber(vitalSpaceWidthTextField.getText()) ||
+                        isNotNumber(vitalSpaceHeightTextField.getText())
         ) {
-            JOptionPane.showMessageDialog(null, "One or more fields are not an integer.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "One or more fields are not a number.", "Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }
 

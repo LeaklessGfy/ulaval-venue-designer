@@ -7,7 +7,10 @@ import app.domain.UIPanel;
 
 import javax.swing.*;
 
+import java.util.Locale;
+
 import static app.gui.GUIUtils.isNotInteger;
+import static app.gui.GUIUtils.isNotNumber;
 
 public final class SectionEdition extends JFrame {
     private JTextField columns;
@@ -25,9 +28,9 @@ public final class SectionEdition extends JFrame {
         VitalSpace vitalSpace = section.getVitalSpace();
         columns.setText(section.getColumns() + "");
         rows.setText(section.getRows() + "");
-        elevation.setText(section.getElevation() + "");
-        vitalSpaceWidth.setText(vitalSpace.getWidth() + "");
-        vitalSpaceHeight.setText(vitalSpace.getHeight() + "");
+        elevation.setText(String.format(Locale.ROOT,"%.2f",section.getElevation()));
+        vitalSpaceWidth.setText(String.format(Locale.ROOT,"%.2f",vitalSpace.getWidth()));
+        vitalSpaceHeight.setText(String.format(Locale.ROOT,"%.2f",vitalSpace.getHeight()));
 
         okButtton.addActionListener(e -> {
             if (!isValidForm()) {
@@ -35,16 +38,16 @@ public final class SectionEdition extends JFrame {
             }
             int nbColums = Integer.parseInt(columns.getText());
             int nbRows = Integer.parseInt(rows.getText());
-            int spaceWidth = Integer.parseInt(vitalSpaceWidth.getText());
-            int spaceHeight = Integer.parseInt(vitalSpaceHeight.getText());
+            double spaceWidth = Double.parseDouble(vitalSpaceWidth.getText());
+            double spaceHeight = Double.parseDouble(vitalSpaceHeight.getText());
             if (controller.validateSectionDimensions(section, nbColums, nbRows, spaceWidth, spaceHeight)) {
                 section.setDimensions(nbColums, nbRows);
-                section.setElevation(Integer.parseInt(elevation.getText()));
+                section.setElevation(Double.parseDouble(elevation.getText()));
                 if (spaceWidth != vitalSpace.getWidth() || spaceHeight != vitalSpace.getHeight()) {
                     section.setVitalSpace(new VitalSpace(spaceWidth, spaceHeight));
                 }
                 section.forEachSeats(seat -> {
-                    seat.setPrice(Integer.parseInt(price.getText()));
+                    seat.setPrice(Double.parseDouble(price.getText()));
                 });
                 setVisible(false);
                 dispose();
@@ -64,10 +67,10 @@ public final class SectionEdition extends JFrame {
         if (
                 isNotInteger(columns.getText()) ||
                         isNotInteger(rows.getText()) ||
-                        isNotInteger(elevation.getText()) ||
-                        isNotInteger(vitalSpaceWidth.getText()) ||
-                        isNotInteger(vitalSpaceHeight.getText()) ||
-                        isNotInteger(price.getText())
+                        isNotNumber(elevation.getText()) ||
+                        isNotNumber(vitalSpaceWidth.getText()) ||
+                        isNotNumber(vitalSpaceHeight.getText()) ||
+                        isNotNumber(price.getText())
         ) {
             JOptionPane.showMessageDialog(null, "One or more fields are not an integer.", "Error", JOptionPane.ERROR_MESSAGE);
             return false;

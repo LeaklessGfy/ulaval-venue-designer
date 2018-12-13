@@ -9,7 +9,7 @@ import java.awt.geom.Area;
 
 public final class GUICollider implements Collider {
     @Override
-    public boolean hasCollide(int x, int y, Shape shape) {
+    public boolean hasCollide(double x, double y, Shape shape) {
         Coordinates coordinates = GUIUtils.getCoordinates(shape.getPoints(), new Point(0, 0));
         Polygon polygon = new Polygon(coordinates.xCoords, coordinates.yCoords, coordinates.points.size());
         return polygon.contains(x, y);

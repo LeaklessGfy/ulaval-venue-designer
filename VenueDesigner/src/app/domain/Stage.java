@@ -12,7 +12,7 @@ import java.util.Vector;
 
 public final class Stage implements Selection {
     private final Shape shape;
-    private int elevation;
+    private double elevation;
 
     @JsonCreator
     public Stage(@JsonProperty("shape") Shape shape) {
@@ -30,12 +30,12 @@ public final class Stage implements Selection {
     }
 
     @Override
-    public void move(int x, int y) {
+    public void move(double x, double y) {
         shape.move(x, y);
     }
 
     @Override
-    public void move(int x, int y, Point offset) {
+    public void move(double x, double y, Point offset) {
         shape.move(x, y, offset);
     }
 
@@ -46,42 +46,42 @@ public final class Stage implements Selection {
 
     @Override
     public void rotate(double thetaRadian){
-        shape.rotate(thetaRadian);
+        shape.rotate(thetaRadian, getShape().computeCentroid());
     }
 
     public Shape getShape() {
         return shape;
     }
 
-    public int getWidth() {
+    public double getWidth() {
         Vector<Point> points = shape.getPoints();
         return points.get(1).x - points.firstElement().x;
     }
 
-    public int getHeight() {
+    public double getHeight() {
         Vector<Point> points = shape.getPoints();
         return points.lastElement().y - points.firstElement().y;
     }
 
-    public int getElevation() {
+    public double getElevation() {
         return elevation;
     }
 
-    public void setWidth(int width) {
+    public void setWidth(double width) {
         Vector<Point> points = shape.getPoints();
-        int x = points.firstElement().x;
+        double x = points.firstElement().x;
         points.get(1).x = x + width;
         points.get(2).x = x + width;
     }
 
-    public void setHeight(int height) {
+    public void setHeight(double height) {
         Vector<Point> points = shape.getPoints();
-        int y = points.firstElement().y;
+        double y = points.firstElement().y;
         points.get(2).y = y + height;
         points.get(3).y = y + height;
     }
 
-    public void setElevation(int elevation) {
+    public void setElevation(double elevation) {
         this.elevation = elevation;
     }
 

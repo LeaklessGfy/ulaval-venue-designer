@@ -16,14 +16,14 @@ public final class Room implements Drawable {
     @JsonProperty
     private Shape shape;
 
-    private int width;
-    private int height;
+    private double width;
+    private double height;
     private VitalSpace vitalSpace;
     private boolean grid;
     @JsonProperty
     private Stage stage;
 
-    public Room(int width, int height, VitalSpace vitalSpace) {
+    public Room(double width, double height, VitalSpace vitalSpace) {
         this.shape = Rectangle.create(0, 0, width, height, new int[]{20, 38, 52, 255});
         this.width = width;
         this.height = height;
@@ -33,8 +33,8 @@ public final class Room implements Drawable {
 
     @JsonCreator
     public Room( @JsonProperty("shape") Shape shape,
-                 @JsonProperty("width") int width,
-                 @JsonProperty("height") int height,
+                 @JsonProperty("width") double width,
+                 @JsonProperty("height") double height,
                  @JsonProperty("vitalSpace") VitalSpace vitalSpace,
                  @JsonProperty("sections") ArrayList<Section> sections,
                  @JsonProperty("stage") Stage stage) {
@@ -46,19 +46,19 @@ public final class Room implements Drawable {
         this.stage = stage;
     }
 
-    public void setDimensions(int width, int height) {
+    public void setDimensions(double width, double height) {
         this.width = width;
         this.height = height;
         this.shape = Rectangle.create(0, 0, width, height, new int[]{20, 38, 52, 255});
     }
 
-    public int getWidth() { return this.width; }
+    public double getWidth() { return this.width; }
 
-    public int getHeight() { return this.height; }
+    public double getHeight() { return this.height; }
 
-    public void setWidth(int width) { this.width = width; }
+    public void setWidth(double width) { this.width = width; }
 
-    public void setHeight(int height) { this.height = height; }
+    public void setHeight(double height) { this.height = height; }
 
     public VitalSpace getVitalSpace() { return vitalSpace; }
 
@@ -82,8 +82,8 @@ public final class Room implements Drawable {
     }
 
     public boolean validShape(Shape s, Point offset) {
-        int x = shape.getPoints().firstElement().x;
-        int y = shape.getPoints().firstElement().y;
+        double x = shape.getPoints().firstElement().x;
+        double y = shape.getPoints().firstElement().y;
         for (Point p : s.getPoints()) {
             if (p.x - offset.x < x || p.x - offset.x > x + width) {
                 return false;

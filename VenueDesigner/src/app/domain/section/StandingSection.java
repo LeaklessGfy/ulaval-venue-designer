@@ -27,12 +27,12 @@ public final class StandingSection extends AbstractSection {
     }
 
     @Override
-    public void move(int x, int y) {
+    public void move(double x, double y) {
         getShape().move(x, y);
     }
 
     @Override
-    public void move(int x, int y, Point offset) {
+    public void move(double x, double y, Point offset) {
         getShape().move(x, y, offset);
     }
 
@@ -56,7 +56,7 @@ public final class StandingSection extends AbstractSection {
 
     @Override
     public void rotate(double thetaRadian){
-        super.getShape().rotate(thetaRadian);
+        super.getShape().rotate(thetaRadian, getShape().computeCentroid());
     }
 
     @Override

@@ -53,8 +53,8 @@ abstract class AbstractShape implements Shape {
         return color;
     }
 
-    public float Area(){ // Polygon Area Calculation
-        float area = 0;
+    public double area(){ // Polygon Area Calculation
+        double area = 0;
         for(Point p: points){
             if(p == points.lastElement()){
                 area += 0.5*(p.x)*(points.firstElement().y)-(points.firstElement().x)*(p.y);
@@ -93,31 +93,34 @@ abstract class AbstractShape implements Shape {
         cx /= (6.0*signedArea);
         cy /= (6.0*signedArea);
 
-        return new Point((int)Math.round(cx),(int)Math.round(cy));
+        return new Point(cx,cy);
     }
 
     @Override
-    public void move(int x, int y) {
+    public void move(double x, double y) {
         move(x, y, new Point());
     }
 
     @Override
-    public void move(int x, int y, Point offset) {
+    public void move(double x, double y, Point offset) {
         Point centroid = this.computeCentroid();
         for (Point p : points) {
-            int dx = p.x - centroid.x;
-            int dy = p.y - centroid.y;
+            double dx = p.x - centroid.x;
+            double dy = p.y - centroid.y;
             p.set((x+dx) - offset.x, (y+dy) - offset.y);
         }
     }
 
     @Override
-    public void rotate(double thetaRadian){
-        Point gravityPoint = computeCentroid();
-        int Gx = gravityPoint.x;
-        int Gy = gravityPoint.y;
+    public void rotate(double thetaRadian, Point rotationCenter){
+        double gx = rotationCenter.x;
+        double gy = rotationCenter.y;
         for(Point p : points){
-            p.set((int)(((p.x-Gx)*Math.cos(thetaRadian))-((p.y-Gy)*Math.sin(thetaRadian)) + Gx),(int)((p.x-Gx)*Math.sin(thetaRadian)+(p.y-Gy)*Math.cos(thetaRadian)+ Gy));
+            double dx = p.x-gx;
+            double dy = p.y-gy;
+            double px = dx*Math.cos(thetaRadian)-dy*Math.sin(thetaRadian) + gx;
+            double py =  dx*Math.sin(thetaRadian)+dy*Math.cos(thetaRadian)+ gy;
+            p.set(px,py);
         }
     }
 

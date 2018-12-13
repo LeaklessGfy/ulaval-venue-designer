@@ -6,7 +6,9 @@ import app.domain.UIPanel;
 
 import javax.swing.*;
 
-import static app.gui.GUIUtils.isNotInteger;
+import java.util.Locale;
+
+import static app.gui.GUIUtils.isNotNumber;
 
 public final class StageEdition extends JFrame {
     private JTextField width;
@@ -18,20 +20,20 @@ public final class StageEdition extends JFrame {
 
     StageEdition(Controller controller, Stage stage, UIPanel panel) {
         setContentPane(panelMain);
-        width.setText(stage.getWidth() + "");
-        height.setText(stage.getHeight() + "");
-        elevation.setText(stage.getElevation() + "");
+        width.setText(String.format(Locale.ROOT,"%.2f",stage.getWidth()));
+        height.setText(String.format(Locale.ROOT,"%.2f",stage.getHeight()));
+        elevation.setText(String.format(Locale.ROOT,"%.2f",stage.getElevation()));
 
         okButton.addActionListener(e -> {
             if (!isValidForm()) {
                 return;
             }
-            int stageWidth = Integer.parseInt(width.getText());
-            int stageHeight = Integer.parseInt(height.getText());
+            double stageWidth = Double.parseDouble(width.getText());
+            double stageHeight = Double.parseDouble(height.getText());
             if (controller.validateStageDimensions(stage, stageWidth, stageHeight)) {
                 stage.setWidth(stageWidth);
                 stage.setHeight(stageHeight);
-                stage.setElevation(Integer.parseInt(elevation.getText()));
+                stage.setElevation(Double.parseDouble(elevation.getText()));
                 setVisible(false);
                 dispose();
                 panel.repaint();
@@ -48,11 +50,11 @@ public final class StageEdition extends JFrame {
 
     private boolean isValidForm() {
         if (
-                isNotInteger(width.getText()) ||
-                        isNotInteger(height.getText()) ||
-                        isNotInteger(elevation.getText())
+                isNotNumber(width.getText()) ||
+                        isNotNumber(height.getText()) ||
+                        isNotNumber(elevation.getText())
         ) {
-            JOptionPane.showMessageDialog(null, "One or more fields are not an integer", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "One or more fields are not a number", "Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }
 
