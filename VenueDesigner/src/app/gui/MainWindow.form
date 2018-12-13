@@ -40,6 +40,12 @@
               <text value="Zoom Out"/>
             </properties>
           </component>
+          <component id="d94bf" class="javax.swing.JButton" binding="autoScaling">
+            <constraints/>
+            <properties>
+              <text value="Auto-scaling"/>
+            </properties>
+          </component>
         </children>
       </grid>
       <scrollpane id="79245" binding="mainScrollPane">
