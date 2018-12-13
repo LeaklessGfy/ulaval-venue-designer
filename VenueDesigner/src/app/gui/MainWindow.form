@@ -28,6 +28,12 @@
               <text value="Regular Seated Section"/>
             </properties>
           </component>
+          <component id="9150" class="javax.swing.JButton" binding="standingSection">
+            <constraints/>
+            <properties>
+              <text value="Standing Section"/>
+            </properties>
+          </component>
           <component id="f7ec" class="javax.swing.JButton" binding="zoomIn">
             <constraints/>
             <properties>

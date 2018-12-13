@@ -4,6 +4,7 @@ import app.domain.Controller;
 import app.domain.Mode;
 import app.domain.Seat;
 import app.domain.SeatSection;
+import app.domain.section.StandingSection;
 import app.domain.selection.SelectionAdapter;
 import app.domain.Stage;
 import app.domain.section.SeatedSection;
@@ -30,6 +31,7 @@ public final class MainWindow extends Frame {
     private JButton zoomOut;
     private JButton editButton;
     private JButton removeButton;
+    private JButton standingSection;
     private JMenu file;
     private JMenuItem newItem;
     private JMenuItem openItem;
@@ -65,10 +67,34 @@ public final class MainWindow extends Frame {
                     reset();
                     tablePanel.setVisible(controller.getMode() == Mode.Selection);
                     regSeatedSection.setVisible(controller.getRoom().isStageSet());
+                    standingSection.setVisible(controller.getRoom().isStageSet());
                 }
             }
         });
 
+        drawingPanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (controller.getMode() == Mode.IrregularStandingSection) {
+                    JFrame StandingSectionSettings = new StandingSectionSettings(
+                            controller,
+                            drawingPanel,
+                            new Vector<Point>
+                            (int)(e.getX() / controller.getScale()),
+                            (int)(e.getY() / controller.getScale()),
+                            () -> reset()
+                    );
+                    sectionSettings.setSize(300,400);
+                    sectionSettings.setVisible(true);
+                } else {
+                    controller.mouseClicked(e.getX(), e.getY());
+                    reset();
+                    tablePanel.setVisible(controller.getMode() == Mode.Selection);
+                    regSeatedSection.setVisible(controller.getRoom().isStageSet());
+                    standingSection.setVisible(controller.getRoom().isStageSet());
+                }
+            }
+        });
         drawingPanel.addMouseMotionListener(new MouseMotionAdapter() {
             @Override
             public void mouseMoved(MouseEvent e) {
@@ -99,7 +125,13 @@ public final class MainWindow extends Frame {
             toggleButton(regSeatedSection, Mode.RegularSeatedSection2);
             tablePanel.setVisible(false);
         });
-
+        // modif
+        standingSection.setVisible(controller.getRoom().isStageSet());
+        standingSection.addActionListener(e ->{
+            toggleButton(standingSection, Mode.IrregularStandingSection);
+            tablePanel.setVisible(false);
+        });
+        // fin modif
         zoomIn.addActionListener( e -> {
             controller.zoom(0.1);
         });
@@ -125,6 +157,13 @@ public final class MainWindow extends Frame {
                 }
 
                 @Override
+                public void visit(StandingSection section) {
+                    JFrame StandingSectionEdition = new StandingSectionEdition(section, drawingPanel);
+                    StandingSectionEdition.setSize(300, 400);
+                    StandingSectionEdition.setVisible(true);
+                }
+
+                @Override
                 public void visit(Seat seat) {
                     JFrame seatEdition = new SeatEdition(seat, drawingPanel);
                     seatEdition.setSize(300, 400);
@@ -139,12 +178,21 @@ public final class MainWindow extends Frame {
                 }
             });
         });
-
+        // modifs
         removeButton.addActionListener(e -> {
             controller.removeSelected();
             tablePanel.setVisible(controller.getMode()==Mode.Selection);
             regSeatedSection.setVisible(controller.getRoom().isStageSet());
+            standingSection.setVisible(controller.getRoom().isStageSet());
+
         });
+        // modifications
+        /*removeButton.addActionListener(e -> {
+            controller.removeSelected();
+            tablePanel.setVisible(controller.getMode()==Mode.Selection);
+            standingSection.setVisible(controller.getRoom().isStageSet());
+        });*/
+       // fin modif
         
         JMenuBar menuBar = new JMenuBar();
         file = new JMenu("File");
@@ -237,6 +285,8 @@ public final class MainWindow extends Frame {
             stage.setForeground(UIManager.getColor("Button.foreground"));
             regSeatedSection.setBackground(UIManager.getColor("Button.background"));
             regSeatedSection.setForeground(UIManager.getColor("Button.foreground"));
+            standingSection.setBackground(UIManager.getColor("Button.background"));
+            standingSection.setForeground(UIManager.getColor("Button.foreground"));
         }
     }
 
@@ -247,7 +297,8 @@ public final class MainWindow extends Frame {
         stage.setForeground(UIManager.getColor("Button.foreground"));
         regSeatedSection.setBackground(UIManager.getColor("Button.background"));
         regSeatedSection.setForeground(UIManager.getColor("Button.foreground"));
-
+        standingSection.setBackground(UIManager.getColor("Button.background"));
+        standingSection.setForeground(UIManager.getColor("Button.foreground"));
         if (isEnabled) {
             btn.setBackground(Color.BLUE);
             btn.setForeground(Color.WHITE);

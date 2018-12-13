@@ -1,13 +1,13 @@
 package app.domain.section;
 
 import app.domain.Seat;
+import app.domain.VitalSpace;
 import app.domain.selection.SelectionVisitor;
-import app.domain.shape.Painter;
-import app.domain.shape.Point;
-import app.domain.shape.Shape;
+import app.domain.shape.*;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.Vector;
 import java.util.function.Consumer;
 
 public final class StandingSection extends AbstractSection {
@@ -20,9 +20,17 @@ public final class StandingSection extends AbstractSection {
         this.max = max;
     }
 
-    public static StandingSection create(int max, Shape shape) {
-        return new StandingSection(null, 0, shape, max);
+    public static StandingSection create(Vector<Point> points, int max) {
+
+        Polygon polygon = new Polygon(points,new int[4]);
+        StandingSection section = new StandingSection(null,0,polygon,max);
+        section.max = max;
+        return section;
+
     }
+
+    public int getMax(){ return this.max;}
+
 
     @Override
     public void move(int x, int y) {

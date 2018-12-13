@@ -12,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         @JsonSubTypes.Type(value = StandingSection.class, name = "StandingSection")
 })
 abstract class AbstractSection implements Section {
+    private int price;
     private String name;
     private int elevation;
     private Shape shape;
@@ -25,6 +26,12 @@ abstract class AbstractSection implements Section {
     AbstractSection(Shape shape) {
         this(null, 0, shape);
     }
+
+    @Override
+    public void setPrice(int price){this.price = price;}
+
+    @Override
+    public void setName(String name){ this.name = name;}
 
     @Override
     public String getName() {

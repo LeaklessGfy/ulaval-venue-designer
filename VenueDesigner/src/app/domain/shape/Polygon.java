@@ -58,6 +58,11 @@ public final class Polygon extends AbstractShape {
             return Math.sqrt(Math.pow(x2-x1, 2) + Math.pow(y2-y1, 2));
         }
     }
+    // modif create polygon
+    public static Polygon create(Vector<Point> points, int[] color) {
+        return new Polygon(points, color);
+    }
+    // fin modif create polygon
 
     @JsonCreator
     public Polygon(@JsonProperty("points") Vector<Point> points, @JsonProperty("color") int[] color) { super(points, color); }
@@ -66,6 +71,7 @@ public final class Polygon extends AbstractShape {
     public <T> void accept(T g, Painter<T> painter) {
         painter.draw(g,this);
     }
+
 
     @Override
     public Shape clone() {

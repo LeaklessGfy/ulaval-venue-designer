@@ -15,6 +15,7 @@ import app.domain.section.SectionFactory;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Vector;
 import java.util.function.BiConsumer;
 
 public class Controller {
@@ -223,6 +224,30 @@ public class Controller {
             mode = Mode.None;
         }
     }
+    // ajout d une methode de create standing section
+
+    public void createStandingSection(Vector<Point> points, int maxPeople) {
+        if (room != null && room.getStage().isPresent()) {
+            Section section = StandingSection.create(points,maxPeople);
+            if (!room.validShape(section.getShape(), new Point())) {
+                return;
+            }
+            if (room.getStage().isPresent()) {
+                if (collider.hasCollide(room.getStage().get().getShape(), section.getShape())) {
+                    return;
+                }
+            }
+            for (Section s : room.getSections()) {
+                if (collider.hasCollide(s.getShape(), section.getShape())) {
+                    return;
+                }
+            }
+            room.addSection(section);
+            mode = Mode.None;
+        }
+    }
+
+    // fin de l ajout
 
     private void doSelection(int x, int y) {
         mode = Mode.None;

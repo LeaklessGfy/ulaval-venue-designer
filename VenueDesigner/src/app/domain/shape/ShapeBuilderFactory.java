@@ -11,6 +11,8 @@ public final class ShapeBuilderFactory {
                 return new Rectangle.Builder(139, 69, 19, 255);
             case RegularSeatedSection:
                 return new Rectangle.Builder(0, 0, 0, 0);
+            case RegularStandingSection:
+                return new Rectangle.Builder(0,0,0,0);
         }
         throw new RuntimeException();
     }

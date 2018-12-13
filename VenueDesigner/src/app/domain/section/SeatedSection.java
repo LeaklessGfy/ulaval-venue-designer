@@ -175,4 +175,6 @@ public final class SeatedSection extends AbstractSection {
     public Zone getZone() {
         return zone;
     }
+
+
 }
