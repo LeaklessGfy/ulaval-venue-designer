@@ -38,6 +38,7 @@ public final class GUIPainter implements Painter<Graphics2D> {
 
     @Override
     public void draw(Graphics2D g, SeatedSection seatedSection) {
+        seatedSection.getShape().accept(g, this);
         for (Seat[] seats : seatedSection.getSeats()) {
             for (Seat seat : seats) {
                 if (!seat.isSelected()) {
@@ -48,9 +49,6 @@ public final class GUIPainter implements Painter<Graphics2D> {
             }
         }
         numberSeats(g, seatedSection);
-        seatedSection.getShape().accept(g, this);
-        //TODO: remove next line, tests only
-        // seatedSection.makeBox(SeatedSection.createTolerantShape(seatedSection.getShape(),1.0),seatedSection.stageCenter).accept(g,this);
     }
 
     @Override
@@ -144,8 +142,6 @@ public final class GUIPainter implements Painter<Graphics2D> {
                 );
         Font font = Font.decode("Arial");
         double maxWidth = section.getVitalSpace().getWidth()/2.0;
-        double theta = section.getTheta();
-
         double x_space = Math.max(section.getSeats()[0][0].getShape().getPoints().elementAt(0).x,
                 section.getSeats()[0][0].getShape().getPoints().elementAt(2).x)-
                 Math.min(section.getSeats()[0][0].getShape().getPoints().elementAt(0).x,
@@ -165,9 +161,8 @@ public final class GUIPainter implements Painter<Graphics2D> {
             String rowNumber = String.valueOf(j);
             Rectangle2D bounds = g.getFontMetrics(font).getStringBounds(rowNumber,g);
             font = font.deriveFont((float)(font.getSize2D()*maxWidth/Math.max(bounds.getWidth(),bounds.getHeight())));
-            drawText(g, p, rowNumber, Color.WHITE, font);
+            drawText(g, p, rowNumber, Color.YELLOW, font);
             for (Seat seat : row) {
-                //print seat number
                 x=(int)Math.round(Math.min(seat.getShape().getPoints().elementAt(0).x,seat.getShape().getPoints().elementAt(2).x)+x_space/3.0);
                 y=(int)Math.round(Math.min(seat.getShape().getPoints().elementAt(1).y,seat.getShape().getPoints().elementAt(3).y)+2*y_space/3.0);
                 p = new Point(x,y);

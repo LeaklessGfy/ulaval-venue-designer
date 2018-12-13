@@ -15,9 +15,6 @@ import java.util.Vector;
 import java.util.function.Consumer;
 
 public final class SeatedSection extends AbstractSection {
-    //TODO:remove this attribute stage center
-    public Point stageCenter;
-
     @JsonProperty
     private VitalSpace vitalSpace;
     @JsonProperty
@@ -49,14 +46,13 @@ public final class SeatedSection extends AbstractSection {
         Point perpPoint = new Point(x-dy*columns*vitalSpace.getWidth()/2,y+dx*columns*vitalSpace.getWidth()/2);
 
         double theta=thetaCalc(perpPoint,stageCenter);
-
-        Rectangle rectangle = Rectangle.create(x, y,columns*vitalSpace.getWidth(),rows*vitalSpace.getHeight(), new int[4],theta);
+        int[] color = {63,63,76,255};
+        Rectangle rectangle = Rectangle.create(x, y,columns*vitalSpace.getWidth(),rows*vitalSpace.getHeight(), color ,theta);
 
 
         SeatedSection section = new SeatedSection(null, 0, rectangle, vitalSpace);
         section.theta = theta;
         section.seats = new Seat[rows][columns];
-        section.stageCenter=stageCenter;
         section.setElevation(0.0);
 
         for (int i = 0; i < rows; i++) {
@@ -75,17 +71,14 @@ public final class SeatedSection extends AbstractSection {
 
     @Override
     public  void move(double x, double y, Point offset) {
-        Shape shape = getShape();
-        for (Seat[] seatRow : seats) {
-            for (Seat seat : seatRow) {
-                Point sectionCenter = shape.computeCentroid();
-                Point seatCenter = seat.getShape().computeCentroid();
-                double dx = seatCenter.x - sectionCenter.x;
-                double dy = seatCenter.y - sectionCenter.y;
-                seat.move(x + dx,y+dy, offset);
-            }
-        }
-        shape.move(x, y, offset);
+        Point ref = getShape().computeCentroid();
+        forEachSeats(seat -> {
+            Point seatCenter = seat.getShape().computeCentroid();
+            double dx = ref.x-seatCenter.x;
+            double dy = ref.y-seatCenter.y;
+            seat.move(x - dx,y-dy, offset);});
+
+        getShape().move(x, y, offset);
     }
 
     @Override
@@ -232,7 +225,7 @@ public final class SeatedSection extends AbstractSection {
         return theta;
     }
 
-    public Rectangle makeBox(Shape shape, Point stageCenter) {
+    private static Rectangle makeBox(Shape shape, Point stageCenter) {
         Point sectionCenter = shape.computeCentroid();
         double alpha = thetaCalc(sectionCenter,stageCenter);
         double dx = stageCenter.x-sectionCenter.x;
@@ -289,7 +282,7 @@ public final class SeatedSection extends AbstractSection {
         return theta;
     }
 
-    public static Shape createTolerantShape(Shape shape, double scaleFactor){
+    private static Shape createTolerantShape(Shape shape, double scaleFactor){
         Vector<Point> points = new Vector<>();
         Point gravityCenter = shape.computeCentroid();
         for (Point p: shape.getPoints()){

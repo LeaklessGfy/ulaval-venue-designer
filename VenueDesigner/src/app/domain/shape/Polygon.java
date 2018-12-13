@@ -62,6 +62,8 @@ public final class Polygon extends AbstractShape {
     @JsonCreator
     public Polygon(@JsonProperty("points") Vector<Point> points, @JsonProperty("color") int[] color) { super(points, color); }
 
+    public Polygon(Polygon polygon) { super(polygon); }
+
     @Override
     public <T> void accept(T g, Painter<T> painter) {
         painter.draw(g,this);
@@ -69,6 +71,6 @@ public final class Polygon extends AbstractShape {
 
     @Override
     public Shape clone() {
-        return new Rectangle(getPoints(), getColor());
+        return new Polygon(this);
     }
 }

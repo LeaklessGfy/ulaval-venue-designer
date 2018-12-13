@@ -210,27 +210,33 @@ public class Controller {
         selection.accept(new SelectionAdapter() {
             @Override
             public void visit(Stage stage) {
-                if (direction){
-                    selection.rotate(Math.PI/32);
-                } else {
-                   selection.rotate(31*Math.PI/32);
+                if (isRotatable(stage.getShape(),direction)){
+                    if (direction){
+                        selection.rotate(Math.PI/32);
+                    } else {
+                        selection.rotate(-Math.PI/32);
+                    }
                 }
             }
             @Override
             public void visit(SeatedSection section) {
-                if (direction){
-                    selection.rotate(Math.PI/16);
-                } else {
-                    selection.rotate(31*Math.PI/16);
+                if (isRotatable(section.getShape(),direction)){
+                    if (direction){
+                        selection.rotate(Math.PI/32);
+                    } else {
+                        selection.rotate(-Math.PI/32);
+                    }
                 }
             }
 
             @Override
             public void visit(StandingSection section) {
-                if (direction){
-                    selection.rotate(Math.PI/16);
-                } else {
-                    selection.rotate(31*Math.PI/16);
+                if (isRotatable(section.getShape(),direction)){
+                    if (direction){
+                        selection.rotate(Math.PI/32);
+                    } else {
+                        selection.rotate(-Math.PI/32);
+                    }
                 }
             }
         });
@@ -248,7 +254,6 @@ public class Controller {
             @Override
             public void visit(SeatedSection section) {
                 if(!room.getStage().isPresent()){
-                    //TODO:ajouter messsage indiquant le besoin d'une scène pour ce feature
                     return;
                 }
                 section.autoSetSeats(room.getStage().get(),collider);
@@ -365,7 +370,9 @@ public class Controller {
         if (mode == Mode.Stage) {
             room.setStage(new Stage(shape));
         } else {
-            room.addSection(SectionFactory.create(mode, shape));
+            Section s = SectionFactory.create(mode, shape, room.getVitalSpace());
+            if (mode == Mode.IrregularSeatedSection){s.autoSetSeats(room.getStage().get(), collider);}
+            room.addSection(s);
         }
         mode = Mode.None;
     }
@@ -373,6 +380,20 @@ public class Controller {
     private boolean isMovable(Shape shape, double x, double y) {
         Shape predict = shape.clone();
         predict.move(x, y, offset);
+        return validPredictedShape(shape, predict);
+    }
+
+    private boolean isRotatable(Shape shape, boolean direction) {
+        Shape predict = shape.clone();
+        if (direction){
+            predict.rotate(Math.PI/32,predict.computeCentroid());
+        } else {
+            predict.rotate(31*Math.PI/32,predict.computeCentroid());
+        }
+        return validPredictedShape(shape, predict);
+    }
+
+    private boolean validPredictedShape(Shape shape, Shape predict){
         if (!room.validShape(predict, new Point())) {
             return false;
         }

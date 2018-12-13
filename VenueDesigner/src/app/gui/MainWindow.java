@@ -33,6 +33,8 @@ public final class MainWindow extends Frame {
     private JButton leftRotateButton;
     private JButton rightRotateButton;
     private JButton autoSetSeatButton;
+    private JButton irregularSeatedSectionButton;
+    private JButton standingSectionButton;
     private JMenu file;
     private JMenuItem newItem;
     private JMenuItem openItem;
@@ -44,8 +46,8 @@ public final class MainWindow extends Frame {
 
 
     private MainWindow(JFrame frame) {
-        buttonTopPanel.setBackground(Color.LIGHT_GRAY);
-        tablePanel.setBorder(BorderFactory.createMatteBorder(5, 5, 0, 0, Color.LIGHT_GRAY));
+        buttonTopPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 3, 0, Color.LIGHT_GRAY));
+        tablePanel.setBorder(BorderFactory.createMatteBorder(0, 5, 0, 0, Color.LIGHT_GRAY));
         tablePanel.setVisible(false);
         buttonTopPanel.setBackground(new Color(20, 38, 52));
         mainScrollPane.setBorder(BorderFactory.createEmptyBorder());
@@ -68,6 +70,8 @@ public final class MainWindow extends Frame {
                     reset();
                     tablePanel.setVisible(controller.getMode() == Mode.Selection);
                     regSeatedSection.setVisible(controller.getRoom().isStageSet());
+                    standingSectionButton.setVisible(controller.getRoom().isStageSet());
+                    irregularSeatedSectionButton.setVisible(controller.getRoom().isStageSet());
                 }
             }
         });
@@ -100,6 +104,18 @@ public final class MainWindow extends Frame {
         regSeatedSection.setVisible(controller.getRoom().isStageSet());
         regSeatedSection.addActionListener(e -> {
             toggleButton(regSeatedSection, Mode.RegularSeatedSection2);
+            tablePanel.setVisible(false);
+        });
+
+        irregularSeatedSectionButton.setVisible(controller.getRoom().isStageSet());
+        irregularSeatedSectionButton.addActionListener(e -> {
+            toggleButton(irregularSeatedSectionButton, Mode.IrregularSeatedSection);
+            tablePanel.setVisible(false);
+        });
+
+        standingSectionButton.setVisible(controller.getRoom().isStageSet());
+        standingSectionButton.addActionListener(e -> {
+            toggleButton(standingSectionButton, Mode.IrregularStandingSection);
             tablePanel.setVisible(false);
         });
 
@@ -147,6 +163,8 @@ public final class MainWindow extends Frame {
             controller.removeSelected();
             tablePanel.setVisible(controller.getMode()==Mode.Selection);
             regSeatedSection.setVisible(controller.getRoom().isStageSet());
+            standingSectionButton.setVisible(controller.getRoom().isStageSet());
+            irregularSeatedSectionButton.setVisible(controller.getRoom().isStageSet());
         });
 
         leftRotateButton.addActionListener(e -> {
@@ -158,7 +176,12 @@ public final class MainWindow extends Frame {
         });
 
         autoSetSeatButton.addActionListener(e -> {
-            controller.autoSetSeatSelected();
+            if(controller.getRoom().getStage().isPresent()){
+                controller.autoSetSeatSelected();
+            } else {
+                JOptionPane.showMessageDialog(null, "A stage is needed to use this feature.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+
         });
 
 
