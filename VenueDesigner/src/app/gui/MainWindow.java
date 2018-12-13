@@ -14,6 +14,8 @@ import java.awt.event.*;
 import java.io.*;
 import javax.swing.filechooser.*;
 import javax.swing.filechooser.FileFilter;
+import javax.imageio.*;
+import java.awt.image.*;
 
 public final class MainWindow extends Frame {
     private Controller controller;
@@ -34,6 +36,7 @@ public final class MainWindow extends Frame {
     private JMenuItem newItem;
     private JMenuItem openItem;
     private JMenuItem saveItem;
+    private JMenuItem exportImage;
     private JMenu edition;
     private JMenuItem room;
     private JMenuItem offers;
@@ -151,6 +154,13 @@ public final class MainWindow extends Frame {
         newItem = new JMenuItem("New");
         openItem = new JMenuItem("Open");
         saveItem = new JMenuItem("Save");
+        exportImage = new JMenuItem(("Export as image"));
+
+        newItem.addActionListener( e -> {
+            JFrame roomSettings = new RoomSettings(controller, drawingPanel, e);
+            roomSettings.setSize(300,400);
+            roomSettings.setVisible(true);
+        });
 
         openItem.addActionListener( e -> {
             JFileChooser fileChooser = new JFileChooser();
@@ -179,15 +189,40 @@ public final class MainWindow extends Frame {
             }
         });
 
+        exportImage.addActionListener( e -> {
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setSelectedFile(new File("room"));
+            FileFilter filterPng = new FileNameExtensionFilter(".png", "png");
+            FileFilter filterJpg = new FileNameExtensionFilter(".jpg", "jpg");
+            FileFilter filterJpeg = new FileNameExtensionFilter(".jpeg", "jpeg");
+            FileFilter filterBmp = new FileNameExtensionFilter(".bmp", "bmp");
+            fileChooser.setFileFilter(filterPng);
+            fileChooser.addChoosableFileFilter(filterJpg);
+            fileChooser.addChoosableFileFilter(filterJpeg);
+            fileChooser.addChoosableFileFilter(filterBmp);
+            int result = fileChooser.showSaveDialog(this);
+            if (result == JFileChooser.APPROVE_OPTION) {
+                String filename = fileChooser.getSelectedFile().toString();
+                String extension = fileChooser.getFileFilter().getDescription();
+                if (!filename.endsWith(extension)) {
+                    filename += extension;
+                }
+                BufferedImage image = new BufferedImage(drawingPanel.getWidth(), drawingPanel.getHeight(), BufferedImage.TYPE_INT_RGB);
+                Graphics2D g = image.createGraphics();
+                drawingPanel.paint(g);
+                g.dispose();
+                try {
+                    ImageIO.write(image, "png", new File(filename));
+                } catch (IOException error) {
+                    error.printStackTrace();
+                }
+            }
+        });
+
         file.add(newItem);
         file.add(openItem);
         file.add(saveItem);
-
-        newItem.addActionListener( e -> {
-            JFrame roomSettings = new RoomSettings(controller, drawingPanel, e);
-            roomSettings.setSize(300,400);
-            roomSettings.setVisible(true);
-        });
+        file.add(exportImage);
 
         edition = new JMenu("Edition");
         room = new JMenuItem("Room");
