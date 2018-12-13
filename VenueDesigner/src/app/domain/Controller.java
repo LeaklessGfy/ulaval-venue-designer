@@ -33,7 +33,7 @@ public class Controller {
 
     public Controller(Collider collider) {
         this.collider = Objects.requireNonNull(collider);
-        this.room = new Room(500, 500, new VitalSpace(30, 30));
+        this.room = new Room(900, 900, new VitalSpace(30, 30));
     }
 
     public Room getRoom() {
@@ -234,6 +234,29 @@ public class Controller {
                     selection.rotate(31*Math.PI/16);
                 }
             }
+        });
+        ui.repaint();
+    }
+
+    public void autoSetSeatSelected() {
+        if (selection == null) {
+            return;
+        }
+        selection.accept(new SelectionAdapter() {
+            @Override
+            public void visit(Stage stage) {}
+
+            @Override
+            public void visit(SeatedSection section) {
+                if(!room.getStage().isPresent()){
+                    //TODO:ajouter messsage indiquant le besoin d'une scène pour ce feature
+                    return;
+                }
+                section.autoSetSeats(room.getStage().get(),collider);
+            }
+
+            @Override
+            public void visit(StandingSection section) { }
         });
         ui.repaint();
     }

@@ -32,6 +32,7 @@ public final class MainWindow extends Frame {
     private JButton removeButton;
     private JButton leftRotateButton;
     private JButton rightRotateButton;
+    private JButton autoSetSeatButton;
     private JMenu file;
     private JMenuItem newItem;
     private JMenuItem openItem;
@@ -155,7 +156,12 @@ public final class MainWindow extends Frame {
         rightRotateButton.addActionListener(e -> {
             controller.rotateSelected(true);
         });
-        
+
+        autoSetSeatButton.addActionListener(e -> {
+            controller.autoSetSeatSelected();
+        });
+
+
         JMenuBar menuBar = new JMenuBar();
         file = new JMenu("File");
         newItem = new JMenuItem("New");

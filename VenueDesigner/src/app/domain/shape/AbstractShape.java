@@ -93,7 +93,7 @@ abstract class AbstractShape implements Shape {
         cx /= (6.0*signedArea);
         cy /= (6.0*signedArea);
 
-        return new Point((int) cx,(int)cy);
+        return new Point((int)Math.round(cx),(int)Math.round(cy));
     }
 
     @Override

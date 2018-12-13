@@ -1,6 +1,8 @@
 package app.domain.section;
 
+import app.domain.Collider;
 import app.domain.Seat;
+import app.domain.Stage;
 import app.domain.selection.SelectionVisitor;
 import app.domain.shape.Painter;
 import app.domain.shape.Point;
@@ -55,5 +57,9 @@ public final class StandingSection extends AbstractSection {
     @Override
     public void rotate(double thetaRadian){
         super.getShape().rotate(thetaRadian);
+    }
+
+    @Override
+    public void autoSetSeats(Stage stage, Collider collider){
     }
 }

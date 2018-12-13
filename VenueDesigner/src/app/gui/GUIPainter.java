@@ -49,6 +49,8 @@ public final class GUIPainter implements Painter<Graphics2D> {
         }
         numberSeats(g, seatedSection);
         seatedSection.getShape().accept(g, this);
+        //TODO: remove next line, tests only
+        // seatedSection.makeBox(seatedSection.stageCenter).accept(g,this);
     }
 
     @Override

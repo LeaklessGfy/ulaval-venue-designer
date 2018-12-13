@@ -81,6 +81,10 @@ public final class Rectangle extends AbstractShape {
         return new Rectangle(points, color);
     }
 
+    public static Rectangle create(Vector<Point> points, int[] color){
+        return new Rectangle(points, color);
+    }
+
     @Override
     public <T> void accept(T g, Painter<T> painter) {
         painter.draw(g, this);
