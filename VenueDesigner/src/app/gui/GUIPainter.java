@@ -128,8 +128,13 @@ public final class GUIPainter implements Painter<Graphics2D> {
     private void drawShapeColor(Graphics2D g, Shape shape, Color stroke, Color fill) {
         Coordinates coordinates = GUIUtils.getCoordinates(shape.getPoints(), controller.getOffset());
         java.awt.Polygon polygon = new java.awt.Polygon(coordinates.xCoords, coordinates.yCoords, coordinates.points.size());
-
-        g.setStroke(new BasicStroke(2));
+        int lineWidth;
+        if (controller.getScale() >= 0.8) {
+            lineWidth = 2;
+        } else {
+            lineWidth = (int)(-20 * controller.getScale() + 18);
+        }
+        g.setStroke(new BasicStroke(lineWidth));
         g.setColor(stroke);
         g.draw(polygon);
         g.setColor(fill);
@@ -142,7 +147,7 @@ public final class GUIPainter implements Painter<Graphics2D> {
                 );
         Font font = Font.decode("Arial");
         int maxWidth = section.getVitalSpace().getWidth()-4;
-        int i=1;
+        int i = 1;
         int j = 1;
         for (Seat[] row : section.getSeats()) {
             Point p = new Point(0,0);
