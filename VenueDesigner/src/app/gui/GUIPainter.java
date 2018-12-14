@@ -24,9 +24,13 @@ public final class GUIPainter implements Painter<Graphics2D> {
     }
 
     void draw(Graphics2D g) {
+        g.translate(15,15);
         g.scale(controller.getScale(), controller.getScale());
         controller.getRoom().accept(g, this);
         controller.getCurrent().ifPresent(s -> s.accept(g, this));
+        g.scale(1/controller.getScale(),1/controller.getScale());
+        g.translate(-15,-15);
+
     }
 
     @Override
@@ -48,7 +52,7 @@ public final class GUIPainter implements Painter<Graphics2D> {
                 }
             }
         }
-        drawFinalPerimeter(g,seatedSection.getShape());
+        if(seatedSection.getShape().isSelected()){ drawFinalPerimeter(g,seatedSection.getShape());}
         numberSeats(g, seatedSection);
 
     }
@@ -61,6 +65,7 @@ public final class GUIPainter implements Painter<Graphics2D> {
     @Override
     public void draw(Graphics2D g, Seat seat) {
         seat.getShape().accept(g, this);
+        drawFinalPerimeter(g,seat.getShape());
     }
 
     @Override
@@ -118,7 +123,7 @@ public final class GUIPainter implements Painter<Graphics2D> {
     }
 
     private void drawFinal(Graphics2D g, Shape shape) {
-        Color stroke = Color.lightGray;
+        Color stroke = new Color(0,0,0,0);
         if (shape.isSelected()) {
             stroke = Color.GREEN;
         }
