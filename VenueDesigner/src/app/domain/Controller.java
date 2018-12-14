@@ -243,6 +243,12 @@ public class Controller {
         ui.repaint();
     }
 
+    public  void autoSetSeat(SeatedSection section, VitalSpace vs){
+        if(!room.getStage().isPresent()){
+            return;
+        }
+        section.autoSetSeats(room.getStage().get(),collider, vs);
+    }
     public void autoSetSeatSelected() {
         if (selection == null) {
             return;
@@ -302,6 +308,7 @@ public class Controller {
                         }
                     });
                 }
+
 
                 @Override
                 public void visit(Seat seat) {

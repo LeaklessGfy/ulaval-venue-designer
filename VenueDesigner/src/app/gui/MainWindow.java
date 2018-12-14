@@ -4,6 +4,7 @@ import app.domain.Controller;
 import app.domain.Mode;
 import app.domain.Seat;
 import app.domain.SeatSection;
+import app.domain.section.StandingSection;
 import app.domain.selection.SelectionAdapter;
 import app.domain.Stage;
 import app.domain.section.SeatedSection;
@@ -138,7 +139,24 @@ public final class MainWindow extends Frame {
 
                 @Override
                 public void visit(SeatedSection section) {
-                    JFrame sectionEdition = new SectionEdition(controller, section, drawingPanel);
+                    JFrame sectionEdition;
+                    if (section.isRegular){
+                        sectionEdition = new SectionEdition(controller, section, drawingPanel);
+                    }else {
+                        if (!controller.getRoom().getStage().isPresent()){
+                            JOptionPane.showMessageDialog(null, "A stage is needed to use this feature.", "Error", JOptionPane.ERROR_MESSAGE);
+                            return;
+                        }
+                        sectionEdition = new IrregularSectionEdition(controller,section,drawingPanel);
+                    }
+                    sectionEdition.setSize(300, 400);
+                    sectionEdition.setVisible(true);
+                }
+
+                @Override
+                public void visit(StandingSection section) {
+                    JFrame sectionEdition = new StandingSectionEdition(section, drawingPanel);
+
                     sectionEdition.setSize(300, 400);
                     sectionEdition.setVisible(true);
                 }
@@ -286,6 +304,12 @@ public final class MainWindow extends Frame {
         stage.setForeground(UIManager.getColor("Button.foreground"));
         regSeatedSection.setBackground(UIManager.getColor("Button.background"));
         regSeatedSection.setForeground(UIManager.getColor("Button.foreground"));
+        irregularSeatedSectionButton.setBackground(UIManager.getColor("Button.background"));
+        irregularSeatedSectionButton.setForeground(UIManager.getColor("Button.foreground"));
+        standingSectionButton.setBackground(UIManager.getColor("Button.background"));
+        standingSectionButton.setForeground(UIManager.getColor("Button.foreground"));
+
+
 
         if (isEnabled) {
             btn.setBackground(Color.BLUE);

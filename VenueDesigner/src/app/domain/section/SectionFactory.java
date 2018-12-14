@@ -12,9 +12,9 @@ public final class SectionFactory {
             case IrregularSeatedSection:
                 return new SeatedSection("", 0, shape, vs);
             case RegularStandingSection:
-                return new StandingSection("",0, shape,10);
+                return new StandingSection("",0, shape,10, 0);
             case IrregularStandingSection:
-                return new StandingSection("",0, shape,10);
+                return new StandingSection("",0, shape,10, 0);
         }
         throw new RuntimeException();
     }

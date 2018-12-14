@@ -16,14 +16,20 @@ public final class StandingSection extends AbstractSection {
     @JsonProperty
     private int max;
 
+    @JsonProperty
+    private double price;
+
+
     @JsonCreator
-    StandingSection(@JsonProperty("name") String name, @JsonProperty("elevation") int elevation, @JsonProperty("shape") Shape shape, @JsonProperty("max") int max) {
+    StandingSection(@JsonProperty("name") String name, @JsonProperty("elevation") int elevation,
+                    @JsonProperty("shape") Shape shape, @JsonProperty("max") int max, @JsonProperty("price") double price) {
         super(name, elevation, shape);
         this.max = max;
+        this.price =price;
     }
 
     public static StandingSection create(int max, Shape shape) {
-        return new StandingSection(null, 0, shape, max);
+        return new StandingSection(null, 0, shape, max,0);
     }
 
     @Override
@@ -43,6 +49,7 @@ public final class StandingSection extends AbstractSection {
 
     @Override
     public void accept(SelectionVisitor visitor) {
+        visitor.visit(this);
     }
 
     @Override
@@ -61,5 +68,20 @@ public final class StandingSection extends AbstractSection {
 
     @Override
     public void autoSetSeats(Stage stage, Collider collider){
+    }
+
+    public void setPrice(double price){
+        this.price=price;
+    }
+
+    public void setMax(int max){
+        this.max=max;
+    }
+    public int getMax(){
+        return max;
+    }
+
+    public double getPrice(){
+        return price;
     }
 }

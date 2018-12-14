@@ -48,7 +48,9 @@ public final class GUIPainter implements Painter<Graphics2D> {
                 }
             }
         }
+        drawFinalPerimeter(g,seatedSection.getShape());
         numberSeats(g, seatedSection);
+
     }
 
     @Override
@@ -122,6 +124,15 @@ public final class GUIPainter implements Painter<Graphics2D> {
         }
         int[] color = shape.getColor();
         Color fill = new Color(color[0], color[1], color[2], color[3]);
+        drawShapeColor(g, shape, stroke, fill);
+    }
+
+    private void drawFinalPerimeter(Graphics2D g, Shape shape) {
+        Color stroke = Color.lightGray;
+        if (shape.isSelected()) {
+            stroke = Color.GREEN;
+        }
+        Color fill = new Color(0,0,0,0);
         drawShapeColor(g, shape, stroke, fill);
     }
 

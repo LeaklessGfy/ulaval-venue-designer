@@ -30,12 +30,16 @@ public final class Seat implements Selection {
         price =0.0;
     }
 
-    public Seat(int row, int column, VitalSpace vs, Point p0, double theta) {
+    public Seat(int row, int column, VitalSpace vs, Point p0, double theta, boolean autoPositioning) {
 
         this.column = column;
         this.row = row;
-        double x=  (row)*vs.getHeight();
-        double y= (column)*vs.getWidth();
+        double x=0;
+        double y=0;
+        if (autoPositioning){
+            x=  (row)*vs.getHeight();
+            y= (column)*vs.getWidth();
+        }
         double x1=x*Math.cos(-theta) - y*Math.sin(-theta);
         double y1=x*Math.sin(-theta) + y*Math.cos(-theta);
         int[] color = {0,0,0,255};
