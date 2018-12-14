@@ -210,28 +210,20 @@ public class Controller {
         selection.accept(new SelectionAdapter() {
             @Override
             public void visit(Stage stage) {
-                if (isRotatable(stage.getShape(),direction)){
-                    if (direction){
-                        selection.rotate(Math.PI/32);
-                    } else {
-                        selection.rotate(-Math.PI/32);
-                    }
-                }
+                rotate(stage);
             }
             @Override
             public void visit(SeatedSection section) {
-                if (isRotatable(section.getShape(),direction)){
-                    if (direction){
-                        selection.rotate(Math.PI/32);
-                    } else {
-                        selection.rotate(-Math.PI/32);
-                    }
-                }
+                rotate(section);
             }
 
             @Override
             public void visit(StandingSection section) {
-                if (isRotatable(section.getShape(),direction)){
+                rotate(section);
+            }
+
+            private void rotate(Selection select){
+                if (isRotatable(selection.getShape(),direction)){
                     if (direction){
                         selection.rotate(Math.PI/32);
                     } else {
@@ -243,20 +235,11 @@ public class Controller {
         ui.repaint();
     }
 
-    public  void autoSetSeat(SeatedSection section, VitalSpace vs){
-        if(!room.getStage().isPresent()){
-            return;
-        }
-        section.autoSetSeats(room.getStage().get(),collider, vs);
-    }
     public void autoSetSeatSelected() {
         if (selection == null) {
             return;
         }
         selection.accept(new SelectionAdapter() {
-            @Override
-            public void visit(Stage stage) {}
-
             @Override
             public void visit(SeatedSection section) {
                 if(!room.getStage().isPresent()){
@@ -264,9 +247,6 @@ public class Controller {
                 }
                 section.autoSetSeats(room.getStage().get(),collider);
             }
-
-            @Override
-            public void visit(StandingSection section) { }
         });
         ui.repaint();
     }

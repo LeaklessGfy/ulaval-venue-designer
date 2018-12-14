@@ -35,8 +35,8 @@ public class IrregularSectionEdition  extends JFrame {
             double spaceHeight = Double.parseDouble(vsHeightText.getText());
 
             section.setElevation(Double.parseDouble(elevationText.getText()));
-            VitalSpace vs=new VitalSpace(spaceWidth, spaceHeight);
-            controller.autoSetSeat(section, vs);
+            section.setVitalSpace(new VitalSpace(spaceWidth, spaceHeight));
+            controller.autoSetSeatSelected();
             section.forEachSeats(seat -> {
                 seat.setPrice(Double.parseDouble(priceText.getText()));
             });

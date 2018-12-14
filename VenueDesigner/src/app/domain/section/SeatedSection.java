@@ -133,10 +133,6 @@ public final class SeatedSection extends AbstractSection {
         forEachSeats( seat -> seat.rotate(thetaRadian,getShape().computeCentroid()));
     }
 
-    public void autoSetSeats(Stage stage, Collider collider, VitalSpace vs){
-        this.vitalSpace=vs;
-        autoSetSeats(stage,collider);
-    }
     @Override
     public void autoSetSeats(Stage stage, Collider collider){
         this.isRegular=false;
@@ -210,7 +206,7 @@ public final class SeatedSection extends AbstractSection {
 
     public void setVitalSpace(VitalSpace vitalSpace) {
         this.vitalSpace = vitalSpace;
-        refresh();
+        if(isRegular) {refresh();}
     }
 
     public void refresh() {
