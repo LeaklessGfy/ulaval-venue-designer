@@ -10,7 +10,7 @@ public final class ShapeBuilderFactory {
             case IrregularStandingSection:
                 return new Polygon.Builder(63, 63, 76, 255);
             case Stage:
-                return new Rectangle.Builder(139, 69, 19, 255);
+                return new Rectangle.Builder(97, 36, 5, 255);
             case RegularSeatedSection:
                 return new Rectangle.Builder(63, 63, 76, 255);
         }

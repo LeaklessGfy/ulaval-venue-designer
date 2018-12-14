@@ -71,6 +71,7 @@ public final class GUIPainter implements Painter<Graphics2D> {
     @Override
     public void draw(Graphics2D g, Stage stage) {
         stage.getShape().accept(g, this);
+        drawFinalPerimeter(g,stage.getShape());
     }
 
     @Override
