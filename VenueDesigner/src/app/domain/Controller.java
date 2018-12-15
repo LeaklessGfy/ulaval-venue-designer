@@ -20,7 +20,7 @@ import java.util.function.BiConsumer;
 public class Controller {
     private final Collider collider;
     private final Point cursor = new Point(-1, -1);
-    private final Point offset = new Point(0, 0);
+    private final Point offset = new Point(15, 15);
     private final HashMap<Mode, BiConsumer<Integer, Integer>> clickActions = new HashMap<>();
 
     private Room room;

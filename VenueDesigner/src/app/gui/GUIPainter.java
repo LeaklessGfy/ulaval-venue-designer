@@ -24,13 +24,10 @@ public final class GUIPainter implements Painter<Graphics2D> {
     }
 
     void draw(Graphics2D g) {
-        g.translate(15,15);
         g.scale(controller.getScale(), controller.getScale());
         controller.getRoom().accept(g, this);
         controller.getCurrent().ifPresent(s -> s.accept(g, this));
         g.scale(1/controller.getScale(),1/controller.getScale());
-        g.translate(-15,-15);
-
     }
 
     @Override
