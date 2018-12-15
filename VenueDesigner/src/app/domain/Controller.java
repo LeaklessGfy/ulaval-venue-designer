@@ -74,7 +74,7 @@ public class Controller {
     }
 
     public void mouseDragged(int x, int y) {
-        observer.hideSeatInfo();
+        observer.onLeave();
         double scaleX = x / scale;
         double scaleY = y / scale;
         double dx = scaleX - cursor.x;
@@ -122,7 +122,7 @@ public class Controller {
         ui.repaint();
     }
     public void mouseClicked(int x, int y) {
-        observer.hideSeatInfo();
+        observer.onLeave();
         if (room == null) {
             return;
         }
@@ -146,7 +146,7 @@ public class Controller {
                 if (selectionCheck(scaleX,scaleY,seat.getShape())){
                     seatHovered = true;
                     if (hoveredSeat!=seat) {
-                        observer.hideSeatInfo();
+                        observer.onLeave();
                         hoveredSection=s;
                         hoveredSeat=seat;
                         timerReset();
@@ -155,7 +155,7 @@ public class Controller {
             });
         }
         if (!seatHovered){
-            observer.hideSeatInfo();
+            observer.onLeave();
             timer.cancel();
             timer.purge();
             timer = new Timer();
@@ -532,7 +532,7 @@ public class Controller {
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
-                observer.displaySeatInfo();
+                observer.onHover();
             }
         };
         timer.schedule(task, 500);
