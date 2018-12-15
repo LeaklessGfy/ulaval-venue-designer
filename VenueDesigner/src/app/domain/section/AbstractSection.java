@@ -13,7 +13,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 })
 abstract class AbstractSection implements Section {
     private String name;
-    private int elevation;
+    private double elevation;
     private Shape shape;
 
     AbstractSection(String name, int elevation, Shape shape) {
@@ -32,12 +32,12 @@ abstract class AbstractSection implements Section {
     }
 
     @Override
-    public int getElevation() {
+    public double getElevation() {
         return elevation;
     }
 
     @Override
-    public void setElevation(int elevation) {
+    public void setElevation(double elevation) {
         this.elevation = elevation;
     }
 

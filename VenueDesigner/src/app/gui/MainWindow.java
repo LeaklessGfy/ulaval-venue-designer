@@ -4,6 +4,7 @@ import app.domain.Controller;
 import app.domain.Mode;
 import app.domain.Seat;
 import app.domain.SeatSection;
+import app.domain.section.StandingSection;
 import app.domain.selection.SelectionAdapter;
 import app.domain.Stage;
 import app.domain.section.SeatedSection;
@@ -30,7 +31,12 @@ public final class MainWindow extends Frame {
     private JButton zoomOut;
     private JButton editButton;
     private JButton removeButton;
-    private JButton autoScaling;
+    private JButton leftRotateButton;
+    private JButton rightRotateButton;
+    private JButton autoSetSeatButton;
+    private JButton irregularSeatedSectionButton;
+    private JButton standingSectionButton;
+    private JButton autoScalingButton;
     private JMenu file;
     private JMenuItem newItem;
     private JMenuItem openItem;
@@ -42,8 +48,8 @@ public final class MainWindow extends Frame {
 
 
     private MainWindow(JFrame frame) {
-        buttonTopPanel.setBackground(Color.LIGHT_GRAY);
-        tablePanel.setBorder(BorderFactory.createMatteBorder(5, 5, 0, 0, Color.LIGHT_GRAY));
+        buttonTopPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 3, 0, Color.LIGHT_GRAY));
+        tablePanel.setBorder(BorderFactory.createMatteBorder(0, 5, 0, 0, Color.LIGHT_GRAY));
         tablePanel.setVisible(false);
         buttonTopPanel.setBackground(new Color(20, 38, 52));
         mainScrollPane.setBorder(BorderFactory.createEmptyBorder());
@@ -66,6 +72,8 @@ public final class MainWindow extends Frame {
                     reset();
                     tablePanel.setVisible(controller.getMode() == Mode.Selection);
                     regSeatedSection.setVisible(controller.getRoom().isStageSet());
+                    standingSectionButton.setVisible(controller.getRoom().isStageSet());
+                    irregularSeatedSectionButton.setVisible(controller.getRoom().isStageSet());
                 }
             }
         });
@@ -101,6 +109,18 @@ public final class MainWindow extends Frame {
             tablePanel.setVisible(false);
         });
 
+        irregularSeatedSectionButton.setVisible(controller.getRoom().isStageSet());
+        irregularSeatedSectionButton.addActionListener(e -> {
+            toggleButton(irregularSeatedSectionButton, Mode.IrregularSeatedSection);
+            tablePanel.setVisible(false);
+        });
+
+        standingSectionButton.setVisible(controller.getRoom().isStageSet());
+        standingSectionButton.addActionListener(e -> {
+            toggleButton(standingSectionButton, Mode.IrregularStandingSection);
+            tablePanel.setVisible(false);
+        });
+
         zoomIn.addActionListener( e -> {
             controller.zoom(0.1);
         });
@@ -109,7 +129,7 @@ public final class MainWindow extends Frame {
             controller.zoom(-0.1);
         });
 
-        autoScaling.addActionListener(e -> {
+        autoScalingButton.addActionListener(e -> {
             controller.autoScaling(drawingPanel.getWidth(), drawingPanel.getHeight());
         });
 
@@ -124,7 +144,24 @@ public final class MainWindow extends Frame {
 
                 @Override
                 public void visit(SeatedSection section) {
-                    JFrame sectionEdition = new SectionEdition(controller, section, drawingPanel);
+                    JFrame sectionEdition;
+                    if (section.isRegular){
+                        sectionEdition = new SectionEdition(controller, section, drawingPanel);
+                    }else {
+                        if (!controller.getRoom().getStage().isPresent()){
+                            JOptionPane.showMessageDialog(null, "A stage is needed to use this feature.", "Error", JOptionPane.ERROR_MESSAGE);
+                            return;
+                        }
+                        sectionEdition = new IrregularSectionEdition(controller,section,drawingPanel);
+                    }
+                    sectionEdition.setSize(300, 400);
+                    sectionEdition.setVisible(true);
+                }
+
+                @Override
+                public void visit(StandingSection section) {
+                    JFrame sectionEdition = new StandingSectionEdition(section, drawingPanel);
+
                     sectionEdition.setSize(300, 400);
                     sectionEdition.setVisible(true);
                 }
@@ -149,8 +186,28 @@ public final class MainWindow extends Frame {
             controller.removeSelected();
             tablePanel.setVisible(controller.getMode()==Mode.Selection);
             regSeatedSection.setVisible(controller.getRoom().isStageSet());
+            standingSectionButton.setVisible(controller.getRoom().isStageSet());
+            irregularSeatedSectionButton.setVisible(controller.getRoom().isStageSet());
         });
-        
+
+        leftRotateButton.addActionListener(e -> {
+            controller.rotateSelected(false);
+        });
+
+        rightRotateButton.addActionListener(e -> {
+            controller.rotateSelected(true);
+        });
+
+        autoSetSeatButton.addActionListener(e -> {
+            if(controller.getRoom().getStage().isPresent()){
+                controller.autoSetSeatSelected();
+            } else {
+                JOptionPane.showMessageDialog(null, "A stage is needed to use this feature.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+
+        });
+
+
         JMenuBar menuBar = new JMenuBar();
         file = new JMenu("File");
         newItem = new JMenuItem("New");
@@ -252,6 +309,10 @@ public final class MainWindow extends Frame {
         stage.setForeground(UIManager.getColor("Button.foreground"));
         regSeatedSection.setBackground(UIManager.getColor("Button.background"));
         regSeatedSection.setForeground(UIManager.getColor("Button.foreground"));
+        irregularSeatedSectionButton.setBackground(UIManager.getColor("Button.background"));
+        irregularSeatedSectionButton.setForeground(UIManager.getColor("Button.foreground"));
+        standingSectionButton.setBackground(UIManager.getColor("Button.background"));
+        standingSectionButton.setForeground(UIManager.getColor("Button.foreground"));
 
         if (isEnabled) {
             btn.setBackground(Color.BLUE);

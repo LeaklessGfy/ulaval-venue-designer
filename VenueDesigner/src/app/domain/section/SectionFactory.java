@@ -5,16 +5,16 @@ import app.domain.VitalSpace;
 import app.domain.shape.Shape;
 
 public final class SectionFactory {
-    public static Section create(Mode mode, Shape shape) {
+    public static Section create(Mode mode, Shape shape, VitalSpace vs) {
         switch (mode) {
             case RegularSeatedSection:
-                return new SeatedSection("", 0, shape, new VitalSpace(20, 20));
+                return new SeatedSection("", 0, shape, vs);
             case IrregularSeatedSection:
-                return new SeatedSection("", 0, shape, new VitalSpace(20, 20));
+                return new SeatedSection("", 0, shape, vs);
             case RegularStandingSection:
-                return new StandingSection("",0, shape,10);
+                return new StandingSection("",0, shape,10, 0);
             case IrregularStandingSection:
-                return new StandingSection("",0, shape,10);
+                return new StandingSection("",0, shape,10, 0);
         }
         throw new RuntimeException();
     }

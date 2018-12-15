@@ -12,8 +12,8 @@ final class GUIUtils {
         int i = 0;
 
         for (Point point : points) {
-            xCoords[i] = point.x + offset.x;
-            yCoords[i] = point.y + offset.y;
+            xCoords[i] = (int)Math.round(point.x + offset.x);
+            yCoords[i] = (int)Math.round(point.y + offset.y);
             i++;
         }
 
@@ -23,6 +23,14 @@ final class GUIUtils {
     static boolean isNotInteger(String text) {
         try {
             Integer.parseInt(text);
+        } catch (NumberFormatException e) {
+            return true;
+        }
+        return false;
+    }
+    static boolean isNotNumber(String text){
+        try {
+            Double.parseDouble(text);
         } catch (NumberFormatException e) {
             return true;
         }

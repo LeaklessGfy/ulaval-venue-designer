@@ -24,9 +24,13 @@ public final class GUIPainter implements Painter<Graphics2D> {
     }
 
     void draw(Graphics2D g) {
+        g.translate(15,15);
         g.scale(controller.getScale(), controller.getScale());
         controller.getRoom().accept(g, this);
         controller.getCurrent().ifPresent(s -> s.accept(g, this));
+        g.scale(1/controller.getScale(),1/controller.getScale());
+        g.translate(-15,-15);
+
     }
 
     @Override
@@ -38,6 +42,7 @@ public final class GUIPainter implements Painter<Graphics2D> {
 
     @Override
     public void draw(Graphics2D g, SeatedSection seatedSection) {
+        seatedSection.getShape().accept(g, this);
         for (Seat[] seats : seatedSection.getSeats()) {
             for (Seat seat : seats) {
                 if (!seat.isSelected()) {
@@ -47,8 +52,9 @@ public final class GUIPainter implements Painter<Graphics2D> {
                 }
             }
         }
+        if(seatedSection.getShape().isSelected()){ drawFinalPerimeter(g,seatedSection.getShape());}
         numberSeats(g, seatedSection);
-        seatedSection.getShape().accept(g, this);
+
     }
 
     @Override
@@ -59,11 +65,13 @@ public final class GUIPainter implements Painter<Graphics2D> {
     @Override
     public void draw(Graphics2D g, Seat seat) {
         seat.getShape().accept(g, this);
+        drawFinalPerimeter(g,seat.getShape());
     }
 
     @Override
     public void draw(Graphics2D g, Stage stage) {
         stage.getShape().accept(g, this);
+        drawFinalPerimeter(g,stage.getShape());
     }
 
     @Override
@@ -85,10 +93,10 @@ public final class GUIPainter implements Painter<Graphics2D> {
         g.drawPolyline(coordinates.xCoords, coordinates.yCoords, coordinates.points.size());
         app.domain.shape.Point last = coordinates.points.lastElement();
 
-        int startX = last.x;
-        int startY = last.y;
-        int endX = controller.getXCursor() - last.x;
-        int endY = controller.getYCursor() - last.y;
+        double startX = last.x;
+        double startY = last.y;
+        double endX = controller.getXCursor() - last.x;
+        double endY = controller.getYCursor() - last.y;
 
         if (endX < 0) {
             startX = controller.getXCursor();
@@ -100,7 +108,7 @@ public final class GUIPainter implements Painter<Graphics2D> {
             endY = last.y - controller.getYCursor();
         }
 
-        g.drawRect(startX, startY, endX, endY);
+        g.drawRect((int)Math.round(startX), (int)Math.round(startY), (int)Math.round(endX), (int)Math.round(endY));
     }
 
     @Override
@@ -112,16 +120,25 @@ public final class GUIPainter implements Painter<Graphics2D> {
         g.drawPolyline(coordinates.xCoords, coordinates.yCoords, coordinates.points.size());
         app.domain.shape.Point last = coordinates.points.lastElement();
 
-        g.drawLine(last.x, last.y, controller.getXCursor(), controller.getYCursor());
+        g.drawLine((int)Math.round(last.x), (int)Math.round(last.y), (int)Math.round(controller.getXCursor()), (int)Math.round(controller.getYCursor()));
     }
 
     private void drawFinal(Graphics2D g, Shape shape) {
-        Color stroke = Color.lightGray;
+        Color stroke = new Color(0,0,0,0);
         if (shape.isSelected()) {
             stroke = Color.GREEN;
         }
         int[] color = shape.getColor();
         Color fill = new Color(color[0], color[1], color[2], color[3]);
+        drawShapeColor(g, shape, stroke, fill);
+    }
+
+    private void drawFinalPerimeter(Graphics2D g, Shape shape) {
+        Color stroke = Color.lightGray;
+        if (shape.isSelected()) {
+            stroke = Color.GREEN;
+        }
+        Color fill = new Color(0,0,0,0);
         drawShapeColor(g, shape, stroke, fill);
     }
 
@@ -140,65 +157,51 @@ public final class GUIPainter implements Painter<Graphics2D> {
         g.setColor(fill);
         g.fill(polygon);
     }
+
     private void numberSeats(Graphics2D g, SeatedSection section) {
         g.setRenderingHint(
                 RenderingHints.KEY_FRACTIONALMETRICS,
                 RenderingHints.VALUE_FRACTIONALMETRICS_ON
                 );
         Font font = Font.decode("Arial");
-        int maxWidth = section.getVitalSpace().getWidth()-4;
+        double maxWidth = section.getVitalSpace().getWidth()/2.0;
+        double x_space = Math.max(section.getSeats()[0][0].getShape().getPoints().elementAt(0).x,
+                section.getSeats()[0][0].getShape().getPoints().elementAt(2).x)-
+                Math.min(section.getSeats()[0][0].getShape().getPoints().elementAt(0).x,
+                        section.getSeats()[0][0].getShape().getPoints().elementAt(2).x);
+        double y_space = Math.max(section.getSeats()[0][0].getShape().getPoints().elementAt(1).y,
+                section.getSeats()[0][0].getShape().getPoints().elementAt(3).y)-
+                Math.min(section.getSeats()[0][0].getShape().getPoints().elementAt(1).y,
+                        section.getSeats()[0][0].getShape().getPoints().elementAt(3).y);
         int i = 1;
         int j = 1;
         for (Seat[] row : section.getSeats()) {
-            Point p = new Point(0,0);
-            switch (section.getZone()){
-                case Down:
-                    p = new Point(row[0].getShape().getPoints().elementAt(3).x+2-section.getVitalSpace().getWidth(),
-                            row[0].getShape().getPoints().elementAt(3).y-2);
-                    break;
-                case Left:
-                    p = new Point(row[0].getShape().getPoints().elementAt(2).x+2,
-                            row[0].getShape().getPoints().elementAt(2).y-2-section.getVitalSpace().getWidth());
-                    break;
-                case Up:
-                    p = new Point(row[0].getShape().getPoints().elementAt(1).x+2+section.getVitalSpace().getWidth(),
-                            row[0].getShape().getPoints().elementAt(1).y-2);
-                    break;
-                case Right:
-                    p = new Point(row[0].getShape().getPoints().elementAt(0).x+2,
-                            row[0].getShape().getPoints().elementAt(0).y-2+section.getVitalSpace().getWidth());}
+            double dx = row[0].getShape().getPoints().elementAt(0).x-row[0].getShape().getPoints().elementAt(1).x;
+            double dy = row[0].getShape().getPoints().elementAt(0).y-row[0].getShape().getPoints().elementAt(1).y;
+            double x=Math.min(row[0].getShape().getPoints().elementAt(0).x,row[0].getShape().getPoints().elementAt(2).x)+x_space/3.0+dx;
+            double y=Math.min(row[0].getShape().getPoints().elementAt(1).y,row[0].getShape().getPoints().elementAt(3).y)+2*y_space/3.0+dy;
+            Point p = new Point(x,y);
             String rowNumber = String.valueOf(j);
             Rectangle2D bounds = g.getFontMetrics(font).getStringBounds(rowNumber,g);
             font = font.deriveFont((float)(font.getSize2D()*maxWidth/Math.max(bounds.getWidth(),bounds.getHeight())));
-            drawText(g, p, rowNumber, Color.WHITE, font);
+            drawText(g, p, rowNumber, Color.YELLOW, font);
             for (Seat seat : row) {
-                //print seat number
-                Point p0 = new Point(0,0);
-                switch (section.getZone()){
-                    case Down:
-                        p0 = new Point(seat.getShape().getPoints().elementAt(3).x+2,seat.getShape().getPoints().elementAt(3).y-2);
-                        break;
-                    case Left:
-                        p0 = new Point(seat.getShape().getPoints().elementAt(2).x+2,seat.getShape().getPoints().elementAt(2).y-2);
-                        break;
-                    case Up:
-                        p0 = new Point(seat.getShape().getPoints().elementAt(1).x+2,seat.getShape().getPoints().elementAt(1).y-2);
-                        break;
-                    case Right:
-                        p0 = new Point(seat.getShape().getPoints().elementAt(0).x+2,seat.getShape().getPoints().elementAt(0).y-2);
-                }
+                x=(int)Math.round(Math.min(seat.getShape().getPoints().elementAt(0).x,seat.getShape().getPoints().elementAt(2).x)+x_space/3.0);
+                y=(int)Math.round(Math.min(seat.getShape().getPoints().elementAt(1).y,seat.getShape().getPoints().elementAt(3).y)+2*y_space/3.0);
+                p = new Point(x,y);
                 String seatNumber = String.valueOf(i);
                 bounds = g.getFontMetrics(font).getStringBounds(seatNumber,g);
                 font = font.deriveFont((float)(font.getSize2D()*maxWidth/Math.max(bounds.getWidth(),bounds.getHeight())));
-                drawText(g, p0, seatNumber, Color.WHITE, font);
+                drawText(g, p, seatNumber, Color.WHITE, font);
                 i++;
             }
             j++;
         }
     }
+
     private void drawText(Graphics2D g, Point point, String string, Color color, Font font){
         g.setFont(font);
         g.setColor(color);
-        g.drawString(string, point.x+controller.getOffset().x, point.y+controller.getOffset().y);
+        g.drawString(string, (int)Math.round(point.x+controller.getOffset().x), (int)Math.round(point.y+controller.getOffset().y));
     }
 }

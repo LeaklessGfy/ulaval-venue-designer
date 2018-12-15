@@ -1,6 +1,5 @@
 package app.domain;
 
-import app.domain.section.Zone;
 import app.domain.selection.Selection;
 import app.domain.selection.SelectionVisitor;
 import app.domain.shape.Point;
@@ -16,7 +15,7 @@ public final class Seat implements Selection {
     private final int row;
     private final Shape shape;
 
-    private int price;
+    private double price;
     private int color;
 
     public Seat(int column, int row, VitalSpace vs, Point p0) {
@@ -28,52 +27,41 @@ public final class Seat implements Selection {
         points.add(new Point(p0.x+(column+1)*vs.getWidth(), p0.y+(row+1)*vs.getHeight()));
         points.add(new Point(p0.x+(column)*vs.getWidth(), p0.y+(row+1)*vs.getHeight()));
         shape = new Rectangle(points, new int[4]);
+        price =0.0;
     }
 
-    public Seat(int row, int column, VitalSpace vs, Point p0, Zone zone) {
+    public Seat(int row, int column, VitalSpace vs, Point p0, double theta, boolean autoPositioning) {
+
         this.column = column;
         this.row = row;
-        Vector<Point> points = new Vector<>();
-        int x=0;
-        int y=0;
-        switch (zone){
-            case Down:{
-                x= p0.x+(column)*vs.getWidth();
-                y=p0.y+(row)*vs.getHeight();
-                break;
-            }
-            case Left:{
-                x= p0.x-(row)*vs.getHeight();
-                y=p0.y+(column)*vs.getWidth();
-                break;
-            }
-            case Up:{
-                x= p0.x-(column)*vs.getWidth();
-                y=p0.y-(row)*vs.getHeight();
-                break;
-            }
-            case Right:{
-                x= p0.x+(row)*vs.getHeight();
-                y=p0.y-(column)*vs.getWidth();
-                break;
-            }
+        double x=0;
+        double y=0;
+        if (autoPositioning){
+            x=  (row)*vs.getHeight();
+            y= (column)*vs.getWidth();
         }
+        double x1=x*Math.cos(-theta) - y*Math.sin(-theta);
+        double y1=x*Math.sin(-theta) + y*Math.cos(-theta);
         int[] color = {0,0,0,255};
-        shape = Rectangle.create(x,y,vs.getWidth(),vs.getHeight(), color, zone);
+        shape = Rectangle.create(p0.x+x1,p0.y-y1,vs.getWidth(),vs.getHeight(), color, theta);
+        price =0.0;
     }
 
     @JsonCreator
-    public Seat(@JsonProperty("column") int column, @JsonProperty("row") int row, @JsonProperty("shape") Shape shape) {
+    public Seat(@JsonProperty("column") int column, @JsonProperty("row") int row, @JsonProperty("shape") Shape shape,
+                @JsonProperty("price") double price)
+    {
         this.column = column;
         this.row = row;
         this.shape = shape;
+        this.price = price;
     }
 
-    public int getPrice() {
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 
@@ -96,12 +84,12 @@ public final class Seat implements Selection {
     }
 
     @Override
-    public void move(int x, int y) {
+    public void move(double x, double y) {
         shape.move(x, y);
     }
 
     @Override
-    public void move(int x, int y, Point offset){
+    public void move(double x, double y, Point offset){
         shape.move(x, y, offset);
     }
 
@@ -113,5 +101,12 @@ public final class Seat implements Selection {
     @Override
     public void accept(SelectionVisitor visitor) {
         visitor.visit(this);
+    }
+
+    @Override
+    public void rotate(double thetaRadian){
+    }
+    public void rotate(double thetaRadian, Point sectionCenter){
+        shape.rotate(thetaRadian, sectionCenter);
     }
 }
