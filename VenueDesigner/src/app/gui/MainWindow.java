@@ -204,9 +204,14 @@ public final class MainWindow extends Frame {
         /////////////////////////////
         // debut apparition offers
         offers.addActionListener(e->{
-            JFrame Offer = new Offer(controller, drawingPanel, e);
-            Offer.setSize(700, 500);// plus tard ce sera 500
-            Offer.setVisible(true);
+            if(controller.getRoom().isStageSet()){// pour commencer la scène est presente
+                JFrame Offer = new OfferWindow(controller, drawingPanel, e);
+                Offer.setSize(700, 500);// plus tard ce sera 500
+                Offer.setVisible(true);
+            }else{
+                // boite de dialogue pour dire attention la scene existe pas encore
+            }
+
         });
 
         // fin apparition offers
