@@ -289,7 +289,6 @@ public class Controller {
                     });
                 }
 
-
                 @Override
                 public void visit(Seat seat) {
                     Seat[] seats = preSelection.getSeats()[seat.getRow()];
