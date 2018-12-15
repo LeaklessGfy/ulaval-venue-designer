@@ -36,6 +36,7 @@ public final class MainWindow extends Frame {
     private JButton autoSetSeatButton;
     private JButton irregularSeatedSectionButton;
     private JButton standingSectionButton;
+    private JButton autoScalingButton;
     private JMenu file;
     private JMenuItem newItem;
     private JMenuItem openItem;
@@ -126,6 +127,10 @@ public final class MainWindow extends Frame {
 
         zoomOut.addActionListener( e -> {
             controller.zoom(-0.1);
+        });
+
+        autoScalingButton.addActionListener(e -> {
+            controller.autoScaling(drawingPanel.getWidth(), drawingPanel.getHeight());
         });
 
         editButton.addActionListener(e -> {
@@ -308,8 +313,6 @@ public final class MainWindow extends Frame {
         irregularSeatedSectionButton.setForeground(UIManager.getColor("Button.foreground"));
         standingSectionButton.setBackground(UIManager.getColor("Button.background"));
         standingSectionButton.setForeground(UIManager.getColor("Button.foreground"));
-
-
 
         if (isEnabled) {
             btn.setBackground(Color.BLUE);

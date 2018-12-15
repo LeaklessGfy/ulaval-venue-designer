@@ -417,6 +417,24 @@ public class Controller {
         });
     }
 
+    public void autoScaling(int panelWidth, int panelHeight) {
+        double maxRoom;
+        int maxPanel;
+        double roomWidth = room.getWidth();
+        double roomHeight = room.getHeight();
+        if (roomHeight > roomWidth || roomWidth < 2 * roomHeight) {
+            maxRoom = roomHeight;
+            maxPanel = panelHeight;
+        } else {
+            maxRoom = roomWidth;
+            maxPanel = panelWidth;
+        }
+        scale = (0.8 * maxPanel) / maxRoom;
+        offset.x = (int)(((panelWidth - roomWidth * scale) / 2) / scale);
+        offset.y = (int)(((panelHeight - roomHeight * scale) / 2) / scale);
+        ui.repaint();
+    }
+
     public boolean validateSectionDimensions(Section section, int nbColums, int nbRows, double spaceWidth, double spaceHeight) {
         VitalSpace vs = new VitalSpace(spaceWidth, spaceHeight);
         Section predict = SeatedSection.create(section.getShape().getPoints().firstElement().x, section.getShape().getPoints().firstElement().y, nbColums, nbRows, vs, room.getStage().get());
@@ -437,7 +455,6 @@ public class Controller {
         }
         return true;
     }
-
 
     public boolean validateStageDimensions(Stage stage, double width, double height) {
         Shape shape = stage.getShape().clone();

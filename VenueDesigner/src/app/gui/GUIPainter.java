@@ -145,13 +145,19 @@ public final class GUIPainter implements Painter<Graphics2D> {
     private void drawShapeColor(Graphics2D g, Shape shape, Color stroke, Color fill) {
         Coordinates coordinates = GUIUtils.getCoordinates(shape.getPoints(), controller.getOffset());
         java.awt.Polygon polygon = new java.awt.Polygon(coordinates.xCoords, coordinates.yCoords, coordinates.points.size());
-
-        g.setStroke(new BasicStroke(2));
+        int lineWidth;
+        if (controller.getScale() >= 0.8) {
+            lineWidth = 2;
+        } else {
+            lineWidth = (int)(-20 * controller.getScale() + 18);
+        }
+        g.setStroke(new BasicStroke(lineWidth));
         g.setColor(stroke);
         g.draw(polygon);
         g.setColor(fill);
         g.fill(polygon);
     }
+
     private void numberSeats(Graphics2D g, SeatedSection section) {
         g.setRenderingHint(
                 RenderingHints.KEY_FRACTIONALMETRICS,
@@ -167,7 +173,7 @@ public final class GUIPainter implements Painter<Graphics2D> {
                 section.getSeats()[0][0].getShape().getPoints().elementAt(3).y)-
                 Math.min(section.getSeats()[0][0].getShape().getPoints().elementAt(1).y,
                         section.getSeats()[0][0].getShape().getPoints().elementAt(3).y);
-        int i=1;
+        int i = 1;
         int j = 1;
         for (Seat[] row : section.getSeats()) {
             double dx = row[0].getShape().getPoints().elementAt(0).x-row[0].getShape().getPoints().elementAt(1).x;
@@ -192,6 +198,7 @@ public final class GUIPainter implements Painter<Graphics2D> {
             j++;
         }
     }
+
     private void drawText(Graphics2D g, Point point, String string, Color color, Font font){
         g.setFont(font);
         g.setColor(color);
