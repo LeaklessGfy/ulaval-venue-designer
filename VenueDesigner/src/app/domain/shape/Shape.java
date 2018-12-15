@@ -15,9 +15,9 @@ import java.util.Vector;
 public interface Shape extends Drawable {
     Vector<Point> getPoints();
     int[] getColor();
+    void setColor(int[] color);
     boolean isSelected();
     void setSelected(boolean selected);
-    void move(double x, double y);
     void move(double x, double y, Point offset);
     void rotate(double thetaRadian, Point rotationCenter);
     Point computeCentroid();
