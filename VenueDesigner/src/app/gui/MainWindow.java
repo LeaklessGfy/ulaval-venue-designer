@@ -321,8 +321,8 @@ public final class MainWindow extends Frame implements Observer {
 
     @Override
     public void onHover() {
-        int x= drawingPanel.getLocation().x + (int)controller.getXCursor() + 100;
-        int y= drawingPanel.getLocation().y + (int)controller.getYCursor() + 100;
+        int x= drawingPanel.getLocation().x + (int)(controller.getXCursor()*controller.getScale());
+        int y= drawingPanel.getLocation().y + (int)(controller.getYCursor()*controller.getScale());
         seatInfo.update(controller);
         seatInfo.setLocation(x,y);
         seatInfo.setVisible(true);
