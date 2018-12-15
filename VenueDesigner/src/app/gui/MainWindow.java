@@ -35,6 +35,8 @@ public final class MainWindow extends Frame implements Observer {
     private JButton standingSectionButton;
     private JButton autoScalingButton;
     private JCheckBox autoSeatCheckBox;
+    private JPanel topPanel;
+    private JPanel buttonToolsPanel;
     private JMenu file;
     private JMenuItem newItem;
     private JMenuItem openItem;
@@ -50,10 +52,10 @@ public final class MainWindow extends Frame implements Observer {
 
 
     private MainWindow(JFrame frame) {
-        buttonTopPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 3, 0, Color.LIGHT_GRAY));
+        buttonToolsPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 3, 0, Color.LIGHT_GRAY));
+        topPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 3, 0, Color.LIGHT_GRAY));
         tablePanel.setBorder(BorderFactory.createMatteBorder(0, 5, 0, 0, Color.LIGHT_GRAY));
         tablePanel.setVisible(false);
-        buttonTopPanel.setBackground(new Color(20, 38, 52));
         mainScrollPane.setBorder(BorderFactory.createEmptyBorder());
 
         drawingPanel.addMouseListener(new MouseAdapter() {

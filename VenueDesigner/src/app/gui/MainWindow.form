@@ -9,77 +9,6 @@
     </properties>
     <border type="none"/>
     <children>
-      <grid id="d40ef" binding="buttonTopPanel" layout-manager="GridLayoutManager" row-count="1" column-count="8" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-        <margin top="0" left="0" bottom="0" right="0"/>
-        <constraints border-constraint="North"/>
-        <properties>
-          <preferredSize width="400" height="35"/>
-        </properties>
-        <border type="none"/>
-        <children>
-          <component id="6c9fb" class="javax.swing.JButton" binding="stage">
-            <constraints>
-              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties>
-              <text value="Stage"/>
-            </properties>
-          </component>
-          <component id="49a81" class="javax.swing.JButton" binding="regSeatedSection">
-            <constraints>
-              <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties>
-              <text value="Regular Seated Section"/>
-            </properties>
-          </component>
-          <component id="2d947" class="javax.swing.JButton" binding="irregularSeatedSectionButton" default-binding="true">
-            <constraints>
-              <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties>
-              <text value="Irregular Seated Section"/>
-            </properties>
-          </component>
-          <component id="b7f82" class="javax.swing.JButton" binding="standingSectionButton" default-binding="true">
-            <constraints>
-              <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties>
-              <text value="Standing Section"/>
-            </properties>
-          </component>
-          <component id="f7ec" class="javax.swing.JButton" binding="zoomIn">
-            <constraints>
-              <grid row="0" column="6" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties>
-              <text value="Zoom In"/>
-            </properties>
-          </component>
-          <component id="28ca4" class="javax.swing.JButton" binding="zoomOut">
-            <constraints>
-              <grid row="0" column="7" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties>
-              <text value="Zoom Out"/>
-            </properties>
-          </component>
-          <hspacer id="2f228">
-            <constraints>
-              <grid row="0" column="4" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-            </constraints>
-          </hspacer>
-          <component id="3a5af" class="javax.swing.JButton" binding="autoScalingButton" default-binding="true">
-            <constraints>
-              <grid row="0" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties>
-              <text value="Auto scaling"/>
-            </properties>
-          </component>
-        </children>
-      </grid>
       <scrollpane id="79245" binding="mainScrollPane">
         <constraints border-constraint="Center"/>
         <properties/>
@@ -146,6 +75,76 @@
               <text value="Auto Seat Distribution"/>
             </properties>
           </component>
+        </children>
+      </grid>
+      <grid id="790d6" binding="topPanel" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+        <margin top="0" left="0" bottom="0" right="0"/>
+        <constraints border-constraint="North"/>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <grid id="b9e8f" binding="buttonTopPanel" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="0">
+            <constraints>
+              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <preferredSize width="400" height="35"/>
+            </properties>
+            <border type="none"/>
+            <children>
+              <component id="b5afd" class="javax.swing.JButton" binding="stage">
+                <constraints/>
+                <properties>
+                  <text value="Stage"/>
+                </properties>
+              </component>
+              <component id="621fa" class="javax.swing.JButton" binding="regSeatedSection">
+                <constraints/>
+                <properties>
+                  <text value="Regular Seated Section"/>
+                </properties>
+              </component>
+              <component id="ba643" class="javax.swing.JButton" binding="irregularSeatedSectionButton" default-binding="true">
+                <constraints/>
+                <properties>
+                  <text value="Irregular Seated Section"/>
+                </properties>
+              </component>
+              <component id="3bdb0" class="javax.swing.JButton" binding="standingSectionButton" default-binding="true">
+                <constraints/>
+                <properties>
+                  <text value="Standing Section"/>
+                </properties>
+              </component>
+            </children>
+          </grid>
+          <grid id="e77d0" binding="buttonToolsPanel" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="0">
+            <constraints>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <component id="4d0ef" class="javax.swing.JButton" binding="autoScalingButton" default-binding="true">
+                <constraints/>
+                <properties>
+                  <text value="Auto scaling"/>
+                </properties>
+              </component>
+              <component id="7e815" class="javax.swing.JButton" binding="zoomIn">
+                <constraints/>
+                <properties>
+                  <text value="Zoom In"/>
+                </properties>
+              </component>
+              <component id="1f715" class="javax.swing.JButton" binding="zoomOut">
+                <constraints/>
+                <properties>
+                  <text value="Zoom Out"/>
+                </properties>
+              </component>
+            </children>
+          </grid>
         </children>
       </grid>
     </children>
