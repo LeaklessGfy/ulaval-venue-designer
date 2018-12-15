@@ -14,11 +14,11 @@ public final class Seat implements Selection {
     private final int column;
     private final int row;
     private final Shape shape;
-
     private double price;
+    private int number;
     private int color;
 
-    public Seat(int column, int row, VitalSpace vs, Point p0) {
+    public Seat(int column, int row, VitalSpace vs, Point p0, int number) {
         this.column = column;
         this.row = row;
         Vector<Point> points = new Vector<>();
@@ -28,9 +28,10 @@ public final class Seat implements Selection {
         points.add(new Point(p0.x+(column)*vs.getWidth(), p0.y+(row+1)*vs.getHeight()));
         shape = new Rectangle(points, new int[4]);
         price =0.0;
+        this.number=number;
     }
 
-    public Seat(int row, int column, VitalSpace vs, Point p0, double theta, boolean autoPositioning) {
+    public Seat(int row, int column, VitalSpace vs, Point p0, double theta, int number, boolean autoPositioning) {
 
         this.column = column;
         this.row = row;
@@ -45,6 +46,7 @@ public final class Seat implements Selection {
         int[] color = {0,0,0,255};
         shape = Rectangle.create(p0.x+x1,p0.y-y1,vs.getWidth(),vs.getHeight(), color, theta);
         price =0.0;
+        this.number=number;
     }
 
     @JsonCreator
@@ -71,6 +73,14 @@ public final class Seat implements Selection {
 
     public int getColumn() {
         return column;
+    }
+
+    public int getNumber(){
+        return number;
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
     }
 
     @Override
@@ -103,5 +113,10 @@ public final class Seat implements Selection {
     }
     public void rotate(double thetaRadian, Point sectionCenter){
         shape.rotate(thetaRadian, sectionCenter);
+    }
+
+    @Override
+    public boolean isAuto(){
+        return false;
     }
 }

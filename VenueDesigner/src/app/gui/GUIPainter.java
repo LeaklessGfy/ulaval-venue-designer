@@ -57,6 +57,7 @@ public final class GUIPainter implements Painter<Graphics2D> {
     @Override
     public void draw(Graphics2D g, StandingSection standingSection) {
         standingSection.getShape().accept(g, this);
+        drawFinalPerimeter(g,standingSection.getShape());
     }
 
     @Override
@@ -156,6 +157,7 @@ public final class GUIPainter implements Painter<Graphics2D> {
     }
 
     private void numberSeats(Graphics2D g, SeatedSection section) {
+        if (section.getSeats().length==0){return;}
         g.setRenderingHint(
                 RenderingHints.KEY_FRACTIONALMETRICS,
                 RenderingHints.VALUE_FRACTIONALMETRICS_ON

@@ -10,4 +10,5 @@ public interface Selection {
     void rotate(double thetaRadian);
     Shape getShape();
     void accept(SelectionVisitor visitor);
+    boolean isAuto();
 }

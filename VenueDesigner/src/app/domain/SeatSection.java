@@ -47,4 +47,9 @@ public final class SeatSection implements Selection {
     public Seat[] getSeats() {
         return seats;
     }
+
+    @Override
+    public boolean isAuto(){
+        return false;
+    }
 }

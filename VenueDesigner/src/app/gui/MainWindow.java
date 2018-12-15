@@ -1,12 +1,8 @@
 package app.gui;
 
-import app.domain.Controller;
-import app.domain.Mode;
-import app.domain.Seat;
-import app.domain.SeatSection;
+import app.domain.*;
 import app.domain.section.StandingSection;
 import app.domain.selection.SelectionAdapter;
-import app.domain.Stage;
 import app.domain.section.SeatedSection;
 
 import javax.swing.*;
@@ -16,7 +12,7 @@ import java.io.*;
 import javax.swing.filechooser.*;
 import javax.swing.filechooser.FileFilter;
 
-public final class MainWindow extends Frame {
+public final class MainWindow extends Frame implements Observer {
     private Controller controller;
     private GUIPainter painter;
 
@@ -33,10 +29,10 @@ public final class MainWindow extends Frame {
     private JButton removeButton;
     private JButton leftRotateButton;
     private JButton rightRotateButton;
-    private JButton autoSetSeatButton;
     private JButton irregularSeatedSectionButton;
     private JButton standingSectionButton;
     private JButton autoScalingButton;
+    private JCheckBox autoSeatCheckBox;
     private JMenu file;
     private JMenuItem newItem;
     private JMenuItem openItem;
@@ -45,6 +41,9 @@ public final class MainWindow extends Frame {
     private JMenuItem room;
     private JMenuItem offers;
     private JMenuItem grid;
+    private SeatInfo seatInfo;
+    private int cursorX;
+    private int cursorY;
 
 
     private MainWindow(JFrame frame) {
@@ -73,6 +72,7 @@ public final class MainWindow extends Frame {
                         reset();
                     }
                     tablePanel.setVisible(controller.getMode() == Mode.Selection);
+                    autoSeatCheckBox.setSelected(controller.isAutoSelected());
                     regSeatedSection.setVisible(controller.getRoom().isStageSet());
                     standingSectionButton.setVisible(controller.getRoom().isStageSet());
                     irregularSeatedSectionButton.setVisible(controller.getRoom().isStageSet());
@@ -84,6 +84,8 @@ public final class MainWindow extends Frame {
             @Override
             public void mouseMoved(MouseEvent e) {
                 super.mouseMoved(e);
+                cursorX=e.getX();
+                cursorY=e.getY();
                 controller.mouseMoved(e.getX(), e.getY());
             }
             @Override
@@ -187,6 +189,7 @@ public final class MainWindow extends Frame {
         removeButton.addActionListener(e -> {
             controller.removeSelected();
             tablePanel.setVisible(controller.getMode()==Mode.Selection);
+            autoSeatCheckBox.setSelected(controller.isAutoSelected());
             regSeatedSection.setVisible(controller.getRoom().isStageSet());
             standingSectionButton.setVisible(controller.getRoom().isStageSet());
             irregularSeatedSectionButton.setVisible(controller.getRoom().isStageSet());
@@ -200,13 +203,8 @@ public final class MainWindow extends Frame {
             controller.rotateSelected(true);
         });
 
-        autoSetSeatButton.addActionListener(e -> {
-            if(controller.getRoom().getStage().isPresent()){
-                controller.autoSetSeatSelected();
-            } else {
-                JOptionPane.showMessageDialog(null, "A stage is needed to use this feature.", "Error", JOptionPane.ERROR_MESSAGE);
-            }
-
+        autoSeatCheckBox.addActionListener(e -> {
+            controller.autoSetSeatSelected();
         });
 
 
@@ -290,9 +288,12 @@ public final class MainWindow extends Frame {
                 {"temporaire", "."}
         };
         controller = new Controller(new GUICollider());
+        controller.setObserver(this);
         painter = new GUIPainter(controller);
         drawingPanel = new DrawingPanel(painter);
         controller.setDrawingPanel(drawingPanel);
+        seatInfo = new SeatInfo();
+        seatInfo.setSize(200,200);
     }
 
     private void reset() {
@@ -316,6 +317,20 @@ public final class MainWindow extends Frame {
             btn.setBackground(UIManager.getColor("Button.background"));
             btn.setForeground(UIManager.getColor("Button.foreground"));
         }
+    }
+
+    @Override
+    public void onHover() {
+        int x= drawingPanel.getLocation().x + (int )controller.getXCursor();
+        int y= drawingPanel.getLocation().y + (int ) controller.getYCursor();
+        seatInfo.update(controller);
+        seatInfo.setLocation(x,y);
+        seatInfo.setVisible(true);
+    }
+
+    @Override
+    public  void onLeave(){
+        seatInfo.setVisible(false);
     }
 }
 

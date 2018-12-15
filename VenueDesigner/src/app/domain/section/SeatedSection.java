@@ -6,6 +6,7 @@ import app.domain.selection.SelectionVisitor;
 import app.domain.Stage;
 import app.domain.VitalSpace;
 import app.domain.shape.*;
+import app.domain.shape.Painter;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -15,6 +16,8 @@ import java.util.Vector;
 import java.util.function.Consumer;
 
 public final class SeatedSection extends AbstractSection {
+    @JsonProperty
+    public boolean autoSetSeat;
     @JsonProperty
     public boolean isRegular;
     @JsonProperty
@@ -28,17 +31,20 @@ public final class SeatedSection extends AbstractSection {
         super(name, elevation, shape);
         this.vitalSpace = vitalSpace;
         this.isRegular = false;
+        this.autoSetSeat=false;
     }
 
     @JsonCreator
     SeatedSection(@JsonProperty("name") String name, @JsonProperty("elevation") int elevation, @JsonProperty("shape") Shape shape,
                   @JsonProperty("vitalSpace") VitalSpace vitalSpace, @JsonProperty("seats") Seat[][] seats,
-                  @JsonProperty("theta") double theta, @JsonProperty("isRegular") boolean isRegular) {
+                  @JsonProperty("theta") double theta, @JsonProperty("isRegular") boolean isRegular,
+                  @JsonProperty("autoSetSeat") boolean autoSetSeat) {
         super(name, elevation, shape);
         this.vitalSpace = vitalSpace;
         this.seats = seats;
         this.theta = theta;
         this.isRegular = isRegular;
+        this.autoSetSeat = autoSetSeat;
     }
 
     public static SeatedSection create(double x, double y, int columns, int rows, VitalSpace vitalSpace, Stage stage) {
@@ -62,9 +68,10 @@ public final class SeatedSection extends AbstractSection {
         section.setElevation(0.0);
         section.isRegular = true;
 
+        int number =1;
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
-                section.seats[i][j] = new Seat(i, j, vitalSpace, new Point(x,y), theta, true);
+                section.seats[i][j] = new Seat(i, j, vitalSpace, new Point(x,y), theta,number++, true);
             }
         }
 
@@ -150,11 +157,8 @@ public final class SeatedSection extends AbstractSection {
             Point iterH = new Point(iterV);
             double dh= 0;
             while (dh<=1.3*boxWidth){
-                Seat tempSeat = new Seat(i, j, vitalSpace, iterH,alpha, false);
-                boolean contains = true;
-                for (Point p:tempSeat.getShape().getPoints()){
-                    if (!collider.hasCollide( p.x,p.y,tolerantShape)){contains=false;}
-                }
+                Seat tempSeat = new Seat(i, j, vitalSpace, iterH,alpha,0, false);
+                boolean contains = collider.contains(tempSeat.getShape(),tolerantShape);
                 if (contains){
                     if(tempSeats.size()<=i){tempSeats.add(new Vector<>()); emptyRow=false;}
                     tempSeats.elementAt(i).add(tempSeat);
@@ -181,12 +185,14 @@ public final class SeatedSection extends AbstractSection {
         }
 
         int a=0;
+        int number=1;
         seats = new Seat[tempSeats.size()][];
         for(Vector<Seat> row: tempSeats){
             int b=0;
             int rowSize = row.size();
             seats[a]=new Seat[rowSize];
             for(Seat seat: row){
+                seat.setNumber(number++);
                 seats[a][b]=seat;
                 b++;
             }
@@ -207,19 +213,21 @@ public final class SeatedSection extends AbstractSection {
         Vector<Point> points = getShape().getPoints();
         double x = points.firstElement().x;
         double y = points.firstElement().y;
+        int number = 1;
         this.setShape(Rectangle.create(x, y,getColumns()*vitalSpace.getWidth(),getRows()*vitalSpace.getHeight(), new int[4],theta));
         for (int i = 0; i < getRows(); i++) {
             for (int j = 0; j < getColumns(); j++) {
-                seats[i][j] = new Seat(i, j, vitalSpace, getShape().getPoints().get(0),theta, true);
+                seats[i][j] = new Seat(i, j, vitalSpace, getShape().getPoints().get(0),theta,number++, true);
             }
         }
     }
 
     public void setDimensions(int columns, int rows) {
         seats = new Seat[rows][columns];
+        int number=1;
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
-                seats[i][j] = new Seat(i, j, vitalSpace, getShape().getPoints().get(0),theta, true);
+                seats[i][j] = new Seat(i, j, vitalSpace, getShape().getPoints().get(0),theta, number++, true);
             }
         }
         refresh();
@@ -300,5 +308,9 @@ public final class SeatedSection extends AbstractSection {
         }
         Shape tolerantShape = new Polygon(points, new int[4]);
         return tolerantShape;
+    }
+    @Override
+    public boolean isAuto(){
+        return autoSetSeat;
     }
 }

@@ -12,9 +12,7 @@ import app.domain.shape.ShapeBuilder;
 import app.domain.shape.ShapeBuilderFactory;
 import app.domain.section.SectionFactory;
 
-import java.util.HashMap;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.BiConsumer;
 
 public class Controller {
@@ -31,6 +29,12 @@ public class Controller {
     private double scale = 1.0;
     private Selection selection;
     private Section preSelection;
+    private Seat hoveredSeat;
+    private Section hoveredSection;
+    private boolean seatHovered = false;
+    private Timer timer = new Timer();
+    private Observer observer;
+
 
     public Controller(Collider collider) {
         this.collider = Objects.requireNonNull(collider);
@@ -72,6 +76,7 @@ public class Controller {
     }
 
     public void mouseDragged(int x, int y) {
+        observer.onLeave();
         double scaleX = x / scale;
         double scaleY = y / scale;
         double dx = scaleX - cursor.x;
@@ -83,11 +88,13 @@ public class Controller {
                 @Override
                 public void visit(Stage stage) {
                     move(stage);
+                    autoSetSeat();
                 }
 
                 @Override
                 public void visit(SeatedSection section) {
                     move(section);
+                    autoSetSeat();
                 }
 
                 @Override
@@ -117,6 +124,7 @@ public class Controller {
         ui.repaint();
     }
     public void mouseClicked(int x, int y) {
+        observer.onLeave();
         if (room == null) {
             return;
         }
@@ -131,9 +139,29 @@ public class Controller {
     }
 
     public void mouseMoved(int x, int y) {
+        seatHovered = false;
         double scaleX = x / scale;
         double scaleY = y / scale;
         cursor.set(scaleX, scaleY);
+        for (Section s: room.getSections()){
+            s.forEachSeats( seat -> {
+                if (selectionCheck(scaleX,scaleY,seat.getShape())){
+                    seatHovered = true;
+                    if (hoveredSeat!=seat) {
+                        observer.onLeave();
+                        hoveredSection=s;
+                        hoveredSeat=seat;
+                        timerReset();
+                    }
+                }
+            });
+        }
+        if (!seatHovered){
+            observer.onLeave();
+            timer.cancel();
+            timer.purge();
+            timer = new Timer();
+        }
         ui.repaint();
     }
 
@@ -213,11 +241,13 @@ public class Controller {
             @Override
             public void visit(Stage stage) {
                 rotate(stage);
+                autoSetSeat();
             }
 
             @Override
             public void visit(SeatedSection section) {
                 rotate(section);
+                autoSetSeat();
             }
 
             @Override
@@ -238,20 +268,39 @@ public class Controller {
 
         ui.repaint();
     }
+    public boolean isAutoSelected(){
+        if (selection == null) {
+            return false;
+        }
+        return selection.isAuto();
+    }
 
-    public void autoSetSeatSelected() {
+    public void autoSetSeatSelected(){
         if (selection == null) {
             return;
         }
         selection.accept(new SelectionAdapter() {
             @Override
             public void visit(SeatedSection section) {
-                if(!room.getStage().isPresent()){
-                    return;
-                }
-                section.autoSetSeats(room.getStage().get(),collider);
+                section.autoSetSeat=!section.autoSetSeat;
             }
         });
+    }
+
+    public void autoSetSeat() {
+        for (Section s: room.getSections()){
+            if(!room.getStage().isPresent()){
+                return;
+            }
+            s.accept(new SelectionAdapter() {
+                @Override
+                public void visit(SeatedSection section) {
+                    if (section.autoSetSeat){
+                        section.autoSetSeats(room.getStage().get(),collider);
+                    }
+                }
+            });
+        }
         ui.repaint();
     }
 
@@ -431,5 +480,29 @@ public class Controller {
             }
         }
         return true;
+    }
+
+    public void setObserver(Observer obs){
+        observer=obs;
+    }
+    private void timerReset(){
+        timer.cancel();
+        timer.purge();
+        timer = new Timer();
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                observer.onHover();
+            }
+        };
+        timer.schedule(task, 500);
+    }
+
+    public Seat getHoveredSeat() {
+        return hoveredSeat;
+    }
+
+    public Section getHoveredSection(){
+        return hoveredSection;
     }
 }

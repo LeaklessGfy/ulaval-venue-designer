@@ -39,12 +39,18 @@ public class IrregularSectionEdition  extends JFrame {
             section.setName(name.getText());
             section.setElevation(Double.parseDouble(elevationText.getText()));
             section.setVitalSpace(new VitalSpace(spaceWidth, spaceHeight));
-            controller.autoSetSeatSelected();
+            boolean check = false;
+            if(!section.autoSetSeat){section.autoSetSeat=true;
+            check=true;}
             section.forEachSeats(seat -> {
                 seat.setPrice(Double.parseDouble(priceText.getText()));
             });
             setVisible(false);
             dispose();
+            controller.autoSetSeat();
+            if (check){
+                section.autoSetSeat=false;
+            }
         });
 
         cancelButton.addActionListener(e -> {

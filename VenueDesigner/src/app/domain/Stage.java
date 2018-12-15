@@ -80,4 +80,9 @@ public final class Stage implements Selection {
         this.elevation = elevation;
     }
 
+    @Override
+    public boolean isAuto(){
+        return false;
+    }
+
 }
