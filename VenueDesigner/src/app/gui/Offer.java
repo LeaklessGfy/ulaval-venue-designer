@@ -20,19 +20,31 @@ public class Offer extends JFrame{
 
     private JTextField tfOfferName;
     private JTextField tfAmount;
-    private JList list1;
+    private JList listOffers;
+    private JList listSeat;
     private JLabel typeAmount;
     private JPanel panelEdit;
-
+    private JPanel panelSeat;
+    private JButton removeSeatButton;
+    private JButton addSeatButton;
+    private JLabel labelTotSeats;
 
 
     Offer(Controller controller, UIPanel ui, ActionEvent event) {
         Objects.requireNonNull(controller);
         setContentPane(panelMain);
         panelEdit.setVisible(false);
+        panelSeat.setVisible(false);
         ButtonGroup Discount = new ButtonGroup();
         Discount.add(radioButtonPercent);
         Discount.add(radioButtonDollar);
+
+        DefaultListModel modelOffers = new DefaultListModel();
+        DefaultListModel modelSeat = new DefaultListModel();
+        listOffers.setModel(modelOffers);
+        listSeat.setModel(modelSeat);
+
+
 
         //Room room = controller.getRoom(); // voir apres pour get des trucs genre sections et sieges
 
@@ -85,11 +97,28 @@ public class Offer extends JFrame{
 
         removeButton.addActionListener( e -> {});
 
-        okButtonOffer.addActionListener(e->{});
-
+        ////////// ajouter un element dans la liste des offres////
+        okButtonOffer.addActionListener(e->{
+            panelEdit.setVisible(false);
+            //modelOffers.addElement();
+        });
+        ///////////////////////////////////////////////
         cancelButtonOffer.addActionListener(e->{
             panelEdit.setVisible(false);
+            tfOfferName.setText("");
+            tfAmount.setText("");
+            radioButtonPercent.setSelected(false);
+            radioButtonDollar.setSelected(false);
         });
+
+        addSeatButton.addActionListener(e->{
+
+        });
+
+        removeSeatButton.addActionListener(e->{
+
+        });
+
 
         /*removeButton.addActionListener( e -> {
             setVisible(false);

@@ -205,7 +205,7 @@ public final class MainWindow extends Frame {
         // debut apparition offers
         offers.addActionListener(e->{
             JFrame Offer = new Offer(controller, drawingPanel, e);
-            Offer.setSize(500, 500);
+            Offer.setSize(700, 500);// plus tard ce sera 500
             Offer.setVisible(true);
         });
 
