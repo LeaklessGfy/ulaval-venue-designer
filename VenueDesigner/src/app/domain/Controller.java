@@ -19,6 +19,7 @@ import java.util.function.BiConsumer;
 
 public class Controller {
     private final Collider collider;
+    private final ColliderValidator validator;
     private final Point cursor = new Point(-1, -1);
     private final Point offset = new Point(15, 15);
     private final HashMap<Mode, BiConsumer<Integer, Integer>> clickActions = new HashMap<>();
@@ -33,6 +34,7 @@ public class Controller {
 
     public Controller(Collider collider) {
         this.collider = Objects.requireNonNull(collider);
+        this.validator = new ColliderValidator(collider);
         this.room = new Room(900, 900, new VitalSpace(30, 30));
     }
 
@@ -256,21 +258,10 @@ public class Controller {
     public void createRegularSection(int x, int y, int xInt, int yInt) {
         if (room != null && room.getStage().isPresent()) {
             Section section = SeatedSection.create(x - offset.x, y - offset.y, xInt, yInt, room.getVitalSpace(), room.getStage().get());
-            if (!room.validShape(section.getShape(), new Point())) {
-                return;
+            if (validator.validShape(section.getShape(), room, new Point())) {
+                room.addSection(section);
+                mode = Mode.None;
             }
-            if (room.getStage().isPresent()) {
-                if (collider.hasCollide(room.getStage().get().getShape(), section.getShape())) {
-                    return;
-                }
-            }
-            for (Section s : room.getSections()) {
-                if (collider.hasCollide(s.getShape(), section.getShape())) {
-                    return;
-                }
-            }
-            room.addSection(section);
-            mode = Mode.None;
         }
     }
 
@@ -338,18 +329,8 @@ public class Controller {
         current.correctLastPoint();
         Shape shape = current.build();
         current = null;
-        if (!room.validShape(shape, offset)) {
+        if (!validator.validShape(shape, room, offset)) {
             return;
-        }
-        if (room.getStage().isPresent()) {
-            if (collider.hasCollide(room.getStage().get().getShape(), shape)) {
-                return;
-            }
-        }
-        for (Section section : room.getSections()) {
-            if (collider.hasCollide(shape, section.getShape())) {
-                return;
-            }
         }
         for (Point p : shape.getPoints()) {
             p.x -= offset.x;
@@ -359,7 +340,9 @@ public class Controller {
             room.setStage(new Stage(shape));
         } else {
             Section s = SectionFactory.create(mode, shape, room.getVitalSpace());
-            if (mode == Mode.IrregularSeatedSection){s.autoSetSeats(room.getStage().get(), collider);}
+            if (mode == Mode.IrregularSeatedSection){
+                s.autoSetSeats(room.getStage().get(), collider);
+            }
             room.addSection(s);
         }
         mode = Mode.None;
@@ -368,7 +351,7 @@ public class Controller {
     private boolean isMovable(Shape shape, double x, double y) {
         Shape predict = shape.clone();
         predict.move(x, y, offset);
-        return validPredictedShape(shape, predict);
+        return validator.validPredictShape(shape, predict, room, new Point());
     }
 
     private boolean isRotatable(Shape shape, boolean direction) {
@@ -378,28 +361,11 @@ public class Controller {
         } else {
             predict.rotate(31*Math.PI/32,predict.computeCentroid());
         }
-        return validPredictedShape(shape, predict);
-    }
-
-    private boolean validPredictedShape(Shape shape, Shape predict){
-        if (!room.validShape(predict, new Point())) {
-            return false;
-        }
-        if (room.getStage().isPresent() && shape != room.getStage().get().getShape()) {
-            if (collider.hasCollide(room.getStage().get().getShape(), predict)) {
-                return false;
-            }
-        }
-        for (Section section : room.getSections()) {
-            if (section.getShape() != shape && collider.hasCollide(section.getShape(), predict)) {
-                return false;
-            }
-        }
-        return true;
+        return validator.validPredictShape(shape, predict, room, new Point());
     }
 
     private boolean selectionCheck(double x, double y, Shape shape){
-        if (collider.hasCollide(x - offset.x, y - offset.y, shape)){
+        if (collider.hasCollide(x - offset.x, y - offset.y, shape)) {
             mode = Mode.Selection;
             return true;
         }
@@ -439,22 +405,7 @@ public class Controller {
     public boolean validateSectionDimensions(Section section, int nbColums, int nbRows, double spaceWidth, double spaceHeight) {
         VitalSpace vs = new VitalSpace(spaceWidth, spaceHeight);
         Section predict = SeatedSection.create(section.getShape().getPoints().firstElement().x, section.getShape().getPoints().firstElement().y, nbColums, nbRows, vs, room.getStage().get());
-        if (!room.validShape(predict.getShape(), new Point())) {
-            return false;
-        }
-        if (room.getStage().isPresent()) {
-            if (collider.hasCollide(room.getStage().get().getShape(), predict.getShape())) {
-                return false;
-            }
-        }
-        for (Section s : room.getSections()) {
-            if (!s.equals(section)) {
-                if (collider.hasCollide(s.getShape(), predict.getShape())) {
-                    return false;
-                }
-            }
-        }
-        return true;
+        return validator.validPredictShape(section.getShape(), predict.getShape(), room, new Point());
     }
 
     public boolean validateStageDimensions(Stage stage, double width, double height) {
@@ -462,14 +413,6 @@ public class Controller {
         Stage predict = new Stage(shape);
         predict.setWidth(width);
         predict.setHeight(height);
-        if (!room.validShape(predict.getShape(), new Point())) {
-            return false;
-        }
-        for (Section s : room.getSections()) {
-            if (collider.hasCollide(s.getShape(), predict.getShape())) {
-                return false;
-            }
-        }
-        return true;
+        return validator.validPredictShape(stage.getShape(), predict.getShape(), room, new Point());
     }
 }
