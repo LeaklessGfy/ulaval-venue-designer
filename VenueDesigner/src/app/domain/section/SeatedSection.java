@@ -158,10 +158,7 @@ public final class SeatedSection extends AbstractSection {
             double dh= 0;
             while (dh<=1.3*boxWidth){
                 Seat tempSeat = new Seat(i, j, vitalSpace, iterH,alpha,0, false);
-                boolean contains = true;
-                for (Point p:tempSeat.getShape().getPoints()){
-                    if (!collider.hasCollide( p.x,p.y,tolerantShape)){contains=false;}
-                }
+                boolean contains = collider.contains(tempSeat.getShape(),tolerantShape);
                 if (contains){
                     if(tempSeats.size()<=i){tempSeats.add(new Vector<>()); emptyRow=false;}
                     tempSeats.elementAt(i).add(tempSeat);

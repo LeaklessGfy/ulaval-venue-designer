@@ -74,6 +74,7 @@ public class Controller {
     }
 
     public void mouseDragged(int x, int y) {
+        observer.hideSeatInfo();
         double scaleX = x / scale;
         double scaleY = y / scale;
         double dx = scaleX - cursor.x;
@@ -121,6 +122,7 @@ public class Controller {
         ui.repaint();
     }
     public void mouseClicked(int x, int y) {
+        observer.hideSeatInfo();
         if (room == null) {
             return;
         }

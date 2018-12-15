@@ -39,7 +39,7 @@ public final class StandingSection extends AbstractSection {
 
     @Override
     public <T> void accept(T g, Painter<T> painter) {
-        getShape().accept(g, painter);
+        painter.draw(g, this);
     }
 
     @Override
