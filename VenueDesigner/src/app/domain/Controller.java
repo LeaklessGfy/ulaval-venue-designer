@@ -485,6 +485,7 @@ public class Controller {
     public void setObserver(Observer obs){
         observer=obs;
     }
+    
     private void timerReset(){
         timer.cancel();
         timer.purge();
