@@ -79,4 +79,9 @@ public final class StandingSection extends AbstractSection {
     public double getPrice(){
         return price;
     }
+
+    @Override
+    public boolean isAuto(){
+        return false;
+    }
 }
