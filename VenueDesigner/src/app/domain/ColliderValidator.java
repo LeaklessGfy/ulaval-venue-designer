@@ -5,18 +5,17 @@ import app.domain.shape.Point;
 import app.domain.shape.Shape;
 
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Vector;
 
-public class ColliderValidator {
+final class ColliderValidator {
     private final Collider collider;
 
-    public ColliderValidator(Collider collider) {
+    ColliderValidator(Collider collider) {
         this.collider = Objects.requireNonNull(collider);
     }
 
-    public boolean validShape(Shape shape, Room room, Point offset) {
-        if (!validShapeRoom(shape, room, offset)) {
+    boolean validShape(Shape shape, Room room, Point offset) {
+        if (invalidShapeRoom(shape, room, offset)) {
             return false;
         }
         if (room.getStage().isPresent()) {
@@ -32,8 +31,8 @@ public class ColliderValidator {
         return true;
     }
 
-    public boolean validPredictShape(Shape shape, Shape predict, Room room, Point offset) {
-        if (!validShapeRoom(predict, room, offset)) {
+    boolean validPredictShape(Shape shape, Shape predict, Room room, Point offset) {
+        if (invalidShapeRoom(predict, room, offset)) {
             return false;
         }
         if (room.getStage().isPresent() && shape != room.getStage().get().getShape()) {
@@ -49,20 +48,20 @@ public class ColliderValidator {
         return true;
     }
 
-    private boolean validShapeRoom(Shape shape, Room room, Point offset) {
+    boolean invalidShapeRoom(Shape shape, Room room, Point offset) {
         Vector<Point> points = room.getShape().getPoints();
         double x = points.firstElement().x;
         double y = points.firstElement().y;
 
         for (Point p : shape.getPoints()) {
             if (p.x - offset.x < x || p.x - offset.x > x + room.getWidth()) {
-                return false;
+                return true;
             }
             if (p.y - offset.y < y || p.y - offset.y > y + room.getHeight()) {
-                return false;
+                return true;
             }
         }
 
-        return true;
+        return false;
     }
 }

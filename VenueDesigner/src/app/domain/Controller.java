@@ -415,4 +415,21 @@ public class Controller {
         predict.setHeight(height);
         return validator.validPredictShape(stage.getShape(), predict.getShape(), room, new Point());
     }
+
+    public boolean validateRoomDimensions(double roomWidth, double roomHeight, double vitalSpaceWidth, double vitalSpaceHeight) {
+        VitalSpace vs = new VitalSpace(vitalSpaceWidth, vitalSpaceHeight);
+        Room predict = new Room(roomWidth, roomHeight, vs);
+        Optional<Stage> opt = room.getStage();
+        if (opt.isPresent()) {
+            if (validator.invalidShapeRoom(opt.get().getShape(), predict, new Point())) {
+                return false;
+            }
+            for (Section section : room.getSections()) {
+                if (!validator.invalidShapeRoom(section.getShape(), predict, new Point())) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 }

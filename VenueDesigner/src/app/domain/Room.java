@@ -2,7 +2,6 @@ package app.domain;
 
 import app.domain.section.Section;
 import app.domain.shape.Painter;
-import app.domain.shape.Point;
 import app.domain.shape.Rectangle;
 import app.domain.shape.Shape;
 import com.fasterxml.jackson.annotation.*;
@@ -79,20 +78,6 @@ public final class Room implements Drawable {
 
     public List<Section> getSections() {
         return sections;
-    }
-
-    public boolean validShape(Shape s, Point offset) {
-        double x = shape.getPoints().firstElement().x;
-        double y = shape.getPoints().firstElement().y;
-        for (Point p : s.getPoints()) {
-            if (p.x - offset.x < x || p.x - offset.x > x + width) {
-                return false;
-            }
-            if (p.y - offset.y < y || p.y - offset.y > y + height) {
-                return false;
-            }
-        }
-        return true;
     }
 
     @Override

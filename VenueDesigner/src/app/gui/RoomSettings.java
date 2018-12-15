@@ -4,12 +4,10 @@ import app.domain.*;
 import app.domain.section.SeatedSection;
 import app.domain.section.Section;
 import app.domain.selection.SelectionAdapter;
-import app.domain.shape.Point;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.util.Objects;
-import java.util.Optional;
 
 import java.util.Locale;
 import static app.gui.GUIUtils.isNotNumber;
@@ -44,7 +42,8 @@ public final class RoomSettings extends JFrame {
             if (event.getActionCommand().equals("New")) {
                 controller.createRoom(roomWidth, roomHeight, vitalSpaceWidth, vitalSpaceHeight);
             } else {
-                if (!validateDimensions(room, roomWidth, roomHeight, vitalSpaceWidth, vitalSpaceHeight)) {
+                if (!controller.validateRoomDimensions(roomWidth, roomHeight, vitalSpaceWidth, vitalSpaceHeight)) {
+                    JOptionPane.showMessageDialog(null, "Inconsistent dimensions.", "Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
                 room.setDimensions(roomWidth, roomHeight);
@@ -69,25 +68,6 @@ public final class RoomSettings extends JFrame {
             setVisible(false);
             dispose();
         });
-    }
-
-    private boolean validateDimensions(Room room, double roomWidth, double roomHeight, double vitalSpaceWidth, double vitalSpaceHeight) {
-        VitalSpace vs = new VitalSpace(vitalSpaceWidth, vitalSpaceHeight);
-        Room predict = new Room(roomWidth, roomHeight, vs);
-        Optional<Stage> opt = room.getStage();
-        if (opt.isPresent()) {
-            if (!predict.validShape(opt.get().getShape(), new Point())) {
-                JOptionPane.showMessageDialog(null, "Inconsistent dimensions.", "Error", JOptionPane.ERROR_MESSAGE);
-                return false;
-            }
-            for (Section section : room.getSections()) {
-                if (!predict.validShape(section.getShape(), new Point())) {
-                    JOptionPane.showMessageDialog(null, "Inconsistent dimensions.", "Error", JOptionPane.ERROR_MESSAGE);
-                    return false;
-                }
-            }
-        }
-        return true;
     }
 
     private boolean validateForm() {
