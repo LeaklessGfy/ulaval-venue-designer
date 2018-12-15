@@ -269,10 +269,14 @@ public final class MainWindow extends Frame {
                 if (!filename.endsWith(extension)) {
                     filename += extension;
                 }
-                BufferedImage image = new BufferedImage(drawingPanel.getWidth(), drawingPanel.getHeight(), BufferedImage.TYPE_INT_RGB);
+                app.domain.shape.Point controllerOffset = new app.domain.shape.Point(controller.getOffset().x, controller.getOffset().y);
+                double controllerScale = controller.getScale();
+                double tempScale = controller.saveImage(drawingPanel.getWidth(), drawingPanel.getHeight());
+                BufferedImage image = new BufferedImage((int)(controller.getRoom().getWidth() * tempScale), (int)(controller.getRoom().getHeight() * tempScale), BufferedImage.TYPE_INT_RGB);
                 Graphics2D g = image.createGraphics();
                 drawingPanel.paint(g);
                 g.dispose();
+                controller.saveImage(controllerOffset, controllerScale);
                 try {
                     ImageIO.write(image, "png", new File(filename));
                 } catch (IOException error) {

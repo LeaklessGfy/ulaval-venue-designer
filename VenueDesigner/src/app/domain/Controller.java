@@ -472,4 +472,29 @@ public class Controller {
         }
         return true;
     }
+
+    public double saveImage(int panelWidth, int panelHeight) {
+        double maxRoom;
+        int maxPanel;
+        double roomWidth = room.getWidth();
+        double roomHeight = room.getHeight();
+        if (roomHeight > roomWidth || roomWidth < 2 * roomHeight) {
+            maxRoom = roomHeight;
+            maxPanel = panelHeight;
+        } else {
+            maxRoom = roomWidth;
+            maxPanel = panelWidth;
+        }
+        scale = (0.9 * maxPanel) / maxRoom;
+        offset.x = 0;
+        offset.y = 0;
+        return scale;
+    }
+
+    public void saveImage(Point offset, double scale) {
+        this.offset.x = offset.x;
+        this.offset.y = offset.y;
+        this.scale = scale;
+        ui.repaint();
+    }
 }
