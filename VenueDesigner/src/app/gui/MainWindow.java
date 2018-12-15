@@ -201,7 +201,16 @@ public final class MainWindow extends Frame {
         edition.add(room);
         edition.add(offers);
         edition.add(grid);
+        /////////////////////////////
+        // debut apparition offers
+        offers.addActionListener(e->{
+            JFrame Offer = new Offer(controller, drawingPanel, e);
+            Offer.setSize(500, 500);
+            Offer.setVisible(true);
+        });
 
+        // fin apparition offers
+        /////////////////////////////
         room.addActionListener( e -> {
             JFrame roomSettings = new RoomSettings(controller, drawingPanel, e);
             roomSettings.setSize(300, 400);

@@ -12,17 +12,29 @@ import java.awt.event.ActionEvent;
 import java.util.Objects;
 
 public class Offer extends JFrame{
+    private JPanel panelMain;
     private JButton addButton;
     private JButton removeButton;
-    private JList list1;
-    private JPanel panelMain;
     private JButton okButton;
     private JButton cancelButton;
+    private JRadioButton radioButtonPercent;
+    private JRadioButton radioButtonDollar;
+
+
+    private JTextField TfOfferName;
+    private JTextField TfAmount;
+    private JList list1;
+    private JLabel typeAmount;
+    private JPanel Panel2;
+    private JButton okButtonOffer;
+    private JButton cancelButtonOffer;
 
 
     Offer(Controller controller, UIPanel ui, ActionEvent event) {
         Objects.requireNonNull(controller);
         setContentPane(panelMain);
+
+
         //Room room = controller.getRoom(); // voir apres pour get des trucs genre sections et sieges
 
         /*okButton.addActionListener(e -> {
@@ -52,14 +64,22 @@ public class Offer extends JFrame{
             ui.repaint();
         });*/
 
+        okButton.addActionListener(e ->{});
+
         addButton.addActionListener(e ->{});
 
         cancelButton.addActionListener(e ->{});
 
-        removeButton.addActionListener( e -> {
+        radioButtonPercent.addActionListener(e->{});
+
+        radioButtonDollar.addActionListener(e->{});
+
+        removeButton.addActionListener( e -> {});
+
+        /*removeButton.addActionListener( e -> {
             setVisible(false);
             dispose();
-        });
+        });*/
     }
 
 }
