@@ -13,6 +13,7 @@ import static app.gui.GUIUtils.isNotInteger;
 import static app.gui.GUIUtils.isNotNumber;
 
 public final class SectionEdition extends JFrame {
+    private JTextField name;
     private JTextField columns;
     private JTextField rows;
     private JTextField elevation;
@@ -26,6 +27,7 @@ public final class SectionEdition extends JFrame {
     SectionEdition(Controller controller, SeatedSection section, UIPanel panel) {
         setContentPane(panelMain);
         VitalSpace vitalSpace = section.getVitalSpace();
+        name.setText(section.getName());
         columns.setText(section.getColumns() + "");
         rows.setText(section.getRows() + "");
         elevation.setText(String.format(Locale.ROOT,"%.2f",section.getElevation()));
@@ -41,6 +43,7 @@ public final class SectionEdition extends JFrame {
             double spaceWidth = Double.parseDouble(vitalSpaceWidth.getText());
             double spaceHeight = Double.parseDouble(vitalSpaceHeight.getText());
             if (controller.validateSectionDimensions(section, nbColums, nbRows, spaceWidth, spaceHeight)) {
+                section.setName(name.getText());
                 section.setDimensions(nbColums, nbRows);
                 section.setElevation(Double.parseDouble(elevation.getText()));
                 if (spaceWidth != vitalSpace.getWidth() || spaceHeight != vitalSpace.getHeight()) {

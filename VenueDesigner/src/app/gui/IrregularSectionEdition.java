@@ -11,6 +11,7 @@ import java.util.Locale;
 import static app.gui.GUIUtils.isNotNumber;
 
 public class IrregularSectionEdition  extends JFrame {
+    private JTextField name;
     private JTextField elevationText;
     private JPanel panel1;
     private JTextField priceText;
@@ -22,9 +23,10 @@ public class IrregularSectionEdition  extends JFrame {
     IrregularSectionEdition(Controller controller, SeatedSection section, UIPanel panel) {
         setContentPane(panel1);
         VitalSpace vitalSpace = section.getVitalSpace();
-        elevationText.setText(String.format(Locale.ROOT,"%.2f",section.getElevation()));
-        vsWidthText.setText(String.format(Locale.ROOT,"%.2f",vitalSpace.getWidth()));
-        vsHeightText.setText(String.format(Locale.ROOT,"%.2f",vitalSpace.getHeight()));
+        name.setText(section.getName());
+        elevationText.setText(String.format(Locale.ROOT,"%.2f", section.getElevation()));
+        vsWidthText.setText(String.format(Locale.ROOT,"%.2f", vitalSpace.getWidth()));
+        vsHeightText.setText(String.format(Locale.ROOT,"%.2f", vitalSpace.getHeight()));
 
         okButton.addActionListener(e -> {
             if (!isValidForm()) {
@@ -34,6 +36,7 @@ public class IrregularSectionEdition  extends JFrame {
             double spaceWidth = Double.parseDouble(vsWidthText.getText());
             double spaceHeight = Double.parseDouble(vsHeightText.getText());
 
+            section.setName(name.getText());
             section.setElevation(Double.parseDouble(elevationText.getText()));
             section.setVitalSpace(new VitalSpace(spaceWidth, spaceHeight));
             controller.autoSetSeatSelected();

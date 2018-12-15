@@ -32,6 +32,11 @@ abstract class AbstractSection implements Section {
     }
 
     @Override
+    public void setName(String name) {
+        this.name = name == null ? "" : name;
+    }
+
+    @Override
     public double getElevation() {
         return elevation;
     }

@@ -22,6 +22,7 @@ import java.util.function.Consumer;
 })
 public interface Section extends Drawable, Selection {
     String getName();
+    void setName(String name);
     double getElevation();
     void setElevation(double elevation);
     Seat[][] getSeats();

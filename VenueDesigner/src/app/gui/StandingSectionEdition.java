@@ -10,6 +10,7 @@ import static app.gui.GUIUtils.isNotNumber;
 import static app.gui.GUIUtils.isNotInteger;
 
 public class StandingSectionEdition extends JFrame{
+    private JTextField name;
     private JButton okButton;
     private JPanel panel1;
     private JTextField elevation;
@@ -20,6 +21,7 @@ public class StandingSectionEdition extends JFrame{
     StandingSectionEdition(StandingSection section, UIPanel panel) {
         setContentPane(panel1);
 
+        name.setText(section.getName());
         elevation.setText(String.format(Locale.ROOT,"%.2f",section.getElevation()));
         max.setText(section.getMax()+"");
         price.setText(String.format(Locale.ROOT,"%.2f",section.getPrice()));
@@ -28,6 +30,7 @@ public class StandingSectionEdition extends JFrame{
             if (!isValidForm()) {
                 return;
             }
+            section.setName(name.getText());
             section.setElevation(Double.parseDouble(elevation.getText()));
             section.setPrice(Double.parseDouble(price.getText()));
             section.setMax(Integer.parseInt(max.getText()));
