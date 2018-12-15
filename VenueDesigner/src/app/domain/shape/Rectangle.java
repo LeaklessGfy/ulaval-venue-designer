@@ -73,7 +73,7 @@ public final class Rectangle extends AbstractShape {
     public static Rectangle create(double x, double y, double width, double height, int[] color, double theta) {
         Vector<Point> points = new Vector<>();
         double diag = Math.sqrt(Math.pow(height,2)+Math.pow(width,2));
-        double alpha = Math.atan((double )height/(double) width);
+        double alpha = Math.atan(height/width);
         points.add(new Point(x, y));
         points.add(new Point(x+width*Math.cos(theta-Math.PI/2), y+width*Math.sin(theta-Math.PI/2)));
         points.add(new Point(x+diag*Math.cos(theta-Math.PI/2+alpha),y +diag*Math.sin(theta-Math.PI/2+alpha)));

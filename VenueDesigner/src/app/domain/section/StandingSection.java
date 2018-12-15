@@ -33,11 +33,6 @@ public final class StandingSection extends AbstractSection {
     }
 
     @Override
-    public void move(double x, double y) {
-        getShape().move(x, y);
-    }
-
-    @Override
     public void move(double x, double y, Point offset) {
         getShape().move(x, y, offset);
     }

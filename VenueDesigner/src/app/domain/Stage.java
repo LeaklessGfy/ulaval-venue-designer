@@ -30,11 +30,6 @@ public final class Stage implements Selection {
     }
 
     @Override
-    public void move(double x, double y) {
-        shape.move(x, y);
-    }
-
-    @Override
     public void move(double x, double y, Point offset) {
         shape.move(x, y, offset);
     }

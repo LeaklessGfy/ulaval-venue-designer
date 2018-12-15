@@ -15,7 +15,6 @@ import java.util.Vector;
 import java.util.function.Consumer;
 
 public final class SeatedSection extends AbstractSection {
-
     @JsonProperty
     public boolean isRegular;
     @JsonProperty
@@ -44,6 +43,7 @@ public final class SeatedSection extends AbstractSection {
 
     public static SeatedSection create(double x, double y, int columns, int rows, VitalSpace vitalSpace, Stage stage) {
         Objects.requireNonNull(vitalSpace);
+        Objects.requireNonNull(stage);
         Point stageCenter = stage.getShape().computeCentroid();
         double dx = stageCenter.x-x;
         double dy = stageCenter.y-y;
@@ -52,29 +52,23 @@ public final class SeatedSection extends AbstractSection {
         dy /= d;
         Point perpPoint = new Point(x-dy*columns*vitalSpace.getWidth()/2,y+dx*columns*vitalSpace.getWidth()/2);
 
-        double theta=thetaCalc(perpPoint,stageCenter);
+        double theta = thetaCalc(perpPoint,stageCenter);
         int[] color = {63,63,76,255};
         Rectangle rectangle = Rectangle.create(x, y,columns*vitalSpace.getWidth(),rows*vitalSpace.getHeight(), color ,theta);
-
 
         SeatedSection section = new SeatedSection(null, 0, rectangle, vitalSpace);
         section.theta = theta;
         section.seats = new Seat[rows][columns];
         section.setElevation(0.0);
-        section.isRegular=true;
+        section.isRegular = true;
 
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
-                section.seats[i][j] = new Seat(i, j, vitalSpace, new Point(x,y),theta, true);
+                section.seats[i][j] = new Seat(i, j, vitalSpace, new Point(x,y), theta, true);
             }
         }
 
         return section;
-    }
-
-    @Override
-    public void move(double x, double y) {
-        move(x, y, new Point());
     }
 
     @Override
@@ -84,8 +78,8 @@ public final class SeatedSection extends AbstractSection {
             Point seatCenter = seat.getShape().computeCentroid();
             double dx = ref.x-seatCenter.x;
             double dy = ref.y-seatCenter.y;
-            seat.move(x - dx,y-dy, offset);});
-
+            seat.move(x - dx,y-dy, offset);
+        });
         getShape().move(x, y, offset);
     }
 
@@ -307,6 +301,4 @@ public final class SeatedSection extends AbstractSection {
         Shape tolerantShape = new Polygon(points, new int[4]);
         return tolerantShape;
     }
-
-
 }

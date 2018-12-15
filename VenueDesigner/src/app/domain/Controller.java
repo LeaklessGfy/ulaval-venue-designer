@@ -212,6 +212,7 @@ public class Controller {
             public void visit(Stage stage) {
                 rotate(stage);
             }
+
             @Override
             public void visit(SeatedSection section) {
                 rotate(section);
@@ -223,15 +224,16 @@ public class Controller {
             }
 
             private void rotate(Selection select){
-                if (isRotatable(selection.getShape(),direction)){
+                if (isRotatable(select.getShape(), direction)){
                     if (direction){
-                        selection.rotate(Math.PI/32);
+                        select.rotate(Math.PI/32);
                     } else {
-                        selection.rotate(-Math.PI/32);
+                        select.rotate(-Math.PI/32);
                     }
                 }
             }
         });
+
         ui.repaint();
     }
 

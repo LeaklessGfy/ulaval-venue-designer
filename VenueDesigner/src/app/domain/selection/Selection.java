@@ -6,7 +6,6 @@ import app.domain.shape.Shape;
 public interface Selection {
     boolean isSelected();
     void setSelected(boolean selected);
-    void move(double x, double y);
     void move(double x, double y, Point offset);
     void rotate(double thetaRadian);
     Shape getShape();

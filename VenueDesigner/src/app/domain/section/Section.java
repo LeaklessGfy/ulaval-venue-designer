@@ -14,8 +14,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import java.util.function.Consumer;
 
 @JsonTypeInfo(
-    use = JsonTypeInfo.Id.NAME,
-    include = JsonTypeInfo.As.PROPERTY
+    use = JsonTypeInfo.Id.NAME
 )
 @JsonSubTypes({
     @JsonSubTypes.Type(value = AbstractSection.class, name = "AbstractSection")
@@ -28,7 +27,6 @@ public interface Section extends Drawable, Selection {
     Seat[][] getSeats();
     Shape getShape();
     void setShape(Shape shape);
-    void move(double x, double y, Point offset);
     void forEachSeats(Consumer<Seat> consumer);
     void autoSetSeats(Stage stage, Collider collider);
 }
