@@ -69,7 +69,9 @@ public final class MainWindow extends Frame {
                     sectionSettings.setVisible(true);
                 } else {
                     controller.mouseClicked(e.getX(), e.getY());
-                    reset();
+                    if (controller.getMode() == Mode.None) {
+                        reset();
+                    }
                     tablePanel.setVisible(controller.getMode() == Mode.Selection);
                     regSeatedSection.setVisible(controller.getRoom().isStageSet());
                     standingSectionButton.setVisible(controller.getRoom().isStageSet());
@@ -294,17 +296,6 @@ public final class MainWindow extends Frame {
     }
 
     private void reset() {
-        if (controller.getMode() == Mode.None) {
-            stage.setBackground(UIManager.getColor("Button.background"));
-            stage.setForeground(UIManager.getColor("Button.foreground"));
-            regSeatedSection.setBackground(UIManager.getColor("Button.background"));
-            regSeatedSection.setForeground(UIManager.getColor("Button.foreground"));
-        }
-    }
-
-    private void toggleButton(JButton btn, Mode mode) {
-        boolean isEnabled = controller.toggleMode(mode);
-
         stage.setBackground(UIManager.getColor("Button.background"));
         stage.setForeground(UIManager.getColor("Button.foreground"));
         regSeatedSection.setBackground(UIManager.getColor("Button.background"));
@@ -313,7 +304,11 @@ public final class MainWindow extends Frame {
         irregularSeatedSectionButton.setForeground(UIManager.getColor("Button.foreground"));
         standingSectionButton.setBackground(UIManager.getColor("Button.background"));
         standingSectionButton.setForeground(UIManager.getColor("Button.foreground"));
+    }
 
+    private void toggleButton(JButton btn, Mode mode) {
+        boolean isEnabled = controller.toggleMode(mode);
+        reset();
         if (isEnabled) {
             btn.setBackground(Color.BLUE);
             btn.setForeground(Color.WHITE);
