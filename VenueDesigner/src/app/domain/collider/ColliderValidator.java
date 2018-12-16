@@ -1,5 +1,6 @@
-package app.domain;
+package app.domain.collider;
 
+import app.domain.Room;
 import app.domain.section.Section;
 import app.domain.shape.Point;
 import app.domain.shape.Shape;
@@ -7,14 +8,14 @@ import app.domain.shape.Shape;
 import java.util.Objects;
 import java.util.Vector;
 
-final class ColliderValidator {
+public final class ColliderValidator {
     private final Collider collider;
 
-    ColliderValidator(Collider collider) {
+    public ColliderValidator(Collider collider) {
         this.collider = Objects.requireNonNull(collider);
     }
 
-    boolean validShape(Shape shape, Room room, Point offset) {
+    public boolean validShape(Shape shape, Room room, Point offset) {
         if (invalidShapeRoom(shape, room, offset)) {
             return false;
         }
@@ -31,7 +32,7 @@ final class ColliderValidator {
         return true;
     }
 
-    boolean validPredictShape(Shape shape, Shape predict, Room room, Point offset) {
+    public boolean validPredictShape(Shape shape, Shape predict, Room room, Point offset) {
         if (invalidShapeRoom(predict, room, offset)) {
             return false;
         }
@@ -48,7 +49,7 @@ final class ColliderValidator {
         return true;
     }
 
-    boolean invalidShapeRoom(Shape shape, Room room, Point offset) {
+    public boolean invalidShapeRoom(Shape shape, Room room, Point offset) {
         Vector<Point> points = room.getShape().getPoints();
         double x = points.firstElement().x;
         double y = points.firstElement().y;

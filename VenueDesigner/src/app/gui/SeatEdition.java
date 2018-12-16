@@ -1,6 +1,6 @@
 package app.gui;
 
-import app.domain.Seat;
+import app.domain.seat.Seat;
 import app.domain.UIPanel;
 
 import javax.swing.*;

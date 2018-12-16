@@ -1,7 +1,7 @@
 package app.gui;
 
-import app.domain.Seat;
-import app.domain.SeatSection;
+import app.domain.seat.Seat;
+import app.domain.seat.SeatSection;
 import app.domain.UIPanel;
 
 import javax.swing.*;

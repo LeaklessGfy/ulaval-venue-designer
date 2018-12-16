@@ -1,7 +1,7 @@
 package app.domain.section;
 
-import app.domain.Collider;
-import app.domain.Seat;
+import app.domain.collider.Collider;
+import app.domain.seat.Seat;
 import app.domain.Stage;
 import app.domain.selection.SelectionVisitor;
 import app.domain.shape.Painter;

@@ -1,44 +1,25 @@
 package app.domain;
+
 import java.io.*;
-import com.fasterxml.jackson.core.*;
-import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-
-public final class JSONSerialize {
-    public static void serializeToJson(Room room, String path)
-    {
+final class JSONSerialize {
+    static void serializeToJson(Room room, String path) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.writeValue(new File(path), room);
-        }
-        catch (JsonMappingException e) {
-            e.printStackTrace();
-        }
-        catch (JsonGenerationException e) {
-            e.printStackTrace();
-        }
-        catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
-    public static Room deserializeFromJson(String path) {
-        Room room = null;
+    static Room deserializeFromJson(String path) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
-            room = objectMapper.readValue(new File(path), Room.class);
+            return objectMapper.readValue(new File(path), Room.class);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-        catch (JsonMappingException e) {
-            e.printStackTrace();
-        }
-        catch (JsonGenerationException e) {
-            e.printStackTrace();
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-        return room;
     }
 }
 

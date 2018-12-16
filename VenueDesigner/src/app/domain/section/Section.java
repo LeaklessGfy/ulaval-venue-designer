@@ -1,11 +1,10 @@
 package app.domain.section;
 
-import app.domain.Collider;
+import app.domain.collider.Collider;
 import app.domain.Drawable;
-import app.domain.Seat;
+import app.domain.seat.Seat;
 import app.domain.Stage;
 import app.domain.selection.Selection;
-import app.domain.shape.Point;
 import app.domain.shape.Shape;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;

@@ -1,6 +1,8 @@
 package app.gui;
 
 import app.domain.*;
+import app.domain.seat.Seat;
+import app.domain.seat.SeatSection;
 import app.domain.section.StandingSection;
 import app.domain.selection.SelectionAdapter;
 import app.domain.section.SeatedSection;

@@ -2,7 +2,7 @@ package app.gui;
 
 import app.domain.Controller;
 import app.domain.Room;
-import app.domain.Seat;
+import app.domain.seat.Seat;
 import app.domain.Stage;
 import app.domain.section.SeatedSection;
 import app.domain.section.StandingSection;

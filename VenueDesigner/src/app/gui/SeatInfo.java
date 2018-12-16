@@ -1,7 +1,6 @@
 package app.gui;
 
-import app.domain.Controller;
-import app.domain.Seat;
+import app.domain.seat.Seat;
 import app.domain.section.Section;
 
 import javax.swing.*;

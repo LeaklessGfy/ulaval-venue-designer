@@ -1,6 +1,6 @@
 package app.gui;
 
-import app.domain.Collider;
+import app.domain.collider.Collider;
 import app.domain.shape.Point;
 import app.domain.shape.Shape;
 

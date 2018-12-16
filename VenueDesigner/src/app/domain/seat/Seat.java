@@ -1,5 +1,6 @@
-package app.domain;
+package app.domain.seat;
 
+import app.domain.VitalSpace;
 import app.domain.selection.Selection;
 import app.domain.selection.SelectionVisitor;
 import app.domain.shape.Point;
@@ -17,7 +18,6 @@ public final class Seat implements Selection {
     private final Shape shape;
     private double price;
     private int number;
-    private int color;
 
     public Seat(int column, int row, VitalSpace vs, Point p0, int number) {
         this.column = column;
@@ -33,7 +33,6 @@ public final class Seat implements Selection {
     }
 
     public Seat(int row, int column, VitalSpace vs, Point p0, double theta, int number, boolean autoPositioning) {
-
         this.column = column;
         this.row = row;
         double x=0;

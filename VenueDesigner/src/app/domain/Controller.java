@@ -1,5 +1,9 @@
 package app.domain;
 
+import app.domain.collider.Collider;
+import app.domain.collider.ColliderValidator;
+import app.domain.seat.Seat;
+import app.domain.seat.SeatSection;
 import app.domain.section.SeatedSection;
 import app.domain.section.Section;
 import app.domain.section.StandingSection;
