@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public final class Offer {
 
     private  ArrayList<Seat> Lseat = new ArrayList();
-    public static ArrayList<Offer> Loffer = new ArrayList(); // attention au public
+    public static ArrayList<Offer> Loffer = new ArrayList();
     private double price;
     private String name;
     private String discountMode;

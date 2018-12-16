@@ -30,7 +30,6 @@ public class OfferWindow extends JFrame{
     private JButton editButton;
     private ArrayList<Offer> LOffer = new ArrayList();
 
-
     private boolean testB;
 
     OfferWindow(Controller controller, UIPanel ui, ActionEvent event) {
@@ -43,6 +42,12 @@ public class OfferWindow extends JFrame{
         DefaultListModel modelOffers = new DefaultListModel();
         listOffers.setModel(modelOffers);
 
+
+        for(Offer offer : Offer.Loffer){  //permet d ajouter des offres a la liste Loffer static dans la classe Offer
+            modelOffers.addElement(offer);
+            LOffer.add(offer);
+        }
+
         okButton.addActionListener(e ->{
             setVisible(false);
             dispose();
@@ -54,7 +59,7 @@ public class OfferWindow extends JFrame{
         });
 
         addButton.addActionListener(e ->{
-            testB = true; // le bouton add est clique
+            testB = true; // passe a true si le bouton add est clique si il est a false alors on veut editer
             panelEdit.setVisible(true);
         });
 
