@@ -7,8 +7,11 @@ import app.domain.UIPanel;
 
 import javax.swing.*;
 
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.util.Locale;
 
+import static app.gui.GUIUtils.colorToArray;
 import static app.gui.GUIUtils.isNotInteger;
 import static app.gui.GUIUtils.isNotNumber;
 
@@ -23,6 +26,9 @@ public final class SectionEdition extends JFrame {
     private JTextField vitalSpaceWidth;
     private JTextField vitalSpaceHeight;
     private JTextField price;
+    private JButton colorButton;
+
+    private final ColorPicker colorPicker = new ColorPicker();
 
     SectionEdition(Controller controller, SeatedSection section, UIPanel panel) {
         setContentPane(panelMain);
@@ -33,6 +39,18 @@ public final class SectionEdition extends JFrame {
         elevation.setText(String.format(Locale.ROOT,"%.2f",section.getElevation()));
         vitalSpaceWidth.setText(String.format(Locale.ROOT,"%.2f",vitalSpace.getWidth()));
         vitalSpaceHeight.setText(String.format(Locale.ROOT,"%.2f",vitalSpace.getHeight()));
+        price.setText(String.format(Locale.ROOT,"%.2f", 0.0));
+
+        colorButton.addActionListener(e -> {
+            colorPicker.setVisible(true);
+        });
+
+        colorPicker.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentHidden(ComponentEvent e) {
+                colorButton.setBackground(colorPicker.getColor());
+            }
+        });
 
         okButtton.addActionListener(e -> {
             if (!isValidForm()) {
@@ -51,6 +69,7 @@ public final class SectionEdition extends JFrame {
                 }
                 section.forEachSeats(seat -> {
                     seat.setPrice(Double.parseDouble(price.getText()));
+                    seat.getShape().setColor(colorToArray(colorPicker.getColor()));
                 });
                 setVisible(false);
                 dispose();
