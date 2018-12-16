@@ -8,7 +8,7 @@ import java.util.Objects;
 
 import static app.gui.GUIUtils.isNotInteger;
 
-public final class SectionSettings extends JFrame {
+final class SectionSettings extends JFrame {
     private JPanel panelMain;
     private JTextField columns;
     private JTextField rows;
@@ -21,6 +21,7 @@ public final class SectionSettings extends JFrame {
         Objects.requireNonNull(onSuccess);
         setContentPane(panelMain);
         setSize(300,400);
+        setVisible(true);
 
         okButton.addActionListener(e -> {
             if (!isValidForm()) {

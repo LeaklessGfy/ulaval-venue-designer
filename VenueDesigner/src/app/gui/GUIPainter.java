@@ -16,7 +16,7 @@ import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.util.Objects;
 
-public final class GUIPainter implements Painter<Graphics2D> {
+final class GUIPainter implements Painter<Graphics2D> {
     private final Controller controller;
 
     GUIPainter(Controller controller) {

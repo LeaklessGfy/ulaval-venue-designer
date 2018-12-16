@@ -16,7 +16,7 @@ import static app.gui.GUIUtils.colorToArray;
 import static app.gui.GUIUtils.isNotInteger;
 import static app.gui.GUIUtils.isNotNumber;
 
-public final class SectionEdition extends JFrame {
+final class SectionEdition extends JFrame {
     private JTextField name;
     private JTextField columns;
     private JTextField rows;
@@ -37,6 +37,7 @@ public final class SectionEdition extends JFrame {
         Objects.requireNonNull(panel);
         setContentPane(panelMain);
         setSize(300,400);
+        setVisible(true);
 
         VitalSpace vitalSpace = section.getVitalSpace();
         name.setText(section.getName());
@@ -103,7 +104,6 @@ public final class SectionEdition extends JFrame {
             JOptionPane.showMessageDialog(null, "One or more fields are not an integer.", "Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }
-
         return true;
     }
 }

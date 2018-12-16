@@ -7,7 +7,7 @@ import app.domain.shape.Shape;
 import java.awt.*;
 import java.awt.geom.Area;
 
-public final class GUICollider implements Collider {
+final class GUICollider implements Collider {
     @Override
     public boolean hasCollide(double x, double y, Shape shape) {
         Coordinates coordinates = GUIUtils.getCoordinates(shape.getPoints(), new Point(0, 0));

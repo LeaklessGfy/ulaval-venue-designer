@@ -13,7 +13,7 @@ import java.util.Objects;
 import static app.gui.GUIUtils.isNotNumber;
 import static app.gui.GUIUtils.colorToArray;
 
-public final class SeatEdition extends JFrame {
+final class SeatEdition extends JFrame {
     private JPanel panelMain;
     private JTextField price;
     private JButton okButton;
@@ -27,6 +27,7 @@ public final class SeatEdition extends JFrame {
         Objects.requireNonNull(panel);
         setContentPane(panelMain);
         setSize(300, 400);
+        setVisible(true);
 
         price.setText(String.format(Locale.ROOT,"%.2f", seat.getPrice()));
         colorButton.addActionListener(e -> {

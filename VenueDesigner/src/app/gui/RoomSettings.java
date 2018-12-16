@@ -12,7 +12,7 @@ import java.util.Objects;
 import java.util.Locale;
 import static app.gui.GUIUtils.isNotNumber;
 
-public final class RoomSettings extends JFrame {
+final class RoomSettings extends JFrame {
     private JPanel panelMain;
     private JTextField roomWidthTextField;
     private JTextField roomHeightTextField;
@@ -27,6 +27,7 @@ public final class RoomSettings extends JFrame {
         Objects.requireNonNull(event);
         setContentPane(panelMain);
         setSize(300, 400);
+        setVisible(true);
 
         Room room = controller.getRoom();
 

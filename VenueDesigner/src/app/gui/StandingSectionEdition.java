@@ -10,7 +10,7 @@ import java.util.Objects;
 import static app.gui.GUIUtils.isNotNumber;
 import static app.gui.GUIUtils.isNotInteger;
 
-public final class StandingSectionEdition extends JFrame{
+final class StandingSectionEdition extends JFrame{
     private JTextField name;
     private JButton okButton;
     private JPanel panelMain;
@@ -24,6 +24,7 @@ public final class StandingSectionEdition extends JFrame{
         Objects.requireNonNull(panel);
         setContentPane(panelMain);
         setSize(300, 400);
+        setVisible(true);
 
         name.setText(section.getName());
         elevation.setText(String.format(Locale.ROOT,"%.2f",section.getElevation()));

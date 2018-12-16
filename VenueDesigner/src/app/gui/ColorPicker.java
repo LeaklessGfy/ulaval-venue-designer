@@ -4,13 +4,15 @@ import javax.swing.*;
 import java.awt.BorderLayout;
 import java.awt.Color;
 
-public final class ColorPicker extends JFrame {
+final class ColorPicker extends JFrame {
     private JPanel panelMain;
     private JColorChooser colorChooser;
 
     ColorPicker() {
         setContentPane(panelMain);
         setSize(600, 300);
+        setVisible(true);
+
         colorChooser = new JColorChooser(Color.BLACK);
         colorChooser.setBorder(null);
         colorChooser.setBounds(0, 0, 600, 300);

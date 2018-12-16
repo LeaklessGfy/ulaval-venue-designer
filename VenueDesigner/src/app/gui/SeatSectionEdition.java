@@ -15,7 +15,7 @@ import static app.gui.GUIUtils.colorToArray;
 
 import static app.gui.GUIUtils.isNotNumber;
 
-public final class SeatSectionEdition extends JFrame {
+final class SeatSectionEdition extends JFrame {
     private JTextField price;
     private JButton okButton;
     private JButton cancelButton;
@@ -29,6 +29,7 @@ public final class SeatSectionEdition extends JFrame {
         Objects.requireNonNull(panel);
         setContentPane(panelMain);
         setSize(300, 400);
+        setVisible(true);
 
         price.setText(String.format(Locale.ROOT,"%.2f", 0.0));
 

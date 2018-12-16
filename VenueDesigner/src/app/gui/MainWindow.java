@@ -54,14 +54,13 @@ public final class MainWindow extends Frame implements Observer {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (controller.getMode() == Mode.RegularSeatedSection2) {
-                    JFrame sectionSettings = new SectionSettings(
+                    new SectionSettings(
                             controller,
                             drawingPanel,
                             (int)(e.getX() / controller.getScale()),
                             (int)(e.getY() / controller.getScale()),
                             () -> reset()
                     );
-                    sectionSettings.setVisible(true);
                 } else {
                     controller.mouseClicked(e.getX(), e.getY());
                     if (controller.getMode() == Mode.None) {
@@ -135,41 +134,35 @@ public final class MainWindow extends Frame implements Observer {
             controller.editSelected(new SelectionAdapter() {
                 @Override
                 public void visit(Stage stage) {
-                    JFrame stageEdition = new StageEdition(controller, stage, drawingPanel);
-                    stageEdition.setVisible(true);
+                    new StageEdition(controller, stage, drawingPanel);
                 }
 
                 @Override
                 public void visit(SeatedSection section) {
-                    JFrame sectionEdition;
                     if (section.isRegular){
-                        sectionEdition = new SectionEdition(controller, section, drawingPanel);
+                        new SectionEdition(controller, section, drawingPanel);
                     } else {
                         if (!controller.getRoom().getStage().isPresent()){
                             JOptionPane.showMessageDialog(null, "A stage is needed to use this feature.", "Error", JOptionPane.ERROR_MESSAGE);
                             return;
                         }
-                        sectionEdition = new IrregularSectionEdition(controller, section);
+                        new IrregularSectionEdition(controller, section);
                     }
-                    sectionEdition.setVisible(true);
                 }
 
                 @Override
                 public void visit(StandingSection section) {
-                    JFrame sectionEdition = new StandingSectionEdition(section, drawingPanel);
-                    sectionEdition.setVisible(true);
+                    new StandingSectionEdition(section, drawingPanel);
                 }
 
                 @Override
                 public void visit(Seat seat) {
-                    JFrame seatEdition = new SeatEdition(seat, drawingPanel);
-                    seatEdition.setVisible(true);
+                    new SeatEdition(seat, drawingPanel);
                 }
 
                 @Override
                 public void visit(SeatSection seatSection) {
-                    JFrame seatSectionEdition = new SeatSectionEdition(seatSection, drawingPanel);
-                    seatSectionEdition.setVisible(true);
+                    new SeatSectionEdition(seatSection, drawingPanel);
                 }
             });
         });
@@ -213,10 +206,10 @@ public final class MainWindow extends Frame implements Observer {
     public static void main(String[] args) {
         JFrame frame = new JFrame("MainWindow");
         frame.setContentPane(new MainWindow(frame).panelMain);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
-        frame.setExtendedState( frame.getExtendedState()|JFrame.MAXIMIZED_BOTH );
+        frame.setExtendedState(frame.getExtendedState()|JFrame.MAXIMIZED_BOTH);
     }
 
     private void createUIComponents() {
@@ -256,7 +249,7 @@ public final class MainWindow extends Frame implements Observer {
         file.add(saveItem);
 
         newItem.addActionListener( e -> {
-            new RoomSettings(controller, drawingPanel, e).setVisible(true);
+            new RoomSettings(controller, drawingPanel, e);
         });
 
         edition = new JMenu("Edition");
@@ -268,7 +261,7 @@ public final class MainWindow extends Frame implements Observer {
         edition.add(grid);
 
         room.addActionListener( e -> {
-            new RoomSettings(controller, drawingPanel, e).setVisible(true);
+            new RoomSettings(controller, drawingPanel, e);
         });
 
         menuBar.add(file);
@@ -317,10 +310,10 @@ public final class MainWindow extends Frame implements Observer {
 
     @Override
     public void onHover() {
-        int x= drawingPanel.getLocation().x + (int)(controller.getXCursor()*controller.getScale())+7;
-        int y= drawingPanel.getLocation().y + (int)(controller.getYCursor()*controller.getScale());
-        seatInfo.update(controller);
-        seatInfo.setLocation(x,y);
+        int x = drawingPanel.getLocation().x + (int)(controller.getXCursor()*controller.getScale())+7;
+        int y = drawingPanel.getLocation().y + (int)(controller.getYCursor()*controller.getScale());
+        seatInfo.update(controller.getHoveredSeat(), controller.getHoveredSection());
+        seatInfo.setLocation(x, y);
         seatInfo.setVisible(true);
     }
 

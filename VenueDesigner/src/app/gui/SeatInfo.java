@@ -7,7 +7,7 @@ import app.domain.section.Section;
 import javax.swing.*;
 import java.util.Locale;
 
-public final class SeatInfo extends JDialog{
+final class SeatInfo extends JDialog{
     private JPanel panelMain;
     private JTextField number;
     private JTextField row;
@@ -20,12 +20,10 @@ public final class SeatInfo extends JDialog{
         setContentPane(panelMain);
         setUndecorated(true);
         setSize(300, 400);
+        setVisible(true);
     }
 
-    void update(Controller controller) {
-        Seat hoveredSeat = controller.getHoveredSeat();
-        Section hoveredSection = controller.getHoveredSection();
-
+    void update(Seat hoveredSeat, Section hoveredSection) {
         number.setText(hoveredSeat.getNumber()+ "");
         section.setText(hoveredSection.getName());
         row.setText(hoveredSeat.getRow()+1+ "");

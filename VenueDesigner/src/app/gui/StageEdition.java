@@ -11,7 +11,7 @@ import java.util.Objects;
 
 import static app.gui.GUIUtils.isNotNumber;
 
-public final class StageEdition extends JFrame {
+final class StageEdition extends JFrame {
     private JTextField width;
     private JTextField height;
     private JTextField elevation;
@@ -25,6 +25,7 @@ public final class StageEdition extends JFrame {
         Objects.requireNonNull(panel);
         setContentPane(panelMain);
         setSize(300,400);
+        setVisible(true);
 
         width.setText(String.format(Locale.ROOT,"%.2f",stage.getWidth()));
         height.setText(String.format(Locale.ROOT,"%.2f",stage.getHeight()));

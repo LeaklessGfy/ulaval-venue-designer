@@ -10,7 +10,7 @@ import java.util.Objects;
 
 import static app.gui.GUIUtils.isNotNumber;
 
-public final class IrregularSectionEdition  extends JFrame {
+final class IrregularSectionEdition  extends JFrame {
     private JTextField name;
     private JTextField elevationText;
     private JPanel panel1;
@@ -25,6 +25,7 @@ public final class IrregularSectionEdition  extends JFrame {
         Objects.requireNonNull(section);
         setContentPane(panel1);
         setSize(300, 400);
+        setVisible(true);
 
         VitalSpace vitalSpace = section.getVitalSpace();
         name.setText(section.getName());

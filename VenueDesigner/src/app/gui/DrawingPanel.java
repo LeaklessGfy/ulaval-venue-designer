@@ -6,7 +6,7 @@ import javax.swing.*;
 
 import app.domain.UIPanel;
 
-public final class DrawingPanel extends JPanel implements UIPanel {
+final class DrawingPanel extends JPanel implements UIPanel {
     private final GUIPainter painter;
 
     DrawingPanel(GUIPainter painter) {
