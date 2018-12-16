@@ -148,7 +148,7 @@ public class Controller {
         for (Section s: room.getSections()){
             s.forEachSeats( seat -> {
                 if (selectionHolder.selectionCheck(seat.getShape(), scaleX, scaleY, offset)) {
-                    Mode mode = Mode.Selection;
+                    mode = Mode.Selection;
                     seatHovered = true;
                     if (hoveredSeat != seat) {
                         observer.onLeave();
