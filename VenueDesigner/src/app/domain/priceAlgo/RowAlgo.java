@@ -23,8 +23,8 @@ public class RowAlgo extends PriceAlgoAbstract{
             for (Seat[] row: section.getSeats()){
                 double x = row[0].getShape().computeCentroid().x+(row[row.length-1].getShape().computeCentroid().x-
                         row[0].getShape().computeCentroid().x)/2;
-                double y = row[0].getShape().computeCentroid().x+(row[row.length-1].getShape().computeCentroid().x-
-                        row[0].getShape().computeCentroid().x)/2;
+                double y = row[0].getShape().computeCentroid().y+(row[row.length-1].getShape().computeCentroid().y-
+                        row[0].getShape().computeCentroid().y)/2;
                 Point rowCenter = new Point(x,y);
                 double distance = Rectangle.distancePoints(rowCenter,stageCenter);
                 rows.add(row);
