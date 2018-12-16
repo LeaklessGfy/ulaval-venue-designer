@@ -1,4 +1,4 @@
-package app.domain;
+package app.domain.seat;
 
 import app.domain.selection.Selection;
 import app.domain.selection.SelectionVisitor;
@@ -10,7 +10,7 @@ import java.util.Objects;
 public final class SeatSection implements Selection {
     private final Seat[] seats;
 
-    SeatSection(Seat[] seats) {
+    public SeatSection(Seat[] seats) {
         this.seats = Objects.requireNonNull(seats);
     }
 
@@ -27,12 +27,10 @@ public final class SeatSection implements Selection {
     }
 
     @Override
-    public void move(double x, double y, Point offset) {
-    }
+    public void move(double x, double y, Point offset) {}
 
     @Override
-    public void rotate(double theta_radian) {
-    }
+    public void rotate(double theta_radian) {}
 
     @Override
     public Shape getShape() {

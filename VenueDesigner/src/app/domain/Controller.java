@@ -1,5 +1,9 @@
 package app.domain;
 
+import app.domain.collider.Collider;
+import app.domain.collider.ColliderValidator;
+import app.domain.seat.Seat;
+import app.domain.seat.SeatSection;
 import app.domain.section.SeatedSection;
 import app.domain.section.Section;
 import app.domain.section.StandingSection;
@@ -304,14 +308,17 @@ public class Controller {
         ui.repaint();
     }
 
-    public void createRegularSection(int x, int y, int xInt, int yInt) {
-        if (room != null && room.getStage().isPresent()) {
-            Section section = SeatedSection.create(x - offset.x, y - offset.y, xInt, yInt, room.getVitalSpace(), room.getStage().get());
-            if (validator.validShape(section.getShape(), room, new Point())) {
-                room.addSection(section);
-                mode = Mode.None;
-            }
+    public boolean createRegularSection(int x, int y, int xInt, int yInt) {
+        if (!room.getStage().isPresent()) {
+            return false;
         }
+        Section section = SeatedSection.create(x - offset.x, y - offset.y, xInt, yInt, room.getVitalSpace(), room.getStage().get());
+        if (!validator.validShape(section.getShape(), room, new Point())) {
+            return false;
+        }
+        room.addSection(section);
+        mode = Mode.None;
+        return true;
     }
 
     private void doSelection(double x, double y) {
@@ -507,7 +514,7 @@ public class Controller {
         return hoveredSection;
     }
 
-    public double prepareForImage(int panelWidth, int panelHeight) {
+    public double prepareSave(int panelWidth, int panelHeight) {
         double maxRoom;
         int maxPanel;
         double roomWidth = room.getWidth();
@@ -525,7 +532,7 @@ public class Controller {
         return scale;
     }
 
-    public void initOffsetScale(Point offset, double scale) {
+    public void offsetScale(Point offset, double scale) {
         this.offset.x = offset.x;
         this.offset.y = offset.y;
         this.scale = scale;

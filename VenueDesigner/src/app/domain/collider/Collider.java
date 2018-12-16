@@ -1,4 +1,4 @@
-package app.domain;
+package app.domain.collider;
 
 import app.domain.shape.Shape;
 

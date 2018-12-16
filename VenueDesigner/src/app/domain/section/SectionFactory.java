@@ -7,8 +7,6 @@ import app.domain.shape.Shape;
 public final class SectionFactory {
     public static Section create(Mode mode, Shape shape, VitalSpace vs) {
         switch (mode) {
-            case RegularSeatedSection:
-                return new SeatedSection("", 0, shape, vs);
             case IrregularSeatedSection:
                 return new SeatedSection("", 0, shape, vs);
             case RegularStandingSection:

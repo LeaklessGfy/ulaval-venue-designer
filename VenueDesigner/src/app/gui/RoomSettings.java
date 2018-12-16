@@ -12,7 +12,7 @@ import java.util.Objects;
 import java.util.Locale;
 import static app.gui.GUIUtils.isNotNumber;
 
-public final class RoomSettings extends JFrame {
+final class RoomSettings extends JFrame {
     private JPanel panelMain;
     private JTextField roomWidthTextField;
     private JTextField roomHeightTextField;
@@ -23,7 +23,12 @@ public final class RoomSettings extends JFrame {
 
     RoomSettings(Controller controller, UIPanel ui, ActionEvent event) {
         Objects.requireNonNull(controller);
+        Objects.requireNonNull(ui);
+        Objects.requireNonNull(event);
         setContentPane(panelMain);
+        setSize(300, 400);
+        setVisible(true);
+
         Room room = controller.getRoom();
 
         roomWidthTextField.setText(String.format(Locale.ROOT,"%.2f",room.getWidth()));
@@ -32,7 +37,7 @@ public final class RoomSettings extends JFrame {
         vitalSpaceHeightTextField.setText(String.format(Locale.ROOT,"%.2f",room.getVitalSpace().getHeight()));
 
         oKButton.addActionListener(e -> {
-            if (!validateForm()) {
+            if (!isValidForm()) {
                 return;
             }
             double roomWidth = Double.parseDouble(roomWidthTextField.getText());
@@ -70,7 +75,7 @@ public final class RoomSettings extends JFrame {
         });
     }
 
-    private boolean validateForm() {
+    private boolean isValidForm() {
         if(
                 roomWidthTextField.getText().isEmpty() ||
                 roomHeightTextField.getText().isEmpty() ||
@@ -80,7 +85,6 @@ public final class RoomSettings extends JFrame {
             JOptionPane.showMessageDialog(null, "One or more fields are empty.", "Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }
-
         if (
                         isNotNumber(roomWidthTextField.getText()) ||
                         isNotNumber(roomHeightTextField.getText()) ||
@@ -90,7 +94,6 @@ public final class RoomSettings extends JFrame {
             JOptionPane.showMessageDialog(null, "One or more fields are not a number.", "Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }
-
         return true;
     }
 }

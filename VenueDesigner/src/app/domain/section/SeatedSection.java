@@ -1,7 +1,7 @@
 package app.domain.section;
 
-import app.domain.Collider;
-import app.domain.Seat;
+import app.domain.collider.Collider;
+import app.domain.seat.Seat;
 import app.domain.selection.SelectionVisitor;
 import app.domain.Stage;
 import app.domain.VitalSpace;
@@ -309,7 +309,9 @@ public final class SeatedSection extends AbstractSection {
         Shape tolerantShape = new Polygon(points, new int[4]);
         return tolerantShape;
     }
+
     @Override
+    @JsonIgnore
     public boolean isAuto(){
         return autoSetSeat;
     }

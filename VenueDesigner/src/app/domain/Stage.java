@@ -5,6 +5,7 @@ import app.domain.selection.SelectionVisitor;
 import app.domain.shape.Point;
 import app.domain.shape.Shape;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
@@ -81,6 +82,7 @@ public final class Stage implements Selection {
     }
 
     @Override
+    @JsonIgnore
     public boolean isAuto(){
         return false;
     }
