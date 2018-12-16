@@ -42,9 +42,6 @@ public final class MainWindow extends Frame implements Observer {
     private JMenuItem offers;
     private JMenuItem grid;
     private SeatInfo seatInfo;
-    private int cursorX;
-    private int cursorY;
-
 
     private MainWindow(JFrame frame) {
         buttonTopPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 3, 0, Color.LIGHT_GRAY));
@@ -83,8 +80,6 @@ public final class MainWindow extends Frame implements Observer {
             @Override
             public void mouseMoved(MouseEvent e) {
                 super.mouseMoved(e);
-                cursorX=e.getX();
-                cursorY=e.getY();
                 controller.mouseMoved(e.getX(), e.getY());
             }
             @Override
@@ -200,7 +195,40 @@ public final class MainWindow extends Frame implements Observer {
             controller.autoSetSeatSelected();
         });
 
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                int answer = JOptionPane.showConfirmDialog(frame, "Do you want to save before quit ?");
+                if (answer == JOptionPane.YES_OPTION) {
+                    save();
+                } else if (answer == JOptionPane.NO_OPTION) {
+                    e.getWindow().dispose();
+                }
+            }
+        });
 
+        initMenu(frame);
+    }
+
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("MainWindow");
+        frame.setContentPane(new MainWindow(frame).panelMain);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.pack();
+        frame.setVisible(true);
+        frame.setExtendedState( frame.getExtendedState()|JFrame.MAXIMIZED_BOTH );
+    }
+
+    private void createUIComponents() {
+        controller = new Controller(new GUICollider());
+        controller.setObserver(this);
+        painter = new GUIPainter(controller);
+        drawingPanel = new DrawingPanel(painter);
+        controller.setDrawingPanel(drawingPanel);
+        seatInfo = new SeatInfo();
+    }
+
+    private void initMenu(JFrame frame) {
         JMenuBar menuBar = new JMenuBar();
         file = new JMenu("File");
         newItem = new JMenuItem("New");
@@ -220,18 +248,7 @@ public final class MainWindow extends Frame implements Observer {
         });
 
         saveItem.addActionListener( e -> {
-            JFileChooser fileChooser = new JFileChooser();
-            fileChooser.setSelectedFile(new File("room.json"));
-            FileFilter filter = new FileNameExtensionFilter("JSON files", "json");
-            fileChooser.setFileFilter(filter);
-            int result = fileChooser.showSaveDialog(this);
-            if (result == JFileChooser.APPROVE_OPTION) {
-                String filename = fileChooser.getSelectedFile().toString();
-                if (!filename.endsWith(".json")) {
-                    filename += ".json";
-                }
-                controller.save(filename);
-            }
+            save();
         });
 
         file.add(newItem);
@@ -239,8 +256,7 @@ public final class MainWindow extends Frame implements Observer {
         file.add(saveItem);
 
         newItem.addActionListener( e -> {
-            JFrame roomSettings = new RoomSettings(controller, drawingPanel, e);
-            roomSettings.setVisible(true);
+            new RoomSettings(controller, drawingPanel, e).setVisible(true);
         });
 
         edition = new JMenu("Edition");
@@ -252,38 +268,12 @@ public final class MainWindow extends Frame implements Observer {
         edition.add(grid);
 
         room.addActionListener( e -> {
-            JFrame roomSettings = new RoomSettings(controller, drawingPanel, e);
-            roomSettings.setVisible(true);
+            new RoomSettings(controller, drawingPanel, e).setVisible(true);
         });
 
         menuBar.add(file);
         menuBar.add(edition);
         frame.setJMenuBar(menuBar);
-    }
-
-    public static void main(String[] args) {
-        JFrame frame = new JFrame("MainWindow");
-        frame.setContentPane(new MainWindow(frame).panelMain);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
-        frame.setVisible(true);
-        frame.setExtendedState( frame.getExtendedState()|JFrame.MAXIMIZED_BOTH );
-    }
-
-    private void createUIComponents() {
-        String[] columnNames = {"Table de ",
-                "test"};
-        Object[][] data = {
-                {"ceci", "est"},
-                {"une", "table"},
-                {"temporaire", "."}
-        };
-        controller = new Controller(new GUICollider());
-        controller.setObserver(this);
-        painter = new GUIPainter(controller);
-        drawingPanel = new DrawingPanel(painter);
-        controller.setDrawingPanel(drawingPanel);
-        seatInfo = new SeatInfo();
     }
 
     private void reset() {
@@ -306,6 +296,22 @@ public final class MainWindow extends Frame implements Observer {
         } else {
             btn.setBackground(UIManager.getColor("Button.background"));
             btn.setForeground(UIManager.getColor("Button.foreground"));
+        }
+    }
+
+    private void save() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setSelectedFile(new File("room.json"));
+        FileFilter filter = new FileNameExtensionFilter("JSON files", "json");
+        fileChooser.setFileFilter(filter);
+        int result = fileChooser.showSaveDialog(this);
+
+        if (result == JFileChooser.APPROVE_OPTION) {
+            String filename = fileChooser.getSelectedFile().toString();
+            if (!filename.endsWith(".json")) {
+                filename += ".json";
+            }
+            controller.save(filename);
         }
     }
 
