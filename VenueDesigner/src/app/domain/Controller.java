@@ -276,20 +276,19 @@ public class Controller {
     }
 
     public void autoSetSeat() {
-        for (Section s: room.getSections()){
-            if(!room.getStage().isPresent()){
-                return;
-            }
-            s.accept(new SelectionAdapter() {
-                @Override
-                public void visit(SeatedSection section) {
-                    if (section.autoSetSeat){
-                        section.autoSetSeats(room.getStage().get(),collider);
+        room.getStage().ifPresent(stage -> {
+            room.getSections().forEach(section -> {
+                section.accept(new SelectionAdapter() {
+                    @Override
+                    public void visit(SeatedSection section) {
+                        if (section.autoSetSeat){
+                            section.autoSetSeats(stage, collider);
+                        }
                     }
-                }
+                });
             });
-        }
-        ui.repaint();
+            ui.repaint();
+        });
     }
 
     public boolean createRegularSection(int x, int y, int xInt, int yInt) {
