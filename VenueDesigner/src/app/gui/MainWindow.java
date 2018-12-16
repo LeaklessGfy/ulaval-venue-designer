@@ -190,6 +190,7 @@ public final class MainWindow extends Frame implements Observer {
 
         autoSeatCheckBox.addActionListener(e -> {
             controller.autoSetSeatSelected();
+            controller.autoSetSeat();
         });
 
         frame.addWindowListener(new WindowAdapter() {
