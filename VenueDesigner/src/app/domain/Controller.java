@@ -308,14 +308,17 @@ public class Controller {
         ui.repaint();
     }
 
-    public void createRegularSection(int x, int y, int xInt, int yInt) {
-        if (room != null && room.getStage().isPresent()) {
-            Section section = SeatedSection.create(x - offset.x, y - offset.y, xInt, yInt, room.getVitalSpace(), room.getStage().get());
-            if (validator.validShape(section.getShape(), room, new Point())) {
-                room.addSection(section);
-                mode = Mode.None;
-            }
+    public boolean createRegularSection(int x, int y, int xInt, int yInt) {
+        if (!room.getStage().isPresent()) {
+            return false;
         }
+        Section section = SeatedSection.create(x - offset.x, y - offset.y, xInt, yInt, room.getVitalSpace(), room.getStage().get());
+        if (!validator.validShape(section.getShape(), room, new Point())) {
+            return false;
+        }
+        room.addSection(section);
+        mode = Mode.None;
+        return true;
     }
 
     private void doSelection(double x, double y) {

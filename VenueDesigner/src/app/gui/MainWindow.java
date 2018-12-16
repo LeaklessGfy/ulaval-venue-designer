@@ -16,7 +16,6 @@ import javax.swing.filechooser.FileFilter;
 
 public final class MainWindow extends Frame implements Observer {
     private Controller controller;
-    private GUIPainter painter;
 
     private JPanel panelMain;
     private JPanel buttonTopPanel;
@@ -220,7 +219,7 @@ public final class MainWindow extends Frame implements Observer {
     private void createUIComponents() {
         controller = new Controller(new GUICollider());
         controller.setObserver(this);
-        painter = new GUIPainter(controller);
+        GUIPainter painter = new GUIPainter(controller);
         drawingPanel = new DrawingPanel(painter);
         controller.setDrawingPanel(drawingPanel);
         seatInfo = new SeatInfo();

@@ -29,11 +29,19 @@ final class SectionSettings extends JFrame {
             }
             int xInt = Integer.parseInt(columns.getText());
             int yInt = Integer.parseInt(rows.getText());
-            controller.createRegularSection(x, y, xInt, yInt);
+            if (!controller.createRegularSection(x, y, xInt, yInt)) {
+                JOptionPane.showMessageDialog(
+                        null,
+                        "Section collides with another shape",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE
+                );
+            } else {
+                panel.repaint();
+                onSuccess.run();
+            }
             setVisible(false);
             dispose();
-            panel.repaint();
-            onSuccess.run();
         });
 
         cancelButton.addActionListener( e -> {
