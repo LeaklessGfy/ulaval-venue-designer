@@ -53,7 +53,7 @@ public final class MainWindow extends Frame implements Observer {
         drawingPanel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (controller.getMode() == Mode.RegularSeatedSection2) {
+                if (controller.getMode() == Mode.RegularSeatedSection) {
                     new SectionSettings(
                             controller,
                             drawingPanel,
@@ -102,7 +102,7 @@ public final class MainWindow extends Frame implements Observer {
 
         regSeatedSection.setVisible(controller.getRoom().isStageSet());
         regSeatedSection.addActionListener(e -> {
-            toggleButton(regSeatedSection, Mode.RegularSeatedSection2);
+            toggleButton(regSeatedSection, Mode.RegularSeatedSection);
             tablePanel.setVisible(false);
         });
 
@@ -194,8 +194,11 @@ public final class MainWindow extends Frame implements Observer {
                 int answer = JOptionPane.showConfirmDialog(frame, "Do you want to save before quit ?");
                 if (answer == JOptionPane.YES_OPTION) {
                     save();
+                    e.getWindow().dispose();
+                    System.exit(0);
                 } else if (answer == JOptionPane.NO_OPTION) {
                     e.getWindow().dispose();
+                    System.exit(0);
                 }
             }
         });

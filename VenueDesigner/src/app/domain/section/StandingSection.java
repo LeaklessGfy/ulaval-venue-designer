@@ -8,6 +8,7 @@ import app.domain.shape.Painter;
 import app.domain.shape.Point;
 import app.domain.shape.Shape;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.function.Consumer;
@@ -18,7 +19,6 @@ public final class StandingSection extends AbstractSection {
 
     @JsonProperty
     private double price;
-
 
     @JsonCreator
     StandingSection(@JsonProperty("name") String name, @JsonProperty("elevation") int elevation,
@@ -48,40 +48,41 @@ public final class StandingSection extends AbstractSection {
     }
 
     @Override
+    @JsonIgnore
     public Seat[][] getSeats() {
         return new Seat[0][0];
     }
 
     @Override
-    public void forEachSeats(Consumer<Seat> consumer) {
-    }
+    public void forEachSeats(Consumer<Seat> consumer) {}
 
     @Override
     public void rotate(double thetaRadian){
-        super.getShape().rotate(thetaRadian, getShape().computeCentroid());
+        getShape().rotate(thetaRadian, getShape().computeCentroid());
     }
 
     @Override
-    public void autoSetSeats(Stage stage, Collider collider){
-    }
+    public void autoSetSeats(Stage stage, Collider collider){}
 
-    public void setPrice(double price){
-        this.price=price;
-    }
-
-    public void setMax(int max){
-        this.max=max;
-    }
-    public int getMax(){
-        return max;
+    @Override
+    @JsonIgnore
+    public boolean isAuto(){
+        return false;
     }
 
     public double getPrice(){
         return price;
     }
 
-    @Override
-    public boolean isAuto(){
-        return false;
+    public void setPrice(double price){
+        this.price=price;
+    }
+
+    public int getMax(){
+        return max;
+    }
+
+    public void setMax(int max){
+        this.max=max;
     }
 }

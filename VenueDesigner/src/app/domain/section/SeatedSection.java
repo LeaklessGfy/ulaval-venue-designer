@@ -309,7 +309,9 @@ public final class SeatedSection extends AbstractSection {
         Shape tolerantShape = new Polygon(points, new int[4]);
         return tolerantShape;
     }
+
     @Override
+    @JsonIgnore
     public boolean isAuto(){
         return autoSetSeat;
     }

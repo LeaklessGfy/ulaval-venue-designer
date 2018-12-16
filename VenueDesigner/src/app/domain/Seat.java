@@ -6,6 +6,7 @@ import app.domain.shape.Point;
 import app.domain.shape.Rectangle;
 import app.domain.shape.Shape;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Vector;
@@ -109,13 +110,14 @@ public final class Seat implements Selection {
     }
 
     @Override
-    public void rotate(double thetaRadian){
-    }
+    public void rotate(double thetaRadian){}
+
     public void rotate(double thetaRadian, Point sectionCenter){
         shape.rotate(thetaRadian, sectionCenter);
     }
 
     @Override
+    @JsonIgnore
     public boolean isAuto(){
         return false;
     }
