@@ -27,8 +27,8 @@ public final class Offer {
         }
     }
 
-    public double getDiscountPrice(){
-        return this.price;
+    public int getDiscountPrice(){
+        return this.valueDiscount;
     }
 
    /* public void setDiscountPrice(double Discountprice){
@@ -43,4 +43,8 @@ public final class Offer {
         return discountMode;
     }
 
+    @Override
+    public String toString() {
+        return name;
+    }
 }

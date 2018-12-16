@@ -6,6 +6,7 @@ import app.domain.UIPanel;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
 import java.util.Objects;
 
 import static app.gui.GUIUtils.isNotInteger;
@@ -46,6 +47,8 @@ public class OfferWindow extends JFrame{
         DefaultListModel modelSeat = new DefaultListModel();
         listOffers.setModel(modelOffers);
         listSeat.setModel(modelSeat);
+        ArrayList<Offer> Loffer = new ArrayList();
+
 
 
         okButton.addActionListener(e ->{
@@ -78,6 +81,7 @@ public class OfferWindow extends JFrame{
         removeButton.addActionListener( e -> {
 
             modelOffers.removeElementAt(listOffers.getSelectedIndex());
+            Loffer.remove(listOffers.getSelectedIndex());
 
         });
 
@@ -90,23 +94,49 @@ public class OfferWindow extends JFrame{
             if (!isValidFormName()) {
                 return;
             }
+            if (!isValidType()) {
+                return;
+            }
             if (!isValidFormAmount()) {
                 return;
             }
-            modelOffers.addElement(new Offer(tfOfferName.getText(),typeAmount.getText(),Integer.parseInt(tfAmount.getText())));
+            Offer offer = new Offer(tfOfferName.getText(),typeAmount.getText(),Integer.parseInt(tfAmount.getText()));
+            modelOffers.addElement(offer);
+            Loffer.add(offer);
+
+
             tfOfferName.setText("");
             tfAmount.setText("");
-            radioButtonPercent.setSelected(false);
-            radioButtonDollar.setSelected(false);
+
+
 
         });
         ///////////////////////////////////////////////
+
+        ////////// listener sur les elements dela liste //////
+        listOffers.addListSelectionListener(e->{
+            tfOfferName.setText(Loffer.get(listOffers.getSelectedIndex()).getName()+"");
+            tfAmount.setText(Loffer.get(listOffers.getSelectedIndex()).getDiscountPrice()+"");
+            if(Loffer.get(listOffers.getSelectedIndex()).getDiscountMode().equals("$")){
+                radioButtonDollar.setSelected(true);
+                radioButtonPercent.setSelected(false);
+            }else{
+                radioButtonDollar.setSelected(false);
+                radioButtonPercent.setSelected(true);
+            }
+            panelSeat.setVisible(true);
+            panelEdit.setVisible(true);
+
+        });
+
+
+
+
         cancelButtonOffer.addActionListener(e->{
             panelEdit.setVisible(false);
             tfOfferName.setText("");
             tfAmount.setText("");
-            radioButtonPercent.setSelected(false);
-            radioButtonDollar.setSelected(false);
+
         });
 
         addSeatButton.addActionListener(e->{
@@ -119,22 +149,31 @@ public class OfferWindow extends JFrame{
 
 
     }
-    private boolean isValidFormName() {
-        if (isNotInteger(tfAmount.getText()) || tfAmount.getText().isEmpty() || Integer.parseInt(tfAmount.getText())<0) {
-            JOptionPane.showMessageDialog(null, "Amount field is not an integer or is empty or is negative", "Error", JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
-
-        return true;
-    }
     private boolean isValidFormAmount() {
-        if (tfAmount.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Offer name field is empty ", "Error", JOptionPane.ERROR_MESSAGE);
+        if (isNotInteger(tfAmount.getText()) || tfAmount.getText().isEmpty() || Integer.parseInt(tfAmount.getText())<0 ) {
+            JOptionPane.showMessageDialog(null, "Sorry, amount field is not an integer or is empty or is negative", "Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }
 
         return true;
     }
+    private boolean isValidFormName() {
+        if (tfOfferName.getText().isEmpty() || tfOfferName.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Sorry, offer name field is empty ", "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        return true;
+    }
+    private boolean isValidType() {
+        if (typeAmount.getText().isEmpty() || typeAmount.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Sorry, you have to choose the discount type", "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        return true;
+    }
+
     // faire une validate form pour savoir si il existe un objet dans la liste des offres qui a le meme nom
 
 
