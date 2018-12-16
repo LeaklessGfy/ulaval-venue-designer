@@ -492,6 +492,7 @@ public class Controller {
     public void setObserver(Observer obs){
         observer=obs;
     }
+    
     private void timerReset(){
         timer.cancel();
         timer.purge();
@@ -509,7 +510,32 @@ public class Controller {
         return hoveredSeat;
     }
 
-    public Section getHoveredSection(){
+    public Section getHoveredSection() {
         return hoveredSection;
+    }
+
+    public double prepareSave(int panelWidth, int panelHeight) {
+        double maxRoom;
+        int maxPanel;
+        double roomWidth = room.getWidth();
+        double roomHeight = room.getHeight();
+        if (roomHeight > roomWidth || roomWidth < 2 * roomHeight) {
+            maxRoom = roomHeight;
+            maxPanel = panelHeight;
+        } else {
+            maxRoom = roomWidth;
+            maxPanel = panelWidth;
+        }
+        scale = (0.9 * maxPanel) / maxRoom;
+        offset.x = 0;
+        offset.y = 0;
+        return scale;
+    }
+
+    public void offsetScale(Point offset, double scale) {
+        this.offset.x = offset.x;
+        this.offset.y = offset.y;
+        this.scale = scale;
+        ui.repaint();
     }
 }

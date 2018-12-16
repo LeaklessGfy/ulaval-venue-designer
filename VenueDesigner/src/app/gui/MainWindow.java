@@ -13,6 +13,8 @@ import java.awt.event.*;
 import java.io.*;
 import javax.swing.filechooser.*;
 import javax.swing.filechooser.FileFilter;
+import javax.imageio.*;
+import java.awt.image.*;
 
 public final class MainWindow extends Frame implements Observer {
     private Controller controller;
@@ -38,6 +40,7 @@ public final class MainWindow extends Frame implements Observer {
     private JMenuItem newItem;
     private JMenuItem openItem;
     private JMenuItem saveItem;
+    private JMenuItem exportImage;
     private JMenu edition;
     private JMenuItem room;
     private JMenuItem offers;
@@ -231,6 +234,13 @@ public final class MainWindow extends Frame implements Observer {
         newItem = new JMenuItem("New");
         openItem = new JMenuItem("Open");
         saveItem = new JMenuItem("Save");
+        exportImage = new JMenuItem(("Export as image"));
+
+        newItem.addActionListener( e -> {
+            JFrame roomSettings = new RoomSettings(controller, drawingPanel, e);
+            roomSettings.setSize(300,400);
+            roomSettings.setVisible(true);
+        });
 
         openItem.addActionListener( e -> {
             JFileChooser fileChooser = new JFileChooser();
@@ -248,13 +258,14 @@ public final class MainWindow extends Frame implements Observer {
             save();
         });
 
+        exportImage.addActionListener(e -> saveImage());
+
         file.add(newItem);
         file.add(openItem);
         file.add(saveItem);
+        file.add(exportImage);
 
-        newItem.addActionListener( e -> {
-            new RoomSettings(controller, drawingPanel, e);
-        });
+        newItem.addActionListener(e -> new RoomSettings(controller, drawingPanel, e));
 
         edition = new JMenu("Edition");
         room = new JMenuItem("Room");
@@ -264,9 +275,7 @@ public final class MainWindow extends Frame implements Observer {
         edition.add(offers);
         edition.add(grid);
 
-        room.addActionListener( e -> {
-            new RoomSettings(controller, drawingPanel, e);
-        });
+        room.addActionListener(e -> new RoomSettings(controller, drawingPanel, e));
 
         menuBar.add(file);
         menuBar.add(edition);
@@ -309,6 +318,37 @@ public final class MainWindow extends Frame implements Observer {
                 filename += ".json";
             }
             controller.save(filename);
+        }
+    }
+
+    private void saveImage() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setSelectedFile(new File("room"));
+        fileChooser.setFileFilter(new FileNameExtensionFilter(".png", "png"));
+        fileChooser.addChoosableFileFilter(new FileNameExtensionFilter(".jpg", "jpg"));
+        fileChooser.addChoosableFileFilter(new FileNameExtensionFilter(".jpeg", "jpeg"));
+        fileChooser.addChoosableFileFilter(new FileNameExtensionFilter(".bmp", "bmp"));
+        int result = fileChooser.showSaveDialog(this);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            String filename = fileChooser.getSelectedFile().toString();
+            String extension = fileChooser.getFileFilter().getDescription();
+            if (!filename.endsWith(extension)) {
+                filename += extension;
+            }
+            app.domain.shape.Point controllerOffset = new app.domain.shape.Point(controller.getOffset());
+            double controllerScale = controller.getScale();
+            double tempScale = controller.prepareSave(drawingPanel.getWidth(), drawingPanel.getHeight());
+            BufferedImage image = new BufferedImage((int)(controller.getRoom().getWidth() * tempScale), (int)(controller.getRoom().getHeight() * tempScale), BufferedImage.TYPE_INT_RGB);
+            Graphics2D g = image.createGraphics();
+            drawingPanel.paint(g);
+            g.dispose();
+            controller.offsetScale(controllerOffset, controllerScale);
+
+            try {
+                ImageIO.write(image, "png", new File(filename));
+            } catch (IOException error) {
+                throw new RuntimeException(error);
+            }
         }
     }
 

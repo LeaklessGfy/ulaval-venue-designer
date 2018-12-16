@@ -147,7 +147,7 @@ final class GUIPainter implements Painter<Graphics2D> {
         if (controller.getScale() >= 0.8) {
             lineWidth = 2;
         } else {
-            lineWidth = (int)(-20 * controller.getScale() + 18);
+            lineWidth = (int)(-10 * controller.getScale() + 10);
         }
         g.setStroke(new BasicStroke(lineWidth));
         g.setColor(stroke);
