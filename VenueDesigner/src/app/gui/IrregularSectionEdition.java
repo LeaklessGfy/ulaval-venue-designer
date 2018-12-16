@@ -1,16 +1,16 @@
 package app.gui;
 
 import app.domain.Controller;
-import app.domain.UIPanel;
 import app.domain.VitalSpace;
 import app.domain.section.SeatedSection;
 
 import javax.swing.*;
 import java.util.Locale;
+import java.util.Objects;
 
 import static app.gui.GUIUtils.isNotNumber;
 
-public class IrregularSectionEdition  extends JFrame {
+final class IrregularSectionEdition  extends JFrame {
     private JTextField name;
     private JTextField elevationText;
     private JPanel panel1;
@@ -20,8 +20,13 @@ public class IrregularSectionEdition  extends JFrame {
     private JButton okButton;
     private JButton cancelButton;
 
-    IrregularSectionEdition(Controller controller, SeatedSection section, UIPanel panel) {
+    IrregularSectionEdition(Controller controller, SeatedSection section) {
+        Objects.requireNonNull(controller);
+        Objects.requireNonNull(section);
         setContentPane(panel1);
+        setSize(300, 400);
+        setVisible(true);
+
         VitalSpace vitalSpace = section.getVitalSpace();
         name.setText(section.getName());
         elevationText.setText(String.format(Locale.ROOT,"%.2f", section.getElevation()));
@@ -40,8 +45,10 @@ public class IrregularSectionEdition  extends JFrame {
             section.setElevation(Double.parseDouble(elevationText.getText()));
             section.setVitalSpace(new VitalSpace(spaceWidth, spaceHeight));
             boolean check = false;
-            if(!section.autoSetSeat){section.autoSetSeat=true;
-            check=true;}
+            if(!section.autoSetSeat) {
+                section.autoSetSeat=true;
+                check=true;
+            }
             section.forEachSeats(seat -> {
                 seat.setPrice(Double.parseDouble(priceText.getText()));
             });
@@ -61,16 +68,14 @@ public class IrregularSectionEdition  extends JFrame {
 
     private boolean isValidForm() {
         if (
-
-                        isNotNumber(elevationText.getText()) ||
-                        isNotNumber(vsWidthText.getText()) ||
-                        isNotNumber(vsHeightText.getText()) ||
-                        isNotNumber(priceText.getText())
+            isNotNumber(elevationText.getText()) ||
+            isNotNumber(vsWidthText.getText()) ||
+            isNotNumber(vsHeightText.getText()) ||
+            isNotNumber(priceText.getText())
         ) {
             JOptionPane.showMessageDialog(null, "One or more fields are not an integer.", "Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }
-
         return true;
     }
 }

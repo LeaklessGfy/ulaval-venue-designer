@@ -5,21 +5,26 @@ import app.domain.section.StandingSection;
 
 import javax.swing.*;
 import java.util.Locale;
+import java.util.Objects;
 
 import static app.gui.GUIUtils.isNotNumber;
 import static app.gui.GUIUtils.isNotInteger;
 
-public class StandingSectionEdition extends JFrame{
+final class StandingSectionEdition extends JFrame{
     private JTextField name;
     private JButton okButton;
-    private JPanel panel1;
+    private JPanel panelMain;
     private JTextField elevation;
     private JTextField price;
     private JButton cancelButton;
     private JTextField max;
 
     StandingSectionEdition(StandingSection section, UIPanel panel) {
-        setContentPane(panel1);
+        Objects.requireNonNull(section);
+        Objects.requireNonNull(panel);
+        setContentPane(panelMain);
+        setSize(300, 400);
+        setVisible(true);
 
         name.setText(section.getName());
         elevation.setText(String.format(Locale.ROOT,"%.2f",section.getElevation()));

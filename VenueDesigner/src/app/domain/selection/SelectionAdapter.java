@@ -1,7 +1,7 @@
 package app.domain.selection;
 
-import app.domain.Seat;
-import app.domain.SeatSection;
+import app.domain.seat.Seat;
+import app.domain.seat.SeatSection;
 import app.domain.Stage;
 import app.domain.section.SeatedSection;
 import app.domain.section.StandingSection;

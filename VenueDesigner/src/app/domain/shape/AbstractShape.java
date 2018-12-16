@@ -15,7 +15,7 @@ import java.util.Vector;
 })
 abstract class AbstractShape implements Shape {
     private final Vector<Point> points;
-    private final int[] color;
+    private int[] color;
     private boolean selected;
 
     AbstractShape(Vector<Point> points, int[] color) {
@@ -51,6 +51,11 @@ abstract class AbstractShape implements Shape {
     @Override
     public int[] getColor() {
         return color;
+    }
+
+    @Override
+    public void setColor(int[] color) {
+        this.color = Objects.requireNonNull(color);
     }
 
     public double area(){ // Polygon Area Calculation
@@ -97,11 +102,6 @@ abstract class AbstractShape implements Shape {
     }
 
     @Override
-    public void move(double x, double y) {
-        move(x, y, new Point());
-    }
-
-    @Override
     public void move(double x, double y, Point offset) {
         Point centroid = this.computeCentroid();
         for (Point p : points) {
@@ -128,5 +128,4 @@ abstract class AbstractShape implements Shape {
     public Shape clone() {
         return null;
     }
-
 }

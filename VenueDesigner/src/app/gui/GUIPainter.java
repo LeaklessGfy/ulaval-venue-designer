@@ -2,7 +2,7 @@ package app.gui;
 
 import app.domain.Controller;
 import app.domain.Room;
-import app.domain.Seat;
+import app.domain.seat.Seat;
 import app.domain.Stage;
 import app.domain.section.SeatedSection;
 import app.domain.section.StandingSection;
@@ -16,7 +16,7 @@ import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.util.Objects;
 
-public final class GUIPainter implements Painter<Graphics2D> {
+final class GUIPainter implements Painter<Graphics2D> {
     private final Controller controller;
 
     GUIPainter(Controller controller) {

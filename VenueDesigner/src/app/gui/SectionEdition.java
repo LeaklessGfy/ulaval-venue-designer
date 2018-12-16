@@ -7,12 +7,16 @@ import app.domain.UIPanel;
 
 import javax.swing.*;
 
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.util.Locale;
+import java.util.Objects;
 
+import static app.gui.GUIUtils.colorToArray;
 import static app.gui.GUIUtils.isNotInteger;
 import static app.gui.GUIUtils.isNotNumber;
 
-public final class SectionEdition extends JFrame {
+final class SectionEdition extends JFrame {
     private JTextField name;
     private JTextField columns;
     private JTextField rows;
@@ -23,9 +27,18 @@ public final class SectionEdition extends JFrame {
     private JTextField vitalSpaceWidth;
     private JTextField vitalSpaceHeight;
     private JTextField price;
+    private JButton colorButton;
+
+    private final ColorPicker colorPicker = new ColorPicker();
 
     SectionEdition(Controller controller, SeatedSection section, UIPanel panel) {
+        Objects.requireNonNull(controller);
+        Objects.requireNonNull(section);
+        Objects.requireNonNull(panel);
         setContentPane(panelMain);
+        setSize(300,400);
+        setVisible(true);
+
         VitalSpace vitalSpace = section.getVitalSpace();
         name.setText(section.getName());
         columns.setText(section.getColumns() + "");
@@ -33,6 +46,18 @@ public final class SectionEdition extends JFrame {
         elevation.setText(String.format(Locale.ROOT,"%.2f",section.getElevation()));
         vitalSpaceWidth.setText(String.format(Locale.ROOT,"%.2f",vitalSpace.getWidth()));
         vitalSpaceHeight.setText(String.format(Locale.ROOT,"%.2f",vitalSpace.getHeight()));
+        price.setText(String.format(Locale.ROOT,"%.2f", 0.0));
+
+        colorButton.addActionListener(e -> {
+            colorPicker.setVisible(true);
+        });
+
+        colorPicker.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentHidden(ComponentEvent e) {
+                colorButton.setBackground(colorPicker.getColor());
+            }
+        });
 
         okButtton.addActionListener(e -> {
             if (!isValidForm()) {
@@ -51,6 +76,7 @@ public final class SectionEdition extends JFrame {
                 }
                 section.forEachSeats(seat -> {
                     seat.setPrice(Double.parseDouble(price.getText()));
+                    seat.getShape().setColor(colorToArray(colorPicker.getColor()));
                 });
                 setVisible(false);
                 dispose();
@@ -78,7 +104,6 @@ public final class SectionEdition extends JFrame {
             JOptionPane.showMessageDialog(null, "One or more fields are not an integer.", "Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }
-
         return true;
     }
 }

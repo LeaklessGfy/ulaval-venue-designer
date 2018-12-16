@@ -2,6 +2,7 @@ package app.gui;
 
 import app.domain.shape.Point;
 
+import java.awt.Color;
 import java.util.Vector;
 
 final class GUIUtils {
@@ -35,5 +36,9 @@ final class GUIUtils {
             return true;
         }
         return false;
+    }
+
+    static int[] colorToArray(Color color) {
+        return new int[]{color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha()};
     }
 }

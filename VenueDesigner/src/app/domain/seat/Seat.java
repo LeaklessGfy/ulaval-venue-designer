@@ -1,11 +1,13 @@
-package app.domain;
+package app.domain.seat;
 
+import app.domain.VitalSpace;
 import app.domain.selection.Selection;
 import app.domain.selection.SelectionVisitor;
 import app.domain.shape.Point;
 import app.domain.shape.Rectangle;
 import app.domain.shape.Shape;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Vector;
@@ -16,7 +18,6 @@ public final class Seat implements Selection {
     private final Shape shape;
     private double price;
     private int number;
-    private int color;
 
     public Seat(int column, int row, VitalSpace vs, Point p0, int number) {
         this.column = column;
@@ -32,7 +33,6 @@ public final class Seat implements Selection {
     }
 
     public Seat(int row, int column, VitalSpace vs, Point p0, double theta, int number, boolean autoPositioning) {
-
         this.column = column;
         this.row = row;
         double x=0;
@@ -109,13 +109,14 @@ public final class Seat implements Selection {
     }
 
     @Override
-    public void rotate(double thetaRadian){
-    }
+    public void rotate(double thetaRadian){}
+
     public void rotate(double thetaRadian, Point sectionCenter){
         shape.rotate(thetaRadian, sectionCenter);
     }
 
     @Override
+    @JsonIgnore
     public boolean isAuto(){
         return false;
     }
