@@ -507,7 +507,7 @@ public class Controller {
         return hoveredSection;
     }
 
-    public double saveImage(int panelWidth, int panelHeight) {
+    public double prepareForImage(int panelWidth, int panelHeight) {
         double maxRoom;
         int maxPanel;
         double roomWidth = room.getWidth();
@@ -525,7 +525,7 @@ public class Controller {
         return scale;
     }
 
-    public void saveImage(Point offset, double scale) {
+    public void initOffsetScale(Point offset, double scale) {
         this.offset.x = offset.x;
         this.offset.y = offset.y;
         this.scale = scale;

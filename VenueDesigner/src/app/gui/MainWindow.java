@@ -269,14 +269,14 @@ public final class MainWindow extends Frame implements Observer {
                 if (!filename.endsWith(extension)) {
                     filename += extension;
                 }
-                app.domain.shape.Point controllerOffset = new app.domain.shape.Point(controller.getOffset().x, controller.getOffset().y);
+                app.domain.shape.Point controllerOffset = new app.domain.shape.Point(controller.getOffset());
                 double controllerScale = controller.getScale();
-                double tempScale = controller.saveImage(drawingPanel.getWidth(), drawingPanel.getHeight());
+                double tempScale = controller.prepareForImage(drawingPanel.getWidth(), drawingPanel.getHeight());
                 BufferedImage image = new BufferedImage((int)(controller.getRoom().getWidth() * tempScale), (int)(controller.getRoom().getHeight() * tempScale), BufferedImage.TYPE_INT_RGB);
                 Graphics2D g = image.createGraphics();
                 drawingPanel.paint(g);
                 g.dispose();
-                controller.saveImage(controllerOffset, controllerScale);
+                controller.initOffsetScale(controllerOffset, controllerScale);
                 try {
                     ImageIO.write(image, "png", new File(filename));
                 } catch (IOException error) {
