@@ -5,10 +5,8 @@ import app.domain.Offer;
 import app.domain.UIPanel;
 
 import javax.swing.*;
-import javax.swing.text.html.HTMLDocument;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Objects;
 
 import static app.gui.GUIUtils.isNotInteger;
@@ -43,7 +41,6 @@ public class OfferWindow extends JFrame{
         Discount.add(radioButtonPercent);
         Discount.add(radioButtonDollar);
         DefaultListModel modelOffers = new DefaultListModel();
-        DefaultListModel modelSeat = new DefaultListModel();
         listOffers.setModel(modelOffers);
 
         okButton.addActionListener(e ->{
@@ -74,17 +71,17 @@ public class OfferWindow extends JFrame{
         });
 
         removeButton.addActionListener( e -> {
-
             LOffer.remove(listOffers.getSelectedIndex());
             modelOffers.removeElementAt(listOffers.getSelectedIndex());
-
-
         });
 
         okButtonOffer.addActionListener(e->{
 
             panelEdit.setVisible(false);
             if (!isValidFormName()) {
+                return;
+            }
+            if (!isValidFormDblName()){
                 return;
             }
             if (!isValidType()) {
@@ -99,6 +96,7 @@ public class OfferWindow extends JFrame{
                 LOffer.add(offer);
                 tfOfferName.setText("");
                 tfAmount.setText("");
+                offer.setLoffer(LOffer);
             }else{ // si je clique sur edit
                 Offer offer = new Offer(tfOfferName.getText(),typeAmount.getText(),Integer.parseInt(tfAmount.getText()));
                 modelOffers.addElement(offer);
@@ -107,6 +105,7 @@ public class OfferWindow extends JFrame{
                 modelOffers.removeElementAt(listOffers.getSelectedIndex());
                 tfOfferName.setText("");
                 tfAmount.setText("");
+                offer.setLoffer(LOffer);
             }
         });
 
@@ -126,7 +125,18 @@ public class OfferWindow extends JFrame{
         });
 
         ////////// listener sur les elements dela liste //////
-        listOffers.addListSelectionListener(e->{});
+        listOffers.addListSelectionListener(e->{
+            testB = false; // le bouton edit est clique
+            tfOfferName.setText(LOffer.get(listOffers.getSelectedIndex())+"");// tfOfferName.setText(Loffer.get(listOffers.getSelectedIndex()).getName()+"");
+            tfAmount.setText(LOffer.get(listOffers.getSelectedIndex()).getDiscountPrice()+"");
+            if(LOffer.get(listOffers.getSelectedIndex()).getDiscountMode().equals("$")){
+                radioButtonDollar.setSelected(true);
+                radioButtonPercent.setSelected(false);
+            }else{
+                radioButtonDollar.setSelected(false);
+                radioButtonPercent.setSelected(true);
+            }
+        });
         ////////////////////////////////////////////////////
 
         cancelButtonOffer.addActionListener(e->{
@@ -161,9 +171,18 @@ public class OfferWindow extends JFrame{
 
         return true;
     }
-
-    public ArrayList<Offer> getListOffers(){
-        return LOffer;
+    private boolean isValidFormDblName() {
+        boolean test = true;
+        for(Offer offer : LOffer){
+            if(tfOfferName.equals(offer.getName())){
+                test = false;
+                break;
+            }
+        }
+        if(test == false){
+            JOptionPane.showMessageDialog(null, "Sorry, offer name already exists you have to choose another one ", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        return test;
     }
 
     private void createUIComponents() {

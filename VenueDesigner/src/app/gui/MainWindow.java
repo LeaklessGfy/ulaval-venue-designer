@@ -36,7 +36,7 @@ public final class MainWindow extends Frame {
     private JMenuItem room;
     private JMenuItem offers;
     private JMenuItem grid;
-    private ArrayList<Offer> Loffer = new ArrayList();
+    private static ArrayList<Offer> Loffer = new ArrayList();
 
 
     private MainWindow(JFrame frame) {
@@ -203,19 +203,17 @@ public final class MainWindow extends Frame {
         // debut apparition offers
         offers.addActionListener(e-> {
 
-            if (controller.getMode() == Mode.Selection && !Loffer.isEmpty()) {// si je selectionne un truc, je vais attribuer une ofrfe a ce truc
-                JFrame Offer = new OfferAttribution(controller, drawingPanel, e);
-                Offer.setSize(400, 400);
-                Offer.setVisible(true);
+            if (controller.getMode() == Mode.Selection ) {// && !Loffer.isEmpty() si je selectionne un truc, je vais attribuer une ofrfe a ce truc
+                JFrame OfferAttrib = new OfferAttribution(controller, drawingPanel, e);
+                OfferAttrib.setSize(400, 400);
+                OfferAttrib.setVisible(true);
             } else { // sinon
 
-                if(Loffer.isEmpty() || controller.getMode() != Mode.Selection){ //si je selectionne pas ou qu'aucune offre existe on la cree
-                    JFrame Offer = new OfferWindow(controller, drawingPanel, e);
-                    Offer.setSize(600, 500);
-                    Offer.setVisible(true);
+                if(controller.getMode() != Mode.Selection){ // Loffer.isEmpty() || si je selectionne pas ou qu'aucune offre existe on la cree
+                    JFrame OfferWind = new OfferWindow(controller, drawingPanel, e);
+                    OfferWind.setSize(500, 400);
+                    OfferWind.setVisible(true);
                 }
-
-                //JOptionPane.showMessageDialog(null, "Sorry, you have to select a section to edit offer or create an offer", " Error", JOptionPane.ERROR_MESSAGE);
             }
         });
 
@@ -239,6 +237,8 @@ public final class MainWindow extends Frame {
         frame.pack();
         frame.setVisible(true);
         frame.setExtendedState( frame.getExtendedState()|JFrame.MAXIMIZED_BOTH );
+        /// loffer
+        System.out.println(Loffer);
     }
 
     private void createUIComponents() {

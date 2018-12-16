@@ -17,6 +17,7 @@ public final class Seat implements Selection {
     private final Shape shape;
 
     private int price;
+    private double discountPrice;
     private int color;
 
     public Seat(int column, int row, VitalSpace vs, Point p0) {
@@ -76,6 +77,10 @@ public final class Seat implements Selection {
     public void setPrice(int price) {
         this.price = price;
     }
+
+    public double getDiscountPrice(){return discountPrice;}
+
+    public void setDoublePrice(double price){this.discountPrice = price;}
 
     public int getRow() {
         return row;

@@ -1,7 +1,11 @@
 package app.domain;
 
+import java.util.ArrayList;
+
 public final class Offer {
 
+    private  ArrayList<Seat> Lseat = new ArrayList();
+    public static ArrayList<Offer> Loffer = new ArrayList(); // attention au public
     private double price;
     private String name;
     private String discountMode;
@@ -13,7 +17,7 @@ public final class Offer {
         this.valueDiscount = valueDiscount;
     }
 
-    public void Discount(String discountMode, int originPrice,int valueDiscount ){
+    public double Discount(String discountMode, int originPrice,int valueDiscount ){
         if(discountMode.equals("%")){
             double price = (double) Math.round(((double)originPrice - ((valueDiscount/100f)*originPrice)) * 100) / 100; // 9.456 --> 9.46;
             if(price < 0){
@@ -24,7 +28,7 @@ public final class Offer {
             if(price < 0){
                 this.price = 0;
             }else{this.price = price;}
-        }
+        }return price;
     }
 
     public int getDiscountPrice(){
@@ -38,6 +42,11 @@ public final class Offer {
     public String getName(){
         return name;
     }
+
+
+    public void setLoffer(ArrayList<Offer> offer){this.Loffer = offer;}
+
+    public ArrayList<Offer> getLoffer(){ return Loffer;}
 
     public String getDiscountMode(){
         return discountMode;

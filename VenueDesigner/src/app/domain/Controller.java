@@ -11,7 +11,9 @@ import app.domain.shape.Shape;
 import app.domain.shape.ShapeBuilder;
 import app.domain.shape.ShapeBuilderFactory;
 import app.domain.section.SectionFactory;
+import app.gui.OfferWindow;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.Optional;
@@ -333,6 +335,8 @@ public class Controller {
         }
         return true;
     }
+
+
 
     private boolean selectionCheck(int x, int y, Shape shape){
         if (collider.hasCollide(x - offset.x, y - offset.y, shape)){

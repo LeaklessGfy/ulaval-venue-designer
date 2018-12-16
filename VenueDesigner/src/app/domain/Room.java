@@ -13,7 +13,6 @@ import java.util.Optional;
 
 public final class Room implements Drawable {
     private final ArrayList<Section> sections;
-    private ArrayList<Offer> offers;
     @JsonProperty
     private Shape shape;
 
@@ -78,7 +77,6 @@ public final class Room implements Drawable {
         sections.add(Objects.requireNonNull(section));
     }
 
-    public void addOffer(Offer offer){offers.add(Objects.requireNonNull(offer));}
 
     public List<Section> getSections() {
         return sections;
