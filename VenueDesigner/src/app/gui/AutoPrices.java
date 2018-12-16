@@ -39,12 +39,15 @@ public class AutoPrices extends JFrame{
 
     private void setPrices(List<Section> sections, Stage stage, double min, double max){
         AlgoType type;
-        if (seatBtn.isSelected()){type = AlgoType.Seat;}
-        else if (rowBtn.isSelected()){type =AlgoType.Row;}
-        else {type=AlgoType.Section;}
-        PriceAlgoFactory factory = PriceAlgoFactory.get();
-        PriceAlgo algo = factory.create(type);
-        algo.extremeDistribution(sections, stage.getShape().computeCentroid(),min,max);
+        if (seatBtn.isSelected()) {
+            type = AlgoType.Seat;
+        } else if (rowBtn.isSelected()) {
+            type = AlgoType.Row;
+        } else {
+            type = AlgoType.Section;
+        }
+        PriceAlgo algo = PriceAlgoFactory.create(type);
+        algo.extremeDistribution(sections, stage.getShape().computeCentroid(), min, max);
     }
 
     private boolean isValidForm() {
