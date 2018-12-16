@@ -1,17 +1,14 @@
 package app.gui;
 
-import app.domain.Controller;
-import app.domain.Mode;
-import app.domain.Seat;
-import app.domain.SeatSection;
+import app.domain.*;
 import app.domain.selection.SelectionAdapter;
-import app.domain.Stage;
 import app.domain.section.SeatedSection;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.util.ArrayList;
 import javax.swing.filechooser.*;
 import javax.swing.filechooser.FileFilter;
 
@@ -39,6 +36,7 @@ public final class MainWindow extends Frame {
     private JMenuItem room;
     private JMenuItem offers;
     private JMenuItem grid;
+    private ArrayList<Offer> Loffer = new ArrayList();
 
 
     private MainWindow(JFrame frame) {
@@ -203,16 +201,22 @@ public final class MainWindow extends Frame {
         edition.add(grid);
         /////////////////////////////
         // debut apparition offers
-        offers.addActionListener(e->{
-            if(controller.getRoom().isStageSet()){// pour commencer la scène est presente
-                JFrame Offer = new OfferWindow(controller, drawingPanel, e);
-                Offer.setSize(550, 500);// plus tard ce sera 500
-                Offer.setVisible(true);
-            }else{
-                // boite de dialogue pour dire attention la scene existe pas encore
-                JOptionPane.showMessageDialog(null, "Sorry, you have to set the stage before create offers", "Error", JOptionPane.ERROR_MESSAGE);
-            }
+        offers.addActionListener(e-> {
 
+            if (controller.getMode() == Mode.Selection && !Loffer.isEmpty()) {// si je selectionne un truc, je vais attribuer une ofrfe a ce truc
+                JFrame Offer = new OfferAttribution(controller, drawingPanel, e);
+                Offer.setSize(400, 400);
+                Offer.setVisible(true);
+            } else { // sinon
+
+                if(Loffer.isEmpty() || controller.getMode() != Mode.Selection){ //si je selectionne pas ou qu'aucune offre existe on la cree
+                    JFrame Offer = new OfferWindow(controller, drawingPanel, e);
+                    Offer.setSize(600, 500);
+                    Offer.setVisible(true);
+                }
+
+                //JOptionPane.showMessageDialog(null, "Sorry, you have to select a section to edit offer or create an offer", " Error", JOptionPane.ERROR_MESSAGE);
+            }
         });
 
         // fin apparition offers

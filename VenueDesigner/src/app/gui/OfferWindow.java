@@ -5,8 +5,10 @@ import app.domain.Offer;
 import app.domain.UIPanel;
 
 import javax.swing.*;
+import javax.swing.text.html.HTMLDocument;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Objects;
 
 import static app.gui.GUIUtils.isNotInteger;
@@ -25,34 +27,28 @@ public class OfferWindow extends JFrame{
     private JTextField tfOfferName;
     private JTextField tfAmount;
     private JList listOffers;
-    private JList listSeat;
     private JLabel typeAmount;
     private JPanel panelEdit;
-    private JPanel panelSeat;
-    private JButton removeSeatButton;
-    private JButton addSeatButton;
-    private JLabel labelTotSeats;
+    private JButton editButton;
+    private ArrayList<Offer> LOffer = new ArrayList();
 
+
+    private boolean testB;
 
     OfferWindow(Controller controller, UIPanel ui, ActionEvent event) {
         Objects.requireNonNull(controller);
         setContentPane(panelMain);
         panelEdit.setVisible(false);
-        panelSeat.setVisible(false);
         ButtonGroup Discount = new ButtonGroup();
         Discount.add(radioButtonPercent);
         Discount.add(radioButtonDollar);
-
         DefaultListModel modelOffers = new DefaultListModel();
         DefaultListModel modelSeat = new DefaultListModel();
         listOffers.setModel(modelOffers);
-        listSeat.setModel(modelSeat);
-        ArrayList<Offer> Loffer = new ArrayList();
-
-
 
         okButton.addActionListener(e ->{
-
+            setVisible(false);
+            dispose();
         });
 
         cancelButton.addActionListener(e ->{
@@ -61,10 +57,9 @@ public class OfferWindow extends JFrame{
         });
 
         addButton.addActionListener(e ->{
+            testB = true; // le bouton add est clique
             panelEdit.setVisible(true);
         });
-
-
 
         radioButtonPercent.addActionListener(e->{
             if(radioButtonPercent.isSelected()){
@@ -77,19 +72,17 @@ public class OfferWindow extends JFrame{
                 typeAmount.setText("$");
             }
         });
-        /////////// supprimer un element dans la liste des offres ////
+
         removeButton.addActionListener( e -> {
 
+            LOffer.remove(listOffers.getSelectedIndex());
             modelOffers.removeElementAt(listOffers.getSelectedIndex());
-            Loffer.remove(listOffers.getSelectedIndex());
+
 
         });
 
-
-        /////////////////////////////////////////////////////////////
-
-        ////////// ajouter un element dans la liste des offres////
         okButtonOffer.addActionListener(e->{
+
             panelEdit.setVisible(false);
             if (!isValidFormName()) {
                 return;
@@ -100,37 +93,41 @@ public class OfferWindow extends JFrame{
             if (!isValidFormAmount()) {
                 return;
             }
-            Offer offer = new Offer(tfOfferName.getText(),typeAmount.getText(),Integer.parseInt(tfAmount.getText()));
-            modelOffers.addElement(offer);
-            Loffer.add(offer);
-
-
-            tfOfferName.setText("");
-            tfAmount.setText("");
-
-
-
+            if (testB == true){ // si je clique sur add
+                Offer offer = new Offer(tfOfferName.getText(),typeAmount.getText(),Integer.parseInt(tfAmount.getText()));
+                modelOffers.addElement(offer);
+                LOffer.add(offer);
+                tfOfferName.setText("");
+                tfAmount.setText("");
+            }else{ // si je clique sur edit
+                Offer offer = new Offer(tfOfferName.getText(),typeAmount.getText(),Integer.parseInt(tfAmount.getText()));
+                modelOffers.addElement(offer);
+                LOffer.add(offer);
+                LOffer.remove(listOffers.getSelectedIndex());
+                modelOffers.removeElementAt(listOffers.getSelectedIndex());
+                tfOfferName.setText("");
+                tfAmount.setText("");
+            }
         });
-        ///////////////////////////////////////////////
 
-        ////////// listener sur les elements dela liste //////
-        listOffers.addListSelectionListener(e->{
-            tfOfferName.setText(Loffer.get(listOffers.getSelectedIndex()).getName()+"");
-            tfAmount.setText(Loffer.get(listOffers.getSelectedIndex()).getDiscountPrice()+"");
-            if(Loffer.get(listOffers.getSelectedIndex()).getDiscountMode().equals("$")){
+        editButton.addActionListener(e->{
+            testB = false; // le bouton edit est clique
+            tfOfferName.setText(LOffer.get(listOffers.getSelectedIndex())+"");// tfOfferName.setText(Loffer.get(listOffers.getSelectedIndex()).getName()+"");
+            tfAmount.setText(LOffer.get(listOffers.getSelectedIndex()).getDiscountPrice()+"");
+            if(LOffer.get(listOffers.getSelectedIndex()).getDiscountMode().equals("$")){
                 radioButtonDollar.setSelected(true);
                 radioButtonPercent.setSelected(false);
             }else{
                 radioButtonDollar.setSelected(false);
                 radioButtonPercent.setSelected(true);
             }
-            panelSeat.setVisible(true);
             panelEdit.setVisible(true);
 
         });
 
-
-
+        ////////// listener sur les elements dela liste //////
+        listOffers.addListSelectionListener(e->{});
+        ////////////////////////////////////////////////////
 
         cancelButtonOffer.addActionListener(e->{
             panelEdit.setVisible(false);
@@ -138,15 +135,6 @@ public class OfferWindow extends JFrame{
             tfAmount.setText("");
 
         });
-
-        addSeatButton.addActionListener(e->{
-
-        });
-
-        removeSeatButton.addActionListener(e->{
-
-        });
-
 
     }
     private boolean isValidFormAmount() {
@@ -172,6 +160,14 @@ public class OfferWindow extends JFrame{
         }
 
         return true;
+    }
+
+    public ArrayList<Offer> getListOffers(){
+        return LOffer;
+    }
+
+    private void createUIComponents() {
+        // TODO: place custom component creation code here
     }
 
     // faire une validate form pour savoir si il existe un objet dans la liste des offres qui a le meme nom

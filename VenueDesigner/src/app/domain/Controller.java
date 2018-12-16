@@ -224,6 +224,8 @@ public class Controller {
         }
     }
 
+
+
     private void doSelection(int x, int y) {
         mode = Mode.None;
         Selection s = selection;
