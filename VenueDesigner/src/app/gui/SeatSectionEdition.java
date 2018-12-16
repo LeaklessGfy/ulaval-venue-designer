@@ -9,6 +9,7 @@ import javax.swing.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.util.Locale;
+import java.util.Objects;
 
 import static app.gui.GUIUtils.colorToArray;
 
@@ -24,7 +25,10 @@ public final class SeatSectionEdition extends JFrame {
     private final ColorPicker colorPicker = new ColorPicker();
 
     SeatSectionEdition(SeatSection seatSection, UIPanel panel) {
+        Objects.requireNonNull(seatSection);
+        Objects.requireNonNull(panel);
         setContentPane(panelMain);
+        setSize(300, 400);
 
         price.setText(String.format(Locale.ROOT,"%.2f", 0.0));
 

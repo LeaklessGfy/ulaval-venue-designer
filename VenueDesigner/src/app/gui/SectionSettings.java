@@ -15,19 +15,24 @@ public final class SectionSettings extends JFrame {
     private JButton okButton;
     private JButton cancelButton;
 
-    SectionSettings(Controller controller, UIPanel ui, int x, int y, Runnable onSuccess) {
+    SectionSettings(Controller controller, UIPanel panel, int x, int y, Runnable onSuccess) {
         Objects.requireNonNull(controller);
+        Objects.requireNonNull(panel);
+        Objects.requireNonNull(onSuccess);
         setContentPane(panelMain);
+        setSize(300,400);
+
         okButton.addActionListener(e -> {
-            if (validateForm()) {
-                int xInt = Integer.parseInt(columns.getText());
-                int yInt = Integer.parseInt(rows.getText());
-                controller.createRegularSection(x, y, xInt, yInt);
-                setVisible(false);
-                dispose();
-                ui.repaint();
-                onSuccess.run();
+            if (!isValidForm()) {
+                return;
             }
+            int xInt = Integer.parseInt(columns.getText());
+            int yInt = Integer.parseInt(rows.getText());
+            controller.createRegularSection(x, y, xInt, yInt);
+            setVisible(false);
+            dispose();
+            panel.repaint();
+            onSuccess.run();
         });
 
         cancelButton.addActionListener( e -> {
@@ -36,7 +41,7 @@ public final class SectionSettings extends JFrame {
         });
     }
 
-    private boolean validateForm() {
+    private boolean isValidForm() {
         if (columns.getText().isEmpty() || rows.getText().isEmpty()) {
             JOptionPane.showMessageDialog(
                     null,
@@ -46,7 +51,6 @@ public final class SectionSettings extends JFrame {
             );
             return false;
         }
-
         if (isNotInteger(columns.getText()) || isNotInteger(rows.getText())) {
             JOptionPane.showMessageDialog(
                     null,
@@ -56,11 +60,9 @@ public final class SectionSettings extends JFrame {
             );
             return false;
         }
-
         if (Integer.parseInt(columns.getText()) < 1 || Integer.parseInt(rows.getText()) < 1) {
             return false;
         }
-
         return true;
     }
 }

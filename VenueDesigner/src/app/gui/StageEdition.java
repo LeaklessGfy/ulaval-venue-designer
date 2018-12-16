@@ -7,6 +7,7 @@ import app.domain.UIPanel;
 import javax.swing.*;
 
 import java.util.Locale;
+import java.util.Objects;
 
 import static app.gui.GUIUtils.isNotNumber;
 
@@ -19,7 +20,12 @@ public final class StageEdition extends JFrame {
     private JPanel panelMain;
 
     StageEdition(Controller controller, Stage stage, UIPanel panel) {
+        Objects.requireNonNull(controller);
+        Objects.requireNonNull(stage);
+        Objects.requireNonNull(panel);
         setContentPane(panelMain);
+        setSize(300,400);
+
         width.setText(String.format(Locale.ROOT,"%.2f",stage.getWidth()));
         height.setText(String.format(Locale.ROOT,"%.2f",stage.getHeight()));
         elevation.setText(String.format(Locale.ROOT,"%.2f",stage.getElevation()));

@@ -2,12 +2,13 @@ package app.gui;
 
 import app.domain.Controller;
 import app.domain.Seat;
+import app.domain.section.Section;
 
 import javax.swing.*;
 import java.util.Locale;
 
-public class SeatInfo extends JDialog{
-    private JPanel panel1;
+public final class SeatInfo extends JDialog{
+    private JPanel panelMain;
     private JTextField number;
     private JTextField row;
     private JTextField section;
@@ -15,16 +16,20 @@ public class SeatInfo extends JDialog{
     private JTextField elevation;
     private JTextArea textArea1;
 
-    SeatInfo(){
-        setContentPane(panel1);
+    SeatInfo() {
+        setContentPane(panelMain);
         setUndecorated(true);
+        setSize(300, 400);
     }
 
-    public void update(Controller controller){
-        number.setText(controller.getHoveredSeat().getNumber()+ "");
-        section.setText(controller.getHoveredSection().getName());
-        row.setText(controller.getHoveredSeat().getRow()+1+ "");
-        price.setText(String.format(Locale.ROOT,"%.2f",controller.getHoveredSeat().getPrice()));
-        elevation.setText(String.format(Locale.ROOT,"%.2f",controller.getHoveredSection().getElevation()));
+    void update(Controller controller) {
+        Seat hoveredSeat = controller.getHoveredSeat();
+        Section hoveredSection = controller.getHoveredSection();
+
+        number.setText(hoveredSeat.getNumber()+ "");
+        section.setText(hoveredSection.getName());
+        row.setText(hoveredSeat.getRow()+1+ "");
+        price.setText(String.format(Locale.ROOT,"%.2f", hoveredSeat.getPrice()));
+        elevation.setText(String.format(Locale.ROOT,"%.2f", hoveredSection.getElevation()));
     }
 }

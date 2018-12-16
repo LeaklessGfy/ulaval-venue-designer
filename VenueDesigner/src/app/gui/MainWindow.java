@@ -64,7 +64,6 @@ public final class MainWindow extends Frame implements Observer {
                             (int)(e.getY() / controller.getScale()),
                             () -> reset()
                     );
-                    sectionSettings.setSize(300,400);
                     sectionSettings.setVisible(true);
                 } else {
                     controller.mouseClicked(e.getX(), e.getY());
@@ -142,7 +141,6 @@ public final class MainWindow extends Frame implements Observer {
                 @Override
                 public void visit(Stage stage) {
                     JFrame stageEdition = new StageEdition(controller, stage, drawingPanel);
-                    stageEdition.setSize(300,400);
                     stageEdition.setVisible(true);
                 }
 
@@ -151,36 +149,31 @@ public final class MainWindow extends Frame implements Observer {
                     JFrame sectionEdition;
                     if (section.isRegular){
                         sectionEdition = new SectionEdition(controller, section, drawingPanel);
-                    }else {
+                    } else {
                         if (!controller.getRoom().getStage().isPresent()){
                             JOptionPane.showMessageDialog(null, "A stage is needed to use this feature.", "Error", JOptionPane.ERROR_MESSAGE);
                             return;
                         }
-                        sectionEdition = new IrregularSectionEdition(controller,section,drawingPanel);
+                        sectionEdition = new IrregularSectionEdition(controller, section);
                     }
-                    sectionEdition.setSize(300, 400);
                     sectionEdition.setVisible(true);
                 }
 
                 @Override
                 public void visit(StandingSection section) {
                     JFrame sectionEdition = new StandingSectionEdition(section, drawingPanel);
-
-                    sectionEdition.setSize(300, 400);
                     sectionEdition.setVisible(true);
                 }
 
                 @Override
                 public void visit(Seat seat) {
                     JFrame seatEdition = new SeatEdition(seat, drawingPanel);
-                    seatEdition.setSize(300, 400);
                     seatEdition.setVisible(true);
                 }
 
                 @Override
                 public void visit(SeatSection seatSection) {
                     JFrame seatSectionEdition = new SeatSectionEdition(seatSection, drawingPanel);
-                    seatSectionEdition.setSize(300, 400);
                     seatSectionEdition.setVisible(true);
                 }
             });
@@ -247,7 +240,6 @@ public final class MainWindow extends Frame implements Observer {
 
         newItem.addActionListener( e -> {
             JFrame roomSettings = new RoomSettings(controller, drawingPanel, e);
-            roomSettings.setSize(300,400);
             roomSettings.setVisible(true);
         });
 
@@ -261,7 +253,6 @@ public final class MainWindow extends Frame implements Observer {
 
         room.addActionListener( e -> {
             JFrame roomSettings = new RoomSettings(controller, drawingPanel, e);
-            roomSettings.setSize(300, 400);
             roomSettings.setVisible(true);
         });
 
@@ -293,7 +284,6 @@ public final class MainWindow extends Frame implements Observer {
         drawingPanel = new DrawingPanel(painter);
         controller.setDrawingPanel(drawingPanel);
         seatInfo = new SeatInfo();
-        seatInfo.setSize(200,200);
     }
 
     private void reset() {

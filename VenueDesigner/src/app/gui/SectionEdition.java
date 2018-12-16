@@ -10,6 +10,7 @@ import javax.swing.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.util.Locale;
+import java.util.Objects;
 
 import static app.gui.GUIUtils.colorToArray;
 import static app.gui.GUIUtils.isNotInteger;
@@ -31,7 +32,12 @@ public final class SectionEdition extends JFrame {
     private final ColorPicker colorPicker = new ColorPicker();
 
     SectionEdition(Controller controller, SeatedSection section, UIPanel panel) {
+        Objects.requireNonNull(controller);
+        Objects.requireNonNull(section);
+        Objects.requireNonNull(panel);
         setContentPane(panelMain);
+        setSize(300,400);
+
         VitalSpace vitalSpace = section.getVitalSpace();
         name.setText(section.getName());
         columns.setText(section.getColumns() + "");

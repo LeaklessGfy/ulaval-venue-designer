@@ -8,6 +8,7 @@ import javax.swing.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.util.Locale;
+import java.util.Objects;
 
 import static app.gui.GUIUtils.isNotNumber;
 import static app.gui.GUIUtils.colorToArray;
@@ -22,7 +23,11 @@ public final class SeatEdition extends JFrame {
     private final ColorPicker colorPicker = new ColorPicker();
 
     SeatEdition(Seat seat, UIPanel panel) {
+        Objects.requireNonNull(seat);
+        Objects.requireNonNull(panel);
         setContentPane(panelMain);
+        setSize(300, 400);
+
         price.setText(String.format(Locale.ROOT,"%.2f", seat.getPrice()));
         colorButton.addActionListener(e -> {
             colorPicker.setVisible(true);
