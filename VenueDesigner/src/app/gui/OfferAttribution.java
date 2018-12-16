@@ -3,6 +3,7 @@ package app.gui;
 import app.domain.*;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -32,7 +33,6 @@ public class OfferAttribution extends JFrame{
                 Offer offer = LOffer.get(listOffer.getSelectedIndex());
                 seat.setDoublePrice(offer.Discount(offer.getDiscountMode(),seat.getPrice(),offer.getDiscountPrice()));
             }*/
-            
 
         });
 
@@ -41,10 +41,14 @@ public class OfferAttribution extends JFrame{
         });
 
         okButton.addActionListener(e->{
-
+            setVisible(false);
+            dispose();
         });
 
-        cancelButton.addActionListener(e->{});
+        cancelButton.addActionListener(e->{
+            setVisible(false);
+            dispose();
+        });
 
         listOffer.addListSelectionListener(e->{
 

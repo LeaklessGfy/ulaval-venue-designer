@@ -36,7 +36,6 @@ public final class MainWindow extends Frame {
     private JMenuItem room;
     private JMenuItem offers;
     private JMenuItem grid;
-    private static ArrayList<Offer> Loffer = new ArrayList();
 
 
     private MainWindow(JFrame frame) {
@@ -199,17 +198,18 @@ public final class MainWindow extends Frame {
         edition.add(room);
         edition.add(offers);
         edition.add(grid);
+
         /////////////////////////////
-        // debut apparition offers
+        // Offer  //
         offers.addActionListener(e-> {
 
-            if (controller.getMode() == Mode.Selection ) {// && !Loffer.isEmpty() si je selectionne un truc, je vais attribuer une ofrfe a ce truc
+            if (controller.getMode() == Mode.Selection ) {//si je selectionne un truc, je vais attribuer une ofrfe a ce truc
                 JFrame OfferAttrib = new OfferAttribution(controller, drawingPanel, e);
                 OfferAttrib.setSize(400, 400);
                 OfferAttrib.setVisible(true);
             } else { // sinon
 
-                if(controller.getMode() != Mode.Selection){ // Loffer.isEmpty() || si je selectionne pas ou qu'aucune offre existe on la cree
+                if(controller.getMode() != Mode.Selection){ // si on est pas en mode selection  ou qu'aucune offre existe on la cree
                     JFrame OfferWind = new OfferWindow(controller, drawingPanel, e);
                     OfferWind.setSize(500, 400);
                     OfferWind.setVisible(true);
@@ -217,7 +217,6 @@ public final class MainWindow extends Frame {
             }
         });
 
-        // fin apparition offers
         /////////////////////////////
         room.addActionListener( e -> {
             JFrame roomSettings = new RoomSettings(controller, drawingPanel, e);
@@ -237,8 +236,6 @@ public final class MainWindow extends Frame {
         frame.pack();
         frame.setVisible(true);
         frame.setExtendedState( frame.getExtendedState()|JFrame.MAXIMIZED_BOTH );
-        /// loffer
-        System.out.println(Loffer);
     }
 
     private void createUIComponents() {

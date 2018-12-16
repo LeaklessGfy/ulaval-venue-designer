@@ -110,8 +110,8 @@ public class OfferWindow extends JFrame{
         });
 
         editButton.addActionListener(e->{
-            testB = false; // le bouton edit est clique
-            tfOfferName.setText(LOffer.get(listOffers.getSelectedIndex())+"");// tfOfferName.setText(Loffer.get(listOffers.getSelectedIndex()).getName()+"");
+            testB = false;
+            tfOfferName.setText(LOffer.get(listOffers.getSelectedIndex())+"");
             tfAmount.setText(LOffer.get(listOffers.getSelectedIndex()).getDiscountPrice()+"");
             if(LOffer.get(listOffers.getSelectedIndex()).getDiscountMode().equals("$")){
                 radioButtonDollar.setSelected(true);
@@ -124,7 +124,6 @@ public class OfferWindow extends JFrame{
 
         });
 
-        ////////// listener sur les elements dela liste //////
         listOffers.addListSelectionListener(e->{
             testB = false; // le bouton edit est clique
             tfOfferName.setText(LOffer.get(listOffers.getSelectedIndex())+"");// tfOfferName.setText(Loffer.get(listOffers.getSelectedIndex()).getName()+"");
@@ -137,7 +136,6 @@ public class OfferWindow extends JFrame{
                 radioButtonPercent.setSelected(true);
             }
         });
-        ////////////////////////////////////////////////////
 
         cancelButtonOffer.addActionListener(e->{
             panelEdit.setVisible(false);
@@ -174,12 +172,12 @@ public class OfferWindow extends JFrame{
     private boolean isValidFormDblName() {
         boolean test = true;
         for(Offer offer : LOffer){
-            if(tfOfferName.equals(offer.getName())){
+            if(tfOfferName.getText().equals(offer.getName())){
                 test = false;
-                break;
             }
         }
         if(test == false){
+            tfOfferName.setText("");
             JOptionPane.showMessageDialog(null, "Sorry, offer name already exists you have to choose another one ", "Error", JOptionPane.ERROR_MESSAGE);
         }
         return test;
@@ -189,7 +187,7 @@ public class OfferWindow extends JFrame{
         // TODO: place custom component creation code here
     }
 
-    // faire une validate form pour savoir si il existe un objet dans la liste des offres qui a le meme nom
+
 
 
 }
