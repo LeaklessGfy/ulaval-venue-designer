@@ -89,6 +89,8 @@ public class Controller {
     public void mouseDragged(int x, int y) {
         observer.onLeave();
         Point destination = getTransformedPoint(new Point(x,y));
+        double dx= destination.x-cursor.x;
+        double dy = destination.y-cursor.y;
         cursor.set(destination.x, destination.y);
         if(isGridOn){
             Point magnet = magnet(cursor);
@@ -132,8 +134,9 @@ public class Controller {
             }
 
             private void move(Selection selection) {
-                if (isMovable(selection.getShape(), cursor.x, cursor.y)) {
+                if (isMovable(selection.getShape(), cursor.x,cursor.y)) {
                     selection.move(cursor.x, cursor.y);
+                    ui.repaint();
                 }
             }
         }))
