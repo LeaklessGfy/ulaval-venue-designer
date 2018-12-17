@@ -365,13 +365,14 @@ public final class MainWindow extends Frame implements Observer {
             }
             app.domain.shape.Point controllerOffset = new app.domain.shape.Point(controller.getOffset());
             double controllerScale = controller.getScale();
-            controller.toggleGrid();
+            boolean isGridOn = controller.isGridOn();
+            if (isGridOn) controller.toggleGrid();
             double tempScale = controller.prepareSave(drawingPanel.getWidth(), drawingPanel.getHeight());
             BufferedImage image = new BufferedImage((int)(controller.getRoom().getWidth() * tempScale), (int)(controller.getRoom().getHeight() * tempScale), BufferedImage.TYPE_INT_RGB);
             Graphics2D g = image.createGraphics();
             drawingPanel.paint(g);
             g.dispose();
-            controller.toggleGrid();
+            if (isGridOn) controller.toggleGrid();
             controller.offsetScale(controllerOffset, controllerScale);
 
             try {
