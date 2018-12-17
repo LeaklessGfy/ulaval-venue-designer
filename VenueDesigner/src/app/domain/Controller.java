@@ -120,7 +120,12 @@ public class Controller {
 
             @Override
             public void visit(PointSelection point) {
+
+                Shape backup = selectionHolder.getPreSelection().getShape().clone();
                 point.move(cursor.x, cursor.y);
+                if(!validator.validPredictShape(selectionHolder.getPreSelection().getShape(),selectionHolder.getPreSelection().getShape(),getRoom())){
+                 selectionHolder.getPreSelection().setShape(backup);
+                }
                 ui.repaint();
             }
 
