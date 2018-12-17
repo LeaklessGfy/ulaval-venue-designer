@@ -87,4 +87,8 @@ public final class Stage implements Selection {
         return false;
     }
 
+    public boolean isSameStage(Stage stage) {
+        return this.getShape().isSameShape(stage.getShape()) &&
+                this.elevation == stage.elevation;
+    }
 }

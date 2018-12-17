@@ -44,6 +44,7 @@ final class StageEdition extends JFrame {
                 setVisible(false);
                 dispose();
                 panel.repaint();
+                controller.saveRoom();
             } else {
                 JOptionPane.showMessageDialog(null, "Inconsistent dimensions.", "Error", JOptionPane.ERROR_MESSAGE);
             }

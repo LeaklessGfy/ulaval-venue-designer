@@ -31,7 +31,7 @@ public final class SeatedSection extends AbstractSection {
         super(name, elevation, shape);
         this.vitalSpace = vitalSpace;
         this.isRegular = false;
-        this.autoSetSeat=false;
+        this.autoSetSeat = false;
     }
 
     @JsonCreator
@@ -45,6 +45,19 @@ public final class SeatedSection extends AbstractSection {
         this.theta = theta;
         this.isRegular = isRegular;
         this.autoSetSeat = autoSetSeat;
+    }
+
+    public SeatedSection(SeatedSection section) {
+        super(section);
+        this.vitalSpace = section.vitalSpace;
+        this.seats = new Seat[section.seats.length][];
+        for (int row = 0; row < section.seats.length; row++) {
+            this.seats[row] = new Seat[section.seats[row].length];
+            for (int col = 0; col < section.seats[row].length; col++) {
+                this.seats[row][col] = new Seat(section.seats[row][col]);
+            }
+        }
+        this.theta = section.theta;
     }
 
     public static SeatedSection create(double x, double y, int columns, int rows, VitalSpace vitalSpace, Stage stage) {
@@ -68,10 +81,10 @@ public final class SeatedSection extends AbstractSection {
         section.setElevation(0.0);
         section.isRegular = true;
 
-        int number =1;
+        int number = 1;
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
-                section.seats[i][j] = new Seat(i, j, vitalSpace, new Point(x,y), theta,number++, true);
+                section.seats[i][j] = new Seat(i, j, vitalSpace, new Point(x,y), theta, number++, true);
             }
         }
 
@@ -302,8 +315,8 @@ public final class SeatedSection extends AbstractSection {
             double d = Math.sqrt(Math.pow(p.x-gravityCenter.x,2)+Math.pow(p.y-gravityCenter.y,2));
             double alpha = thetaCalc(p,gravityCenter);
             d *= scaleFactor;
-            double px= gravityCenter.x + d*Math.cos(alpha);
-            double py= gravityCenter.y + d*Math.sin(alpha);
+            double px = gravityCenter.x + d*Math.cos(alpha);
+            double py = gravityCenter.y + d*Math.sin(alpha);
             points.add(new Point(px,py));
         }
         Shape tolerantShape = new Polygon(points, new int[4]);
@@ -314,5 +327,33 @@ public final class SeatedSection extends AbstractSection {
     @JsonIgnore
     public boolean isAuto(){
         return autoSetSeat;
+    }
+
+    @Override
+    public boolean isSameSection(Section section) {
+        SeatedSection seatedSection = (SeatedSection) section;
+        if (getName().equals(seatedSection.getName()) &&
+                getElevation() == seatedSection.getElevation() &&
+                getShape().isSameShape(seatedSection.getShape()) &&
+                this.vitalSpace == seatedSection.vitalSpace &&
+                this.seats.equals(seatedSection.seats)) {
+            for (int row = 0; row < this.seats.length; row++) {
+                for (int col = 0; col < this.seats[row].length; col++) {
+                    if (!this.seats[row][col].isSameSeat(seatedSection.seats[row][col])) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    public int maxCol() {
+        int maxcol = 0;
+        for (int i = 0; i < this.seats.length; i++)
+            if (this.seats[i].length > maxcol){
+                maxcol = this.seats[i].length;
+            }
+            return maxcol;
     }
 }

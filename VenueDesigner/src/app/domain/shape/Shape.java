@@ -22,4 +22,5 @@ public interface Shape extends Drawable {
     void rotate(double thetaRadian, Point rotationCenter);
     Point computeCentroid();
     Shape clone();
+    boolean isSameShape(Shape shape);
 }

@@ -26,6 +26,9 @@ public class Controller {
     private final Point offset = new Point(15, 15);
     private final HashMap<Mode, BiConsumer<Integer, Integer>> clickActions = new HashMap<>();
 
+    private ArrayList<Room> listRooms = new ArrayList<Room>();
+    private int currentindexListRoom = -1;
+    private int maximumListRoomsSize = 20;
     private Room room;
     private Mode mode = Mode.None;
     private UIPanel ui;
@@ -77,6 +80,10 @@ public class Controller {
 
     public double getScale() {
         return scale;
+    }
+
+    public int getCurrentindexListRoom() {
+        return currentindexListRoom;
     }
 
     public void mouseDragged(int x, int y) {
@@ -222,16 +229,19 @@ public class Controller {
             public void visit(Stage stage) {
                 room.setStage(null);
                 mode = Mode.None;
+                saveRoom();
             }
 
             @Override
             public void visit(SeatedSection section) {
                 room.getSections().remove(section);
+                saveRoom();
             }
 
             @Override
             public void visit(StandingSection section) {
                 room.getSections().remove(section);
+                saveRoom();
             }
         });
         ui.repaint();
@@ -266,6 +276,7 @@ public class Controller {
                     } else {
                         select.rotate(-Math.PI/32);
                     }
+                    saveRoom();
                 }
             }
         });
@@ -318,6 +329,7 @@ public class Controller {
         }
         room.addSection(section);
         mode = Mode.None;
+        saveRoom();
         return true;
     }
 
@@ -402,6 +414,7 @@ public class Controller {
             room.addSection(s);
         }
         mode = Mode.None;
+        saveRoom();
     }
 
     private boolean isMovable(Shape shape, double x, double y) {
@@ -537,5 +550,59 @@ public class Controller {
         this.offset.y = offset.y;
         this.scale = scale;
         ui.repaint();
+    }
+
+    public void saveRoom() {
+         int listRoomsSize = listRooms.size();
+         if (listRoomsSize == 0 || !listRooms.get(listRooms.size() - 1).isSameRoom(room)) {
+            if (listRooms.size() == maximumListRoomsSize) {
+                listRooms.remove(0);
+            }
+             if (listRoomsSize != 0  && !listRooms.get(listRooms.size() - 1).isSameRoom(listRooms.get(currentindexListRoom))) {
+                 for (int i = currentindexListRoom + 1; i < listRooms.size(); i++) {
+                     listRooms.remove(i);
+                 }
+             }
+            Room newRoom = new Room(room);
+            listRooms.add(newRoom);
+            currentindexListRoom++;
+            observer.onUndoRedo();
+         }
+    }
+
+    public void undo() {
+        currentindexListRoom--;
+        room = new Room(listRooms.get(currentindexListRoom));
+        selection = null;
+        resetSelection();
+        observer.onUndoRedo();
+        ui.repaint();
+    }
+
+    public void redo() {
+        currentindexListRoom++;
+        room = new Room(listRooms.get(currentindexListRoom));
+        selection = null;
+        resetSelection();
+        observer.onUndoRedo();
+        ui.repaint();
+    }
+
+    public boolean undoFirstIndex() {
+        if (currentindexListRoom == 0) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    public boolean redoLastIndex() {
+        if (currentindexListRoom == listRooms.size() - 1) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 }

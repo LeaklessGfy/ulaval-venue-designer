@@ -36,6 +36,8 @@ public final class MainWindow extends Frame implements Observer {
     private JButton standingSectionButton;
     private JButton autoScalingButton;
     private JCheckBox autoSeatCheckBox;
+    private JButton undo;
+    private JButton redo;
     private JMenu file;
     private JMenuItem newItem;
     private JMenuItem openItem;
@@ -156,17 +158,17 @@ public final class MainWindow extends Frame implements Observer {
 
                 @Override
                 public void visit(StandingSection section) {
-                    new StandingSectionEdition(section, drawingPanel);
+                    new StandingSectionEdition(controller, section, drawingPanel);
                 }
 
                 @Override
                 public void visit(Seat seat) {
-                    new SeatEdition(seat, drawingPanel);
+                    new SeatEdition(controller, seat, drawingPanel);
                 }
 
                 @Override
                 public void visit(SeatSection seatSection) {
-                    new SeatSectionEdition(seatSection, drawingPanel);
+                    new SeatSectionEdition(controller, seatSection, drawingPanel);
                 }
             });
         });
@@ -192,6 +194,14 @@ public final class MainWindow extends Frame implements Observer {
             controller.autoSetSeatSelected();
         });
 
+        undo.addActionListener( e -> {
+            controller.undo();
+        });
+
+        redo.addActionListener(e -> {
+            controller.redo();
+        });
+
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -208,6 +218,7 @@ public final class MainWindow extends Frame implements Observer {
         });
 
         initMenu(frame);
+        controller.saveRoom();
     }
 
     public static void main(String[] args) {
@@ -362,8 +373,24 @@ public final class MainWindow extends Frame implements Observer {
     }
 
     @Override
-    public  void onLeave(){
+    public void onLeave(){
         seatInfo.setVisible(false);
+    }
+
+    @Override
+    public void onUndoRedo() {
+        if (controller.undoFirstIndex()) {
+            undo.setEnabled(false);
+        }
+        else {
+            undo.setEnabled(true);
+        }
+        if (controller.redoLastIndex()) {
+            redo.setEnabled(false);
+        }
+        else {
+            redo.setEnabled(true);
+        }
     }
 }
 

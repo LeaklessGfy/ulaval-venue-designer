@@ -128,4 +128,10 @@ abstract class AbstractShape implements Shape {
     public Shape clone() {
         return null;
     }
+
+    @Override
+    public boolean isSameShape(Shape shape) {
+        return this.getPoints().equals(shape.getPoints()) &&
+                this.getColor().equals(shape.getColor());
+    }
 }

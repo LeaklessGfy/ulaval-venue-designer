@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Vector;
+import java.util.Arrays;
 
 public final class Rectangle extends AbstractShape {
     public static class Builder implements ShapeBuilder {
@@ -93,5 +94,24 @@ public final class Rectangle extends AbstractShape {
     @Override
     public Shape clone() {
         return new Rectangle(this);
+    }
+
+    @Override
+    public boolean isSameShape(Shape shape) {
+        int size = this.getPoints().size();
+        if (size == shape.getPoints().size()) {
+            for (int i = 0; i < size; i++) {
+                if (this.getPoints().elementAt(i).x != (shape.getPoints().elementAt(i)).x ||
+                        this.getPoints().elementAt(i).y != (shape.getPoints().elementAt(i)).y) {
+                    return false;
+                }
+            }
+        } else {
+            return false;
+        }
+        if (!Arrays.equals(this.getColor(), shape.getColor())) {
+            return false;
+        }
+        return true;
     }
 }

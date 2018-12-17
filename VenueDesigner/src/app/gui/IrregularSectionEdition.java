@@ -47,7 +47,7 @@ final class IrregularSectionEdition  extends JFrame {
             boolean check = false;
             if(!section.autoSetSeat) {
                 section.autoSetSeat=true;
-                check=true;
+                check = true;
             }
             section.forEachSeats(seat -> {
                 seat.setPrice(Double.parseDouble(priceText.getText()));
@@ -55,8 +55,9 @@ final class IrregularSectionEdition  extends JFrame {
             setVisible(false);
             dispose();
             controller.autoSetSeat();
+            controller.saveRoom();
             if (check){
-                section.autoSetSeat=false;
+                section.autoSetSeat = false;
             }
         });
 

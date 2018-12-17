@@ -18,7 +18,7 @@ import java.util.function.Consumer;
 @JsonSubTypes({
     @JsonSubTypes.Type(value = AbstractSection.class, name = "AbstractSection")
 })
-public interface Section extends Drawable, Selection {
+public interface Section extends Drawable, Selection, Cloneable {
     String getName();
     void setName(String name);
     double getElevation();
@@ -28,4 +28,5 @@ public interface Section extends Drawable, Selection {
     void setShape(Shape shape);
     void forEachSeats(Consumer<Seat> consumer);
     void autoSetSeats(Stage stage, Collider collider);
+    boolean isSameSection(Section section);
 }

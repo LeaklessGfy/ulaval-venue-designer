@@ -1,6 +1,9 @@
 package app.domain;
 
+import app.domain.seat.Seat;
+import app.domain.section.SeatedSection;
 import app.domain.section.Section;
+import app.domain.section.StandingSection;
 import app.domain.shape.Painter;
 import app.domain.shape.Rectangle;
 import app.domain.shape.Shape;
@@ -43,6 +46,24 @@ public final class Room implements Drawable {
         this.vitalSpace = Objects.requireNonNull(vitalSpace);
         this.sections = sections;
         this.stage = stage;
+    }
+
+    public Room (Room room) {
+        this.shape = room.shape;
+        this.width = room.width;
+        this.height = room.height;
+        this.vitalSpace = room.vitalSpace;
+        this.sections = new ArrayList<>();
+        for (Section section : room.sections) {
+            if (section instanceof SeatedSection){
+                this.sections.add(new SeatedSection((SeatedSection)section));
+            }
+            else {
+                this.sections.add(new StandingSection((StandingSection)section));
+            }
+        }
+        this.stage = room.stage;
+        this.grid = room.grid;
     }
 
     public void setDimensions(double width, double height) {
@@ -88,5 +109,53 @@ public final class Room implements Drawable {
     @JsonIgnore
     public boolean isStageSet(){
         return !(stage ==  null);
+    }
+
+    public boolean isSameRoom(Room room){
+        if(this.shape.isSameShape(room.shape) &&
+                this.width == room.width &&
+                this.height == room.height &&
+                this.vitalSpace == room.vitalSpace &&
+                this.stage == room.stage) {
+            if (this.stage != null && room.stage != null) {
+                if (this.stage.isSameStage(room.stage)) {
+                    if (this.sections.size() == room.sections.size()) {
+                        for (int i = 0; i < sections.size(); i++) {
+                            Section oldSection = this.sections.get(i);
+                            Section newSection = room.sections.get(i);
+                            if (oldSection.isSameSection(newSection)) {
+                                if (oldSection instanceof SeatedSection) {
+                                    SeatedSection oldSeatedSection = (SeatedSection) oldSection;
+                                    SeatedSection newSeatedSection = (SeatedSection) newSection;
+                                    if (oldSeatedSection.getSeats().length == newSeatedSection.getSeats().length &&
+                                            oldSeatedSection.maxCol() == newSeatedSection.maxCol()) {
+                                        for (int row = 0; row < oldSeatedSection.getSeats().length; row++) {
+                                            for (int col = 0; col < oldSeatedSection.getSeats()[row].length; col++) {
+                                                if (!oldSeatedSection.getSeats()[row][col].isSameSeat(newSeatedSection.getSeats()[row][col])) {
+                                                    return false;
+                                                }
+                                            }
+                                        }
+                                    } else {
+                                        return false;
+                                    }
+                                }
+                            }
+                            else {
+                                return false;
+                            }
+                        }
+                    } else {
+                        return false;
+                    }
+                } else {
+                    return false;
+                }
+            }
+        }
+        else {
+            return false;
+        }
+        return true;
     }
 }

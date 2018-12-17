@@ -22,6 +22,12 @@ abstract class AbstractSection implements Section {
         this.shape = shape;
     }
 
+    AbstractSection(AbstractSection section) {
+        this.name = section.name;
+        this.elevation = section.elevation;
+        this.shape = section.shape.clone();
+    }
+
     AbstractSection(Shape shape) {
         this(null, 0, shape);
     }
