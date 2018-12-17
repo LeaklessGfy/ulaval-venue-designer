@@ -45,6 +45,7 @@ public final class MainWindow extends Frame implements Observer {
     private JMenuItem room;
     private JMenuItem offers;
     private JMenuItem grid;
+    private JMenuItem prices;
     private SeatInfo seatInfo;
 
     private MainWindow(JFrame frame) {
@@ -272,12 +273,18 @@ public final class MainWindow extends Frame implements Observer {
         room = new JMenuItem("Room");
         offers = new JMenuItem("Offers");
         grid = new JMenuItem("Grid");
+        prices = new JMenuItem("Prices");
         edition.add(room);
         edition.add(offers);
         edition.add(grid);
+        edition.add(prices);
 
         room.addActionListener(e -> new RoomSettings(controller, drawingPanel, e));
-
+        prices.addActionListener(e -> {
+            if(controller.getRoom().getStage().isPresent()){
+            new AutoPrices(controller.getRoom().getSections(),controller.getRoom().getStage().get());}
+            else {JOptionPane.showMessageDialog(null, "A stage is needed to use this feature.", "Error", JOptionPane.ERROR_MESSAGE);}
+        });
         menuBar.add(file);
         menuBar.add(edition);
         frame.setJMenuBar(menuBar);
