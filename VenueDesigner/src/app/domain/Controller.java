@@ -61,11 +61,13 @@ public class Controller {
     }
 
     public void save(String path) {
+        selectionHolder.resetSelection(room);
         serializer.serializeToJson(room, path);
     }
 
     public void load(String path) {
         room = serializer.deserializeFromJson(path);
+        selectionHolder.resetSelection(room);
         ui.repaint();
     }
 

@@ -1,49 +1,69 @@
 package app.gui;
 
 import app.domain.*;
+import app.domain.seat.Seat;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
+import java.util.List;
 import java.util.Objects;
 
 final class OfferAttribution extends JFrame{
-    private JButton addToOfferButton;
-    private JButton removeToOfferButton;
+    private JButton addOfferButton;
+    private JButton removeOfferButton;
     private JButton okButton;
-    private JButton cancelButton;
-    private JList<String> listOffer;
+    private JList<Offer> seatOffers;
     private JPanel panelMain;
+    private JPanel panelAdd;
+    private JButton addOffersToSeat;
+    private JList<Offer> listOffers;
 
-    OfferAttribution(Controller controller, UIPanel ui, ActionEvent event) {//Controller controller,SeatSection seatSection, UIPanel ui, ActionEvent event
+    OfferAttribution(Controller controller, Seat seat) {
         Objects.requireNonNull(controller);
         setContentPane(panelMain);
-        DefaultListModel<String> modelOffer = new DefaultListModel<>();
-        listOffer.setModel(modelOffer);
+        setSize(300, 400);
+        setVisible(true);
+        panelAdd.setVisible(false);
 
-        addToOfferButton.addActionListener(e->{
-            /*for (Seat seat : seatSection.getSeats()) {
-                Offer offer = LOffer.get(listOffer.getSelectedIndex());
-                seat.setDoublePrice(offer.Discount(offer.getDiscountMode(),seat.getPrice(),offer.getDiscountPrice()));
-            }*/
+        DefaultListModel<Offer> modelSeatOffer = new DefaultListModel<>();
+        for (Offer offer : seat.getOffers()) {
+            modelSeatOffer.addElement(offer);
+        }
+        seatOffers.setModel(modelSeatOffer);
+
+        DefaultListModel<Offer> modelOffer = new DefaultListModel<>();
+        for (Offer offer : controller.getRoom().getOffers()) {
+            modelOffer.addElement(offer);
+        }
+        listOffers.setModel(modelOffer);
+
+        addOfferButton.addActionListener(e -> {
+            panelAdd.setVisible(true);
         });
 
-        removeToOfferButton.addActionListener(e->{
-
+        removeOfferButton.addActionListener(e -> {
+            Offer offer = seatOffers.getSelectedValue();
+            if (offer == null) {
+                return;
+            }
+            seat.getOffers().remove(offer);
+            modelSeatOffer.removeElement(offer);
         });
 
-        okButton.addActionListener(e->{
+        addOffersToSeat.addActionListener(e -> {
+            List<Offer> offerList = listOffers.getSelectedValuesList();
+            List<Offer> seatOffer = seat.getOffers();
+            for (Offer offer : offerList) {
+                if (seatOffer.contains(offer)) {
+                    continue;
+                }
+                seatOffer.add(offer);
+                modelSeatOffer.addElement(offer);
+            }
+        });
+
+        okButton.addActionListener(e -> {
             setVisible(false);
             dispose();
-        });
-
-        cancelButton.addActionListener(e->{
-            setVisible(false);
-            dispose();
-        });
-
-        listOffer.addListSelectionListener(e->{
-
         });
     }
-
 }

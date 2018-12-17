@@ -282,11 +282,7 @@ public final class MainWindow extends Frame implements Observer {
 
         room.addActionListener(e -> new RoomSettings(controller, drawingPanel, e));
         offers.addActionListener(e-> {
-            if (controller.getMode() == Mode.Selection) {
-                new OfferAttribution(controller, drawingPanel, e);
-            } else {
-                new OfferWindow(controller);
-            }
+            new OfferWindow(controller);
         });
         prices.addActionListener(e -> {
             if(controller.getRoom().getStage().isPresent()){

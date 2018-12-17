@@ -1,20 +1,17 @@
 package app.domain;
 
-import app.domain.seat.Seat;
 import app.domain.section.Section;
 import app.domain.shape.Painter;
 import app.domain.shape.Rectangle;
 import app.domain.shape.Shape;
 import com.fasterxml.jackson.annotation.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 public final class Room implements Drawable {
     private final ArrayList<Section> sections;
-    private final HashMap<Seat, ArrayList<Offer>> seatOffers;
     private final ArrayList<Offer> offers;
 
     @JsonProperty
@@ -28,7 +25,6 @@ public final class Room implements Drawable {
 
     public Room(double width, double height, VitalSpace vitalSpace) {
         this.sections = new ArrayList<>();
-        this.seatOffers = new HashMap<>();
         this.offers = new ArrayList<>();
         this.shape = Rectangle.create(0, 0, width, height, new int[]{20, 38, 52, 255});
         this.width = width;
@@ -37,16 +33,18 @@ public final class Room implements Drawable {
     }
 
     @JsonCreator
-    public Room( @JsonProperty("shape") Shape shape,
-                 @JsonProperty("width") double width,
-                 @JsonProperty("height") double height,
-                 @JsonProperty("vitalSpace") VitalSpace vitalSpace,
-                 @JsonProperty("sections") ArrayList<Section> sections,
-                 @JsonProperty("stage") Stage stage) {
-        this.sections = sections;
-        this.seatOffers = new HashMap<>();
-        this.offers = new ArrayList<>();
-        this.shape = shape;
+    public Room(
+            @JsonProperty("sections") ArrayList<Section> sections,
+            @JsonProperty("offers") ArrayList<Offer> offers,
+            @JsonProperty("shape") Shape shape,
+            @JsonProperty("width") double width,
+            @JsonProperty("height") double height,
+            @JsonProperty("vitalSpace") VitalSpace vitalSpace,
+            @JsonProperty("stage") Stage stage
+    ) {
+        this.sections = Objects.requireNonNull(sections);
+        this.offers = Objects.requireNonNull(offers);
+        this.shape = Objects.requireNonNull(shape);
         this.width = width;
         this.height = height;
         this.vitalSpace = Objects.requireNonNull(vitalSpace);
@@ -100,14 +98,5 @@ public final class Room implements Drawable {
 
     public List<Offer> getOffers() {
         return offers;
-    }
-
-    public void addOffer(Offer offer) {
-        offers.add(offer);
-    }
-
-    public void removeOffer(Offer offer) {
-        offers.remove(offer);
-        // handle seatOffers
     }
 }

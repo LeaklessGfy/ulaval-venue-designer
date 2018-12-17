@@ -65,7 +65,7 @@ final class OfferWindow extends JFrame{
                 return;
             }
             modelOffers.removeElement(offer);
-            room.removeOffer(offer);
+            room.getOffers().remove(offer);
             removeButton.setEnabled(listOffers.getSelectedValue() != null);
             editButton.setEnabled(listOffers.getSelectedValue() != null);
             resetEditPanel();
@@ -96,7 +96,7 @@ final class OfferWindow extends JFrame{
                 }
                 Offer offer = new Offer(offerName.getText(), Offer.DiscountMode.Dollar, Integer.parseInt(amount.getText()));
                 modelOffers.addElement(offer);
-                room.addOffer(offer);
+                room.getOffers().add(offer);
             } else {
                 if (!isValidFormDblName(listOffers.getSelectedValue())) {
                     return;

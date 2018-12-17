@@ -1,8 +1,8 @@
 package app.domain;
 
-import app.domain.seat.Seat;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.ArrayList;
 import java.util.Objects;
 
 public final class Offer {
@@ -11,12 +11,16 @@ public final class Offer {
         Percent
     }
 
-    private final ArrayList<Seat> seats = new ArrayList<>();
     private String name;
     private DiscountMode mode;
     private int discount;
 
-    public Offer(String name, DiscountMode mode, int discount) {
+    @JsonCreator
+    public Offer(
+            @JsonProperty("name") String name,
+            @JsonProperty("mode") DiscountMode mode,
+            @JsonProperty("discount") int discount
+    ) {
         this.name = Objects.requireNonNull(name);
         this.mode = Objects.requireNonNull(mode);
         this.discount = discount;
@@ -70,5 +74,20 @@ public final class Offer {
     @Override
     public String toString() {
         return name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Offer offer = (Offer) o;
+        return discount == offer.discount &&
+                Objects.equals(name, offer.name) &&
+                mode == offer.mode;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, mode, discount);
     }
 }

@@ -1,10 +1,12 @@
 package app.gui;
 
+import app.domain.Offer;
 import app.domain.seat.Seat;
 import app.domain.section.Section;
 
 import javax.swing.*;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 final class SeatInfo extends JDialog{
     private JPanel panelMain;
@@ -13,7 +15,7 @@ final class SeatInfo extends JDialog{
     private JTextField section;
     private JTextField price;
     private JTextField elevation;
-    private JTextArea textArea1;
+    private JTextArea offers;
 
     SeatInfo() {
         setContentPane(panelMain);
@@ -27,5 +29,6 @@ final class SeatInfo extends JDialog{
         row.setText(hoveredSeat.getRow()+1+ "");
         price.setText(String.format(Locale.ROOT,"%.2f", hoveredSeat.getPrice()));
         elevation.setText(String.format(Locale.ROOT,"%.2f", hoveredSection.getElevation()));
+        offers.setText(hoveredSeat.getOffers().stream().map(Offer::toString).collect(Collectors.joining("\n", "- ", "")));
     }
 }
