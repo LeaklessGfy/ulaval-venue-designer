@@ -405,7 +405,7 @@ public class Controller {
                 return false;
             }
             for (Section section : room.getSections()) {
-                if (!validator.invalidShapeRoom(section.getShape(), predict)) {
+                if (validator.invalidShapeRoom(section.getShape(), predict)) {
                     return false;
                 }
             }

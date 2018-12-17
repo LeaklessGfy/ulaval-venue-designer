@@ -58,7 +58,11 @@ final class RoomSettings extends JFrame {
                     section.accept(new SelectionAdapter() {
                         @Override
                         public void visit(SeatedSection section) {
-                            section.refresh();
+                            if (section.isRegular){section.refresh();}
+                            else if (room.getStage().isPresent()){
+                                section.autoSetSeat=true;
+                                controller.autoSetSeat();
+                            }
                         }
                     });
                 }
