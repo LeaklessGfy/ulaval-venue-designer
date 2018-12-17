@@ -28,7 +28,6 @@ final class GUIPainter implements Painter<Graphics2D> {
         Point limits = GUIUtils.getTransformedPoint(controller.getRoom().getShape().getPoints().elementAt(2)
                 ,controller.getOffset(),controller.getScale());
         drawingPanel.setPreferredSize((int)Math.round(limits.x+controller.getOffset().x), (int)Math.round(limits.y+controller.getOffset().y));
-
         controller.getRoom().accept(g, this);
         controller.getCurrent().ifPresent(s -> s.accept(g, this));
     }

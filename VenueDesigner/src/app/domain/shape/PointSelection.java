@@ -28,10 +28,7 @@ public final class PointSelection implements Selection {
 
     @Override
     public void move(double x, double y) {
-        Point centroid = shape.computeCentroid();
-        double dx = point.x - centroid.x;
-        double dy = point.y - centroid.y;
-        point.set(x+dx, y+dy);
+        point.set(x, y);
     }
 
     @Override
@@ -60,5 +57,9 @@ public final class PointSelection implements Selection {
         if (seatedSection != null) {
             seatedSection.autoSetSeats(stage, collider);
         }
+    }
+
+    public Point getPoint(){
+        return point;
     }
 }

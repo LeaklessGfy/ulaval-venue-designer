@@ -121,6 +121,7 @@ public class Controller {
             @Override
             public void visit(PointSelection point) {
                 point.move(cursor.x, cursor.y);
+                ui.repaint();
             }
 
             private void move(Selection selection) {
@@ -517,7 +518,4 @@ public class Controller {
         double py = (p0.y-offset.y)/scale;
         return new Point(px,py);
     }
-
-
-
 }
