@@ -82,5 +82,7 @@ public final class StandingSection extends AbstractSection {
         return max;
     }
 
-    public void setMax(int max){ this.max = max; }
+    public void setMax(int max) {
+        this.max = max;
+    }
 }

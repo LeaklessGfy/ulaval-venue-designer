@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Vector;
-import java.util.Arrays;
 
 public final class Polygon extends AbstractShape {
     public static class Builder implements ShapeBuilder {

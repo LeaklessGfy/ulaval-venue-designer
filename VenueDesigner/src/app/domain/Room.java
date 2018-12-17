@@ -1,6 +1,5 @@
 package app.domain;
 
-import app.domain.section.SeatedSection;
 import app.domain.section.Section;
 import app.domain.shape.Painter;
 import app.domain.shape.Rectangle;
