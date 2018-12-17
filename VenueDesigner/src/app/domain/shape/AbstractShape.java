@@ -1,5 +1,6 @@
 package app.domain.shape;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
@@ -34,11 +35,13 @@ abstract class AbstractShape implements Shape {
     }
 
     @Override
+    @JsonIgnore
     public void setSelected(boolean bool) {
         selected = bool;
     }
 
     @Override
+    @JsonIgnore
     public boolean isSelected() {
         return selected;
     }

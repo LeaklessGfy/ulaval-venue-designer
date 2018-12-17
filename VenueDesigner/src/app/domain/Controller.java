@@ -93,13 +93,11 @@ public class Controller {
             @Override
             public void visit(Stage stage) {
                 move(stage);
-                autoSetSeat();
             }
 
             @Override
             public void visit(SeatedSection section) {
                 move(section);
-                autoSetSeat();
             }
 
             @Override
@@ -143,6 +141,7 @@ public class Controller {
             @Override
             public void visit(SeatedSection section) {
                 saveRoom();
+                autoSetSeat();
             }
 
             @Override
@@ -153,11 +152,13 @@ public class Controller {
             @Override
             public void visit(Seat seat) {
                 saveRoom();
+                autoSetSeat();
             }
 
             @Override
             public void visit(SeatSection seatSection) {
                 saveRoom();
+                autoSetSeat();
             }
 
             @Override

@@ -1,5 +1,6 @@
 package app.gui;
 
+import app.domain.Controller;
 import app.domain.Stage;
 import app.domain.priceAlgo.AlgoType;
 import app.domain.priceAlgo.PriceAlgo;
@@ -21,7 +22,7 @@ final class AutoPrices extends JFrame{
     private JTextField min;
     private JTextField max;
 
-    AutoPrices(List<Section> sections, Stage stage) {
+    AutoPrices(Controller controller, List<Section> sections, Stage stage) {
         Objects.requireNonNull(sections);
         Objects.requireNonNull(stage);
         setLocation(300,300);
@@ -35,6 +36,7 @@ final class AutoPrices extends JFrame{
                 return;
             }
             setPrices(sections, stage, Double.parseDouble(min.getText()), Double.parseDouble(max.getText()));
+            controller.saveRoom();
             setVisible(false);
             dispose();
         });

@@ -21,11 +21,13 @@ public final class Stage implements Selection {
     }
 
     @Override
+    @JsonIgnore
     public boolean isSelected() {
         return shape.isSelected();
     }
 
     @Override
+    @JsonIgnore
     public void setSelected(boolean selected) {
         shape.setSelected(selected);
     }

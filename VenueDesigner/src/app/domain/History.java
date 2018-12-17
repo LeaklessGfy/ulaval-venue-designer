@@ -10,9 +10,15 @@ public class History {
     public void add(String version) {
         if (history.size() == MAX_SIZE) {
             history.remove(0);
+            current--;
         }
         if (current > -1 && version.equals(history.get(current))) {
             return;
+        }
+        if (current > -1 && !version.equals(history.get(history.size() - 1))) {
+            for (int i = current + 1; i < history.size(); i++) {
+                history.remove(i);
+            }
         }
         history.add(version);
         current++;
