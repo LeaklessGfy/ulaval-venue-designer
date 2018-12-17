@@ -449,8 +449,8 @@ public class Controller {
 
     public boolean validateSectionDimensions(Section section, int nbColums, int nbRows, double spaceWidth, double spaceHeight) {
         VitalSpace vs = new VitalSpace(spaceWidth, spaceHeight);
-        Section predict = SeatedSection.create(section.getShape().getPoints().firstElement().x, section.getShape().getPoints().firstElement().y, nbColums, nbRows, vs, room.getStage().get());
-        return validator.validPredictShape(section.getShape(), predict.getShape(), room, new Point());
+        Shape predict = section.getShape().clone();
+        return validator.validPredictShape(section.getShape(), predict, room, new Point());
     }
 
     public boolean validateStageDimensions(Stage stage, double width, double height) {

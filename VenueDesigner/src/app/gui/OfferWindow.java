@@ -3,6 +3,9 @@ package app.gui;
 import app.domain.Controller;
 import app.domain.Offer;
 import app.domain.Room;
+import app.domain.UIPanel;
+import app.domain.seat.Seat;
+import app.domain.section.Section;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -30,7 +33,7 @@ final class OfferWindow extends JFrame{
 
     private boolean edition = false;
 
-    OfferWindow(Controller controller) {
+    OfferWindow(Controller controller, UIPanel ui) {
         Objects.requireNonNull(controller);
         setContentPane(panelMain);
         setSize(500, 400);
@@ -71,7 +74,7 @@ final class OfferWindow extends JFrame{
             resetEditPanel();
         });
         editButton.addActionListener(e -> onEdit());
-        listOffers.addListSelectionListener(e -> onEdit());
+        listOffers.addListSelectionListener(e ->{showSeats(room); ui.repaint(); });
 
         removeButton.setEnabled(listOffers.getSelectedValue() != null);
         editButton.setEnabled(listOffers.getSelectedValue() != null);
@@ -194,5 +197,17 @@ final class OfferWindow extends JFrame{
             offers.add(model.getElementAt(i));
         }
         return offers;
+    }
+    private void showSeats(Room room){
+        Offer offer =listOffers.getSelectedValue();
+        if (offer == null) { return; }
+        for (Section section: room.getSections()){
+            section.forEachSeats( seat -> {
+                seat.setSelected(false);
+                for (Offer o: seat.getOffers()){
+                    if (o == offer){seat.setSelected(true); }
+                }
+            });
+        }
     }
 }
