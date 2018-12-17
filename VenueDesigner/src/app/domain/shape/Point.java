@@ -8,7 +8,10 @@ public final class Point {
     public double y;
 
     @JsonCreator
-    public Point(@JsonProperty("x") double x, @JsonProperty("y") double y) {
+    public Point(
+            @JsonProperty("x") double x,
+            @JsonProperty("y") double y
+    ) {
         this.x = x;
         this.y = y;
     }

@@ -15,9 +15,17 @@ public final class Stage implements Selection {
     private final Shape shape;
     private double elevation;
 
+    public Stage(Shape shape) {
+        this(shape, 0);
+    }
+
     @JsonCreator
-    public Stage(@JsonProperty("shape") Shape shape) {
+    public Stage(
+            @JsonProperty("shape") Shape shape,
+            @JsonProperty("elevation") double elevation
+    ) {
         this.shape = Objects.requireNonNull(shape);
+        this.elevation = elevation;
     }
 
     @Override

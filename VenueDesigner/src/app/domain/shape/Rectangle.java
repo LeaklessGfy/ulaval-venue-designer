@@ -10,8 +10,6 @@ public final class Rectangle extends AbstractShape {
         private final Vector<Point> points = new Vector<>();
         private final int[] color = new int[4];
 
-        Builder() {}
-
         Builder(int r, int g, int b, int a) {
             color[0] = r;
             color[1] = g;
@@ -53,8 +51,14 @@ public final class Rectangle extends AbstractShape {
             painter.draw(g, this);
         }
     }
+
     @JsonCreator
-    public Rectangle(@JsonProperty("points") Vector<Point> points,  @JsonProperty("color") int[] color) { super(points, color); }
+    public Rectangle(
+            @JsonProperty("points") Vector<Point> points,
+            @JsonProperty("color") int[] color
+    ) {
+        super(points, color);
+    }
 
     private Rectangle(Rectangle rectangle) {
         super(rectangle);

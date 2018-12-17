@@ -14,13 +14,11 @@ public final class Room implements Drawable {
     private final ArrayList<Section> sections;
     private final ArrayList<Offer> offers;
 
-    @JsonProperty
     private Shape shape;
     private double width;
     private double height;
     private VitalSpace vitalSpace;
     private boolean grid;
-    @JsonProperty
     private Stage stage;
 
     public Room(double width, double height, VitalSpace vitalSpace) {

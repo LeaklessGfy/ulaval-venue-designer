@@ -2,7 +2,7 @@ package app.domain;
 
 import java.util.ArrayList;
 
-public class History {
+public final class History {
     private final static int MAX_SIZE = 10;
     private final ArrayList<String> history = new ArrayList<>();
     private int current = -1;

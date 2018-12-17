@@ -14,15 +14,17 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.function.Consumer;
 
 public final class StandingSection extends AbstractSection {
-    @JsonProperty
     private int max;
-
-    @JsonProperty
     private double price;
 
     @JsonCreator
-    StandingSection(@JsonProperty("name") String name, @JsonProperty("elevation") int elevation,
-                    @JsonProperty("shape") Shape shape, @JsonProperty("max") int max, @JsonProperty("price") double price) {
+    StandingSection(
+            @JsonProperty("name") String name,
+            @JsonProperty("elevation") int elevation,
+            @JsonProperty("shape") Shape shape,
+            @JsonProperty("max") int max,
+            @JsonProperty("price") double price
+    ) {
         super(name, elevation, shape);
         this.max = max;
         this.price = price;
