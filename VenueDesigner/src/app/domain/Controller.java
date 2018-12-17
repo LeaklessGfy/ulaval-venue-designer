@@ -82,10 +82,6 @@ public class Controller {
         return scale;
     }
 
-    public int getCurrentindexListRoom() {
-        return currentindexListRoom;
-    }
-
     public void mouseDragged(int x, int y) {
         observer.onLeave();
         double scaleX = x / scale;

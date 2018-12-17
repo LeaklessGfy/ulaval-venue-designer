@@ -62,7 +62,9 @@ public final class Room implements Drawable {
                 this.sections.add(new StandingSection((StandingSection)section));
             }
         }
-        this.stage = room.stage;
+        if (room.getStage().isPresent()) {
+            this.stage = new Stage(room.getStage().get());
+        }
         this.grid = room.grid;
     }
 
