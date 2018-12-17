@@ -402,7 +402,7 @@ public class Controller {
                 return false;
             }
             for (Section section : room.getSections()) {
-                if (!validator.invalidShapeRoom(section.getShape(), predict, new Point())) {
+                if (validator.invalidShapeRoom(section.getShape(), predict, new Point())) {
                     return false;
                 }
             }
