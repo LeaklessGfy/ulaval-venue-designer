@@ -286,7 +286,7 @@ public final class MainWindow extends Frame implements Observer {
         });
         prices.addActionListener(e -> {
             if(controller.getRoom().getStage().isPresent()){
-            new AutoPrices(controller.getRoom().getSections(),controller.getRoom().getStage().get());}
+            new AutoPrices(controller, controller.getRoom().getSections(),controller.getRoom().getStage().get());}
             else {JOptionPane.showMessageDialog(null, "A stage is needed to use this feature.", "Error", JOptionPane.ERROR_MESSAGE);}
         });
 
