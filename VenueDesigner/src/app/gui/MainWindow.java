@@ -6,6 +6,7 @@ import app.domain.seat.SeatSection;
 import app.domain.section.StandingSection;
 import app.domain.selection.SelectionAdapter;
 import app.domain.section.SeatedSection;
+import app.domain.shape.Point;
 
 import javax.swing.*;
 import java.awt.*;
@@ -58,6 +59,8 @@ public final class MainWindow extends Frame implements Observer {
         tablePanel.setVisible(false);
         mainScrollPane.setBorder(BorderFactory.createEmptyBorder());
         mainScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+
+
 
         onButton.addActionListener( e -> {
             controller.toggleGrid();
@@ -149,17 +152,6 @@ public final class MainWindow extends Frame implements Observer {
             tablePanel.setVisible(false);
         });
 
-/*        zoomIn.addActionListener( e -> {
-            controller.zoom(0.1);
-        });
-
-        zoomOut.addActionListener( e -> {
-            controller.zoom(-0.1);
-        });
-
-        autoScalingButton.addActionListener(e -> {
-            controller.autoScaling(drawingPanel.getWidth(), drawingPanel.getHeight());
-        });*/
 
         editButton.addActionListener(e -> {
             controller.editSelected(new SelectionAdapter() {
@@ -252,6 +244,9 @@ public final class MainWindow extends Frame implements Observer {
         controller.setObserver(this);
         GUIPainter painter = new GUIPainter(controller);
         drawingPanel = new DrawingPanel(painter);
+        Point limits = GUIUtils.getTransformedPoint(controller.getRoom().getShape().getPoints().elementAt(2)
+                ,controller.getOffset(),controller.getScale());
+        drawingPanel.setPreferredSize((int)Math.round(limits.x+controller.getOffset().x), (int)Math.round(limits.y+controller.getOffset().y));
         controller.setDrawingPanel(drawingPanel);
         seatInfo = new SeatInfo();
         sliderZoom = new JSlider(33,400,100);
@@ -300,11 +295,9 @@ public final class MainWindow extends Frame implements Observer {
         edition = new JMenu("Edition");
         room = new JMenuItem("Room");
         offers = new JMenuItem("Offers");
-        grid = new JMenuItem("Grid");
         prices = new JMenuItem("Prices");
         edition.add(room);
         edition.add(offers);
-        edition.add(grid);
         edition.add(prices);
 
         room.addActionListener(e -> new RoomSettings(controller, drawingPanel, e));
@@ -390,8 +383,8 @@ public final class MainWindow extends Frame implements Observer {
 
     @Override
     public void onHover() {
-        int x = drawingPanel.getLocation().x + (int)(controller.getXCursor()*controller.getScale())+7;
-        int y = drawingPanel.getLocation().y + (int)(controller.getYCursor()*controller.getScale());
+        int x = drawingPanel.getLocation().x + (int)(controller.getXCursor()*controller.getScale()+controller.getOffset().x)+7;
+        int y = drawingPanel.getLocation().y + (int)(controller.getYCursor()*controller.getScale()+controller.getOffset().y);
         seatInfo.update(controller.getHoveredSeat(), controller.getHoveredSection());
         seatInfo.setLocation(x, y);
         seatInfo.setVisible(true);
