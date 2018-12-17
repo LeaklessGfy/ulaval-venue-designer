@@ -18,7 +18,7 @@ import java.util.function.Consumer;
 @JsonSubTypes({
     @JsonSubTypes.Type(value = AbstractSection.class, name = "AbstractSection")
 })
-public interface Section extends Drawable, Selection, Cloneable {
+public interface Section extends Drawable, Selection {
     String getName();
     void setName(String name);
     double getElevation();

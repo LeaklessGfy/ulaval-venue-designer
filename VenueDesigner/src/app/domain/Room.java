@@ -127,8 +127,7 @@ public final class Room implements Drawable {
                                 if (oldSection instanceof SeatedSection) {
                                     SeatedSection oldSeatedSection = (SeatedSection) oldSection;
                                     SeatedSection newSeatedSection = (SeatedSection) newSection;
-                                    if (oldSeatedSection.getSeats().length == newSeatedSection.getSeats().length &&
-                                            oldSeatedSection.maxCol() == newSeatedSection.maxCol()) {
+                                    if (oldSeatedSection.getSeats().length == newSeatedSection.getSeats().length) {
                                         for (int row = 0; row < oldSeatedSection.getSeats().length; row++) {
                                             for (int col = 0; col < oldSeatedSection.getSeats()[row].length; col++) {
                                                 if (!oldSeatedSection.getSeats()[row][col].isSameSeat(newSeatedSection.getSeats()[row][col])) {

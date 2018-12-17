@@ -347,13 +347,4 @@ public final class SeatedSection extends AbstractSection {
         }
         return true;
     }
-
-    public int maxCol() {
-        int maxcol = 0;
-        for (int i = 0; i < this.seats.length; i++)
-            if (this.seats[i].length > maxcol){
-                maxcol = this.seats[i].length;
-            }
-            return maxcol;
-    }
 }
