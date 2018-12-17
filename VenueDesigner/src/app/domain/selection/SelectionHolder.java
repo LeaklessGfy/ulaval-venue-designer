@@ -15,7 +15,6 @@ import app.domain.shape.ShapeUtils;
 
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Vector;
 
 public final class SelectionHolder {
     private final Collider collider;

@@ -1,6 +1,7 @@
 package app.domain.section;
 
 import app.domain.shape.Shape;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
@@ -20,10 +21,6 @@ abstract class AbstractSection implements Section {
         this.name = name;
         this.elevation = elevation;
         this.shape = shape;
-    }
-
-    AbstractSection(Shape shape) {
-        this(null, 0, shape);
     }
 
     @Override
@@ -57,11 +54,13 @@ abstract class AbstractSection implements Section {
     }
 
     @Override
+    @JsonIgnore
     public boolean isSelected() {
         return shape.isSelected();
     }
 
     @Override
+    @JsonIgnore
     public void setSelected(boolean selected) {
         shape.setSelected(selected);
     }

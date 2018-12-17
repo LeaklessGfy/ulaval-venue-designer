@@ -8,7 +8,10 @@ public final class VitalSpace {
     private double height;
 
     @JsonCreator
-    public VitalSpace(@JsonProperty("width") double width, @JsonProperty("height") double height) {
+    public VitalSpace(
+            @JsonProperty("width") double width,
+            @JsonProperty("height") double height
+    ) {
         this.width = width;
         this.height = height;
     }

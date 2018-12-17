@@ -1,5 +1,6 @@
 package app.gui;
 
+import app.domain.Controller;
 import app.domain.UIPanel;
 import app.domain.section.StandingSection;
 
@@ -19,7 +20,7 @@ final class StandingSectionEdition extends JFrame{
     private JButton cancelButton;
     private JTextField max;
 
-    StandingSectionEdition(StandingSection section, UIPanel panel) {
+    StandingSectionEdition(Controller controller, StandingSection section, UIPanel panel) {
         Objects.requireNonNull(section);
         Objects.requireNonNull(panel);
         setContentPane(panelMain);
@@ -39,6 +40,7 @@ final class StandingSectionEdition extends JFrame{
             section.setElevation(Double.parseDouble(elevation.getText()));
             section.setPrice(Double.parseDouble(price.getText()));
             section.setMax(Integer.parseInt(max.getText()));
+            controller.saveRoom();
             setVisible(false);
             dispose();
             panel.repaint();

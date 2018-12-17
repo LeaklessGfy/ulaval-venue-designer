@@ -67,7 +67,7 @@ final class SectionEdition extends JFrame {
             int nbRows = Integer.parseInt(rows.getText());
             double spaceWidth = Double.parseDouble(vitalSpaceWidth.getText());
             double spaceHeight = Double.parseDouble(vitalSpaceHeight.getText());
-            if (controller.validateSectionDimensions(section, nbColums, nbRows, spaceWidth, spaceHeight)) {
+            if (controller.validateSectionDimensions(section, spaceWidth, spaceHeight)) {
                 section.setName(name.getText());
                 section.setDimensions(nbColums, nbRows);
                 section.setElevation(Double.parseDouble(elevation.getText()));
@@ -78,6 +78,7 @@ final class SectionEdition extends JFrame {
                     seat.setPrice(Double.parseDouble(price.getText()));
                     seat.getShape().setColor(colorToArray(colorPicker.getColor()));
                 });
+                controller.saveRoom();
                 setVisible(false);
                 dispose();
                 panel.repaint();

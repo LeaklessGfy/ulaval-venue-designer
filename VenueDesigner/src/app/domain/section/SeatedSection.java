@@ -31,14 +31,20 @@ public final class SeatedSection extends AbstractSection {
         super(name, elevation, shape);
         this.vitalSpace = vitalSpace;
         this.isRegular = false;
-        this.autoSetSeat=false;
+        this.autoSetSeat = false;
     }
 
     @JsonCreator
-    SeatedSection(@JsonProperty("name") String name, @JsonProperty("elevation") int elevation, @JsonProperty("shape") Shape shape,
-                  @JsonProperty("vitalSpace") VitalSpace vitalSpace, @JsonProperty("seats") Seat[][] seats,
-                  @JsonProperty("theta") double theta, @JsonProperty("isRegular") boolean isRegular,
-                  @JsonProperty("autoSetSeat") boolean autoSetSeat) {
+    SeatedSection(
+            @JsonProperty("name") String name,
+            @JsonProperty("elevation") int elevation,
+            @JsonProperty("shape") Shape shape,
+            @JsonProperty("vitalSpace") VitalSpace vitalSpace,
+            @JsonProperty("seats") Seat[][] seats,
+            @JsonProperty("theta") double theta,
+            @JsonProperty("isRegular") boolean isRegular,
+            @JsonProperty("autoSetSeat") boolean autoSetSeat
+    ) {
         super(name, elevation, shape);
         this.vitalSpace = vitalSpace;
         this.seats = seats;
@@ -68,10 +74,10 @@ public final class SeatedSection extends AbstractSection {
         section.setElevation(0.0);
         section.isRegular = true;
 
-        int number =1;
+        int number = 1;
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
-                section.seats[i][j] = new Seat(i, j, vitalSpace, new Point(x,y), theta,number++, true);
+                section.seats[i][j] = new Seat(i, j, vitalSpace, new Point(x,y), theta, number++, true);
             }
         }
 
@@ -303,12 +309,11 @@ public final class SeatedSection extends AbstractSection {
             double d = Math.sqrt(Math.pow(p.x-gravityCenter.x,2)+Math.pow(p.y-gravityCenter.y,2));
             double alpha = thetaCalc(p,gravityCenter);
             d *= scaleFactor;
-            double px= gravityCenter.x + d*Math.cos(alpha);
-            double py= gravityCenter.y + d*Math.sin(alpha);
+            double px = gravityCenter.x + d*Math.cos(alpha);
+            double py = gravityCenter.y + d*Math.sin(alpha);
             points.add(new Point(px,py));
         }
-        Shape tolerantShape = new Polygon(points, new int[4]);
-        return tolerantShape;
+        return new Polygon(points, new int[4]);
     }
 
     @Override

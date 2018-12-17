@@ -27,6 +27,8 @@ public class Controller {
 
     private final Point cursor = new Point(-1, -1);
     private final Point offset = new Point(30, 30);
+    private final History history = new History();
+    private final JSONSerialize serializer = new JSONSerialize();
 
     private Room room;
     private Mode mode = Mode.None;
@@ -62,11 +64,13 @@ public class Controller {
     }
 
     public void save(String path) {
-        JSONSerialize.serializeToJson(room, path);
+        selectionHolder.resetSelection(room);
+        serializer.serializeToJson(room, path);
     }
 
     public void load(String path) {
-        room = JSONSerialize.deserializeFromJson(path);
+        room = serializer.deserializeFromJson(path);
+        selectionHolder.resetSelection(room);
         ui.repaint();
     }
 
@@ -94,13 +98,11 @@ public class Controller {
             @Override
             public void visit(Stage stage) {
                 move(stage);
-                autoSetSeat();
             }
 
             @Override
             public void visit(SeatedSection section) {
                 move(section);
-                autoSetSeat();
             }
 
             @Override
@@ -139,10 +141,39 @@ public class Controller {
     }
 
     public void mouseReleased() {
-        selectionHolder.applySelection(new SelectionAdapter() {
+        selectionHolder.applySelection(new SelectionVisitor() {
+            @Override
+            public void visit(Stage stage) {
+                saveRoom();
+            }
+
+            @Override
+            public void visit(SeatedSection section) {
+                saveRoom();
+                autoSetSeat();
+            }
+
+            @Override
+            public void visit(StandingSection section) {
+                saveRoom();
+            }
+
+            @Override
+            public void visit(Seat seat) {
+                saveRoom();
+                autoSetSeat();
+            }
+
+            @Override
+            public void visit(SeatSection seatSection) {
+                saveRoom();
+                autoSetSeat();
+            }
+
             @Override
             public void visit(PointSelection point) {
                 point.recalculate(room.getStage().get(), collider);
+                saveRoom();
             }
         });
     }
@@ -193,7 +224,7 @@ public class Controller {
         ui.repaint();
     }
 
-    public void mouseWheelMoved(double rotation, int width, int heigth) {
+    public void mouseWheelMoved(double rotation) {
         double scale = (0.05 *-(rotation));
         zoom(this.scale+scale);
         ui.repaint();
@@ -243,16 +274,19 @@ public class Controller {
             public void visit(Stage stage) {
                 room.setStage(null);
                 mode = Mode.None;
+                saveRoom();
             }
 
             @Override
             public void visit(SeatedSection section) {
                 room.getSections().remove(section);
+                saveRoom();
             }
 
             @Override
             public void visit(StandingSection section) {
                 room.getSections().remove(section);
+                saveRoom();
             }
         });
         ui.repaint();
@@ -284,6 +318,7 @@ public class Controller {
                     } else {
                         select.rotate(-Math.PI/32);
                     }
+                    saveRoom();
                 }
             }
         });
@@ -329,6 +364,7 @@ public class Controller {
         }
         room.addSection(section);
         mode = Mode.None;
+        saveRoom();
         return true;
     }
 
@@ -366,6 +402,7 @@ public class Controller {
             room.addSection(s);
         }
         mode = Mode.None;
+        saveRoom();
     }
 
     private boolean isMovable(Shape shape, double x, double y) {
@@ -382,24 +419,6 @@ public class Controller {
             predict.rotate(31*Math.PI/32,predict.computeCentroid());
         }
         return validator.validPredictShape(shape, predict, room);
-    }
-
-    public void autoScaling(int panelWidth, int panelHeight) {
-        double maxRoom;
-        int maxPanel;
-        double roomWidth = room.getWidth();
-        double roomHeight = room.getHeight();
-        if (roomHeight > roomWidth || roomWidth < 2 * roomHeight) {
-            maxRoom = roomHeight;
-            maxPanel = panelHeight;
-        } else {
-            maxRoom = roomWidth;
-            maxPanel = panelWidth;
-        }
-        scale = (0.8 * maxPanel) / maxRoom;
-        offset.x = (int)(((panelWidth - roomWidth * scale) / 2) / scale);
-        offset.y = (int)(((panelHeight - roomHeight * scale) / 2) / scale);
-        ui.repaint();
     }
 
     public boolean validateRoomDimensions(double roomWidth, double roomHeight, double vitalSpaceWidth, double vitalSpaceHeight) {
@@ -419,10 +438,10 @@ public class Controller {
         return true;
     }
 
-    public boolean validateSectionDimensions(Section section, int nbColums, int nbRows, double spaceWidth, double spaceHeight) {
+    public boolean validateSectionDimensions(Section section, double spaceWidth, double spaceHeight) {
         VitalSpace vs = new VitalSpace(spaceWidth, spaceHeight);
-        Section predict = SeatedSection.create(section.getShape().getPoints().firstElement().x, section.getShape().getPoints().firstElement().y, nbColums, nbRows, vs, room.getStage().get());
-        return validator.validPredictShape(section.getShape(), predict.getShape(), room);
+        Shape predict = section.getShape().clone();
+        return validator.validPredictShape(section.getShape(), predict, room);
     }
 
     public boolean validateStageDimensions(Stage stage, double width, double height) {
@@ -522,5 +541,36 @@ public class Controller {
         double px = (p0.x-offset.x)/scale;
         double py = (p0.y-offset.y)/scale;
         return new Point(px,py);
+    }
+
+    public void saveRoom() {
+        history.add(serializer.toJson(room));
+        observer.onUndoRedo();
+    }
+
+    public void undo() {
+        if (history.canUndo()) {
+            room = serializer.fromJson(history.undo());
+            selectionHolder.resetSelection(room);
+            observer.onUndoRedo();
+            ui.repaint();
+        }
+    }
+
+    public void redo() {
+        if (history.canRedo()) {
+            room = serializer.fromJson(history.redo());
+            selectionHolder.resetSelection(room);
+            observer.onUndoRedo();
+            ui.repaint();
+        }
+    }
+
+    public boolean canUndo() {
+        return history.canUndo();
+    }
+
+    public boolean canRedo() {
+        return history.canRedo();
     }
 }

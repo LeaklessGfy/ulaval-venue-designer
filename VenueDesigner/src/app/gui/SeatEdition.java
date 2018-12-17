@@ -1,5 +1,6 @@
 package app.gui;
 
+import app.domain.Controller;
 import app.domain.seat.Seat;
 import app.domain.UIPanel;
 
@@ -19,10 +20,11 @@ final class SeatEdition extends JFrame {
     private JButton okButton;
     private JButton cancelButton;
     private JButton colorButton;
+    private JButton offersButton;
 
     private final ColorPicker colorPicker = new ColorPicker();
 
-    SeatEdition(Seat seat, UIPanel panel) {
+    SeatEdition(Controller controller, Seat seat, UIPanel panel) {
         Objects.requireNonNull(seat);
         Objects.requireNonNull(panel);
         setContentPane(panelMain);
@@ -30,15 +32,14 @@ final class SeatEdition extends JFrame {
         setVisible(true);
 
         price.setText(String.format(Locale.ROOT,"%.2f", seat.getPrice()));
-        colorButton.addActionListener(e -> {
-            colorPicker.setVisible(true);
-        });
+        colorButton.addActionListener(e -> colorPicker.setVisible(true));
         colorPicker.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentHidden(ComponentEvent e) {
                 colorButton.setBackground(colorPicker.getColor());
             }
         });
+        offersButton.addActionListener(e -> new OfferAttribution(controller, seat));
 
         okButton.addActionListener(e -> {
             if (!isValidForm()) {
@@ -46,6 +47,7 @@ final class SeatEdition extends JFrame {
             }
             seat.setPrice(Double.parseDouble(price.getText()));
             seat.getShape().setColor(colorToArray(colorPicker.getColor()));
+            controller.saveRoom();
             setVisible(false);
             dispose();
             panel.repaint();

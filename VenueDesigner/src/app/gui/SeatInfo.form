@@ -136,13 +136,14 @@
         <properties/>
         <border type="none"/>
         <children>
-          <component id="9baf8" class="javax.swing.JTextArea" binding="textArea1" default-binding="true">
+          <component id="9baf8" class="javax.swing.JTextArea" binding="offers">
             <constraints/>
             <properties>
-              <background color="-2629399"/>
+              <background color="-1644067"/>
               <editable value="false"/>
-              <enabled value="false"/>
-              <font size="10"/>
+              <enabled value="true"/>
+              <font size="16"/>
+              <foreground color="-16777216"/>
             </properties>
           </component>
         </children>

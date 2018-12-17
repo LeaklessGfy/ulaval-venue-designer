@@ -12,37 +12,42 @@ import java.util.Optional;
 
 public final class Room implements Drawable {
     private final ArrayList<Section> sections;
-    @JsonProperty
-    private Shape shape;
+    private final ArrayList<Offer> offers;
 
+    private Shape shape;
     private double width;
     private double height;
     private VitalSpace vitalSpace;
-    private boolean grid;
     @JsonProperty
     private Stage stage;
 
+
     public Room(double width, double height, VitalSpace vitalSpace) {
+        this.sections = new ArrayList<>();
+        this.offers = new ArrayList<>();
         this.shape = Rectangle.create(0, 0, width, height, new int[]{20, 38, 52, 255});
         this.width = width;
         this.height = height;
         this.vitalSpace = Objects.requireNonNull(vitalSpace);
-        this.sections = new ArrayList<>();
     }
 
     @JsonCreator
-    public Room( @JsonProperty("shape") Shape shape,
-                 @JsonProperty("width") double width,
-                 @JsonProperty("height") double height,
-                 @JsonProperty("vitalSpace") VitalSpace vitalSpace,
-                 @JsonProperty("sections") ArrayList<Section> sections,
-                 @JsonProperty("stage") Stage stage) {
+    public Room(
+            @JsonProperty("sections") ArrayList<Section> sections,
+            @JsonProperty("offers") ArrayList<Offer> offers,
+            @JsonProperty("shape") Shape shape,
+            @JsonProperty("width") double width,
+            @JsonProperty("height") double height,
+            @JsonProperty("vitalSpace") VitalSpace vitalSpace,
+            @JsonProperty("stage") Stage stage
+    ) {
+        this.sections = Objects.requireNonNull(sections);
+        this.offers = Objects.requireNonNull(offers);
         this.shape = shape;
         this.width = width;
         this.height = height;
         this.vitalSpace = Objects.requireNonNull(vitalSpace);
-        this.sections = sections;
-        this.stage = stage;
+        this.stage =stage;
     }
 
     public void setDimensions(double width, double height) {
@@ -88,5 +93,9 @@ public final class Room implements Drawable {
     @JsonIgnore
     public boolean isStageSet(){
         return !(stage ==  null);
+    }
+
+    public List<Offer> getOffers() {
+        return offers;
     }
 }

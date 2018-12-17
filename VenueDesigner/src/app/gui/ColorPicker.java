@@ -10,7 +10,7 @@ final class ColorPicker extends JFrame {
 
     ColorPicker() {
         setContentPane(panelMain);
-        setSize(600, 300);
+        setSize(600, 400);
 
         colorChooser = new JColorChooser(Color.BLACK);
         colorChooser.setBorder(null);

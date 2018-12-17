@@ -74,8 +74,9 @@ final class IrregularSectionEdition  extends JFrame {
                 seat.setPrice(Double.parseDouble(price.getText()));
                 seat.getShape().setColor(colorToArray(colorPicker.getColor()));
             });
+            controller.saveRoom();
             if (check) {
-                section.autoSetSeat=false;
+                section.autoSetSeat = false;
             }
         });
 
