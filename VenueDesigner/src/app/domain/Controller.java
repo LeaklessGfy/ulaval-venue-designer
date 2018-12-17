@@ -12,6 +12,7 @@ import app.domain.selection.SelectionAdapter;
 import app.domain.selection.SelectionHolder;
 import app.domain.selection.SelectionVisitor;
 import app.domain.shape.Point;
+import app.domain.shape.PointSelection;
 import app.domain.shape.Shape;
 import app.domain.shape.ShapeBuilder;
 import app.domain.shape.ShapeBuilderFactory;
@@ -114,6 +115,11 @@ public class Controller {
                 move(selectionHolder.getPreSelection());
             }
 
+            @Override
+            public void visit(PointSelection point) {
+                point.move(scaleX, scaleY, offset);
+            }
+
             private void move(Selection selection) {
                 if (isMovable(selection.getShape(), scaleX, scaleY)) {
                     selection.move(scaleX, scaleY, offset);
@@ -123,6 +129,15 @@ public class Controller {
             offset.offset(dx, dy);
         }
         ui.repaint();
+    }
+
+    public void mouseReleased() {
+        selectionHolder.applySelection(new SelectionAdapter() {
+            @Override
+            public void visit(PointSelection point) {
+                point.recalculate(room.getStage().get(), collider);
+            }
+        });
     }
 
     public void mouseClicked(int x, int y) {

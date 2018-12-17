@@ -3,7 +3,7 @@ package app.domain.priceAlgo;
 import app.domain.seat.Seat;
 import app.domain.section.Section;
 import app.domain.shape.Point;
-import app.domain.shape.Rectangle;
+import app.domain.shape.ShapeUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +22,7 @@ public final class SeatAlgo extends PriceAlgoAbstract {
             for (Seat[] row: seats){
                 for (Seat seat: row){
                     Point seatCenter = seat.getShape().computeCentroid();
-                    double distance = Rectangle.distancePoints(seatCenter,stageCenter);
+                    double distance = ShapeUtils.distance(seatCenter, stageCenter);
                     seatArray.add(seat);
                     distances.add(distance);
                     minDist = Math.min(minDist, distance);

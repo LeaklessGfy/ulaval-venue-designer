@@ -7,11 +7,15 @@ import app.domain.seat.Seat;
 import app.domain.seat.SeatSection;
 import app.domain.section.SeatedSection;
 import app.domain.section.Section;
+import app.domain.section.StandingSection;
 import app.domain.shape.Point;
+import app.domain.shape.PointSelection;
 import app.domain.shape.Shape;
+import app.domain.shape.ShapeUtils;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Vector;
 
 public final class SelectionHolder {
     private final Collider collider;
@@ -32,13 +36,20 @@ public final class SelectionHolder {
                 @Override
                 public void visit(SeatedSection section) {
                     section.forEachSeats(seat -> {
-                        if (selectionCheck(seat.getShape(), x, y, offset)) {
+                        if (!selection[0] && selectionCheck(seat.getShape(), x, y, offset)) {
                             current = seat;
                             current.setSelected(true);
                             preSelection.setSelected(true);
                             selection[0] = true;
                         }
                     });
+                    if (!selection[0] && !section.isRegular) {
+                        PointSelection pointSelection = pointSelection(section.getShape());
+                        if (pointSelection == null) {
+                            return;
+                        }
+                        pointSelection.setSeatedSection(section);
+                    }
                 }
 
                 @Override
@@ -50,8 +61,27 @@ public final class SelectionHolder {
                             current.setSelected(true);
                             preSelection.setSelected(true);
                             selection[0] = true;
+                            return;
                         }
                     }
+                }
+
+                @Override
+                public void visit(StandingSection section) {
+                    pointSelection(section.getShape());
+                }
+
+                private PointSelection pointSelection(Shape shape) {
+                    for (Point p : shape.getPoints()) {
+                        if (selectionCheck(p, x, y, offset)) {
+                            PointSelection pointSelection = new PointSelection(shape, p);
+                            current = pointSelection;
+                            preSelection.setSelected(true);
+                            selection[0] = true;
+                            return pointSelection;
+                        }
+                    }
+                    return null;
                 }
             });
             if (selection[0]) {
@@ -80,8 +110,12 @@ public final class SelectionHolder {
         return false;
     }
 
-    public boolean selectionCheck(Shape shape, double x, double y, Point offset){
+    public boolean selectionCheck(Shape shape, double x, double y, Point offset) {
         return collider.hasCollide(x - offset.x, y - offset.y, shape);
+    }
+
+    public boolean selectionCheck(Point point, double x, double y, Point offset) {
+        return ShapeUtils.distance(point, x - offset.x, y - offset.y) < 50;
     }
 
     public void resetSelection(Room room) {

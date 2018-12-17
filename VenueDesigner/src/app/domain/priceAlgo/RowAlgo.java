@@ -3,7 +3,7 @@ package app.domain.priceAlgo;
 import app.domain.seat.Seat;
 import app.domain.section.Section;
 import app.domain.shape.Point;
-import app.domain.shape.Rectangle;
+import app.domain.shape.ShapeUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +24,7 @@ public final class RowAlgo extends PriceAlgoAbstract{
                 double y = row[0].getShape().computeCentroid().y+(row[row.length-1].getShape().computeCentroid().y-
                         row[0].getShape().computeCentroid().y)/2;
                 Point rowCenter = new Point(x,y);
-                double distance = Rectangle.distancePoints(rowCenter,stageCenter);
+                double distance = ShapeUtils.distance(rowCenter, stageCenter);
                 rows.add(row);
                 distances.add(distance);
                 minDist = Math.min(minDist, distance);

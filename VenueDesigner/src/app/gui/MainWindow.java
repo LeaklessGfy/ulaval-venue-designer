@@ -78,6 +78,11 @@ public final class MainWindow extends Frame implements Observer {
                     irregularSeatedSectionButton.setVisible(controller.getRoom().isStageSet());
                 }
             }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                controller.mouseReleased();
+            }
         });
 
         drawingPanel.addMouseMotionListener(new MouseMotionAdapter() {
