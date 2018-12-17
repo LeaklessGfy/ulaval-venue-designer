@@ -28,12 +28,6 @@ public final class StandingSection extends AbstractSection {
         this.price = price;
     }
 
-    public StandingSection(StandingSection section) {
-        super(section);
-        this.max = section.max;
-        this.price = section.price;
-    }
-
     public static StandingSection create(int max, Shape shape) {
         return new StandingSection(null, 0, shape, max,0);
     }
@@ -89,14 +83,4 @@ public final class StandingSection extends AbstractSection {
     }
 
     public void setMax(int max){ this.max = max; }
-
-    @Override
-    public boolean isSameSection(Section section) {
-        StandingSection standingSection = (StandingSection) section;
-        return getName().equals(standingSection.getName()) &&
-                getElevation() == standingSection.getElevation() &&
-                getShape().isSameShape(standingSection.getShape()) &&
-                this.max == standingSection.max &&
-                this.price == standingSection.price;
-    }
 }

@@ -59,14 +59,6 @@ public final class Seat implements Selection {
         this.price = price;
     }
 
-    public Seat(Seat seat) {
-        this.column = seat.column;
-        this.row = seat.row;
-        this.shape = seat.shape.clone();
-        this.price = seat.price;
-        this.number = seat.number;
-    }
-
     public double getPrice() {
         return price;
     }
@@ -127,13 +119,5 @@ public final class Seat implements Selection {
     @JsonIgnore
     public boolean isAuto(){
         return false;
-    }
-
-    public boolean isSameSeat(Seat seat) {
-        return this.column == seat.column &&
-        this.row == seat.row &&
-        this.shape.isSameShape(seat.shape) &&
-        this.price == seat.price &&
-        this.number == seat.number;
     }
 }

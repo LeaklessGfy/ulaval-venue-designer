@@ -74,23 +74,4 @@ public final class Polygon extends AbstractShape {
     public Shape clone() {
         return new Polygon(this);
     }
-
-    @Override
-    public boolean isSameShape(Shape shape) {
-        int size = this.getPoints().size();
-        if (size == shape.getPoints().size()) {
-            for (int i = 0; i < size; i++) {
-                if (this.getPoints().elementAt(i).x != (shape.getPoints().elementAt(i)).x ||
-                        this.getPoints().elementAt(i).y != (shape.getPoints().elementAt(i)).y) {
-                    return false;
-                }
-            }
-        } else {
-            return false;
-        }
-        if (!Arrays.equals(this.getColor(), shape.getColor())) {
-            return false;
-        }
-        return true;
-    }
 }

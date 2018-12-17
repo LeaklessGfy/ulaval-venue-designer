@@ -28,5 +28,4 @@ public interface Section extends Drawable, Selection {
     void setShape(Shape shape);
     void forEachSeats(Consumer<Seat> consumer);
     void autoSetSeats(Stage stage, Collider collider);
-    boolean isSameSection(Section section);
 }

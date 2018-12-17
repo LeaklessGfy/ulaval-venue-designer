@@ -47,19 +47,6 @@ public final class SeatedSection extends AbstractSection {
         this.autoSetSeat = autoSetSeat;
     }
 
-    public SeatedSection(SeatedSection section) {
-        super(section);
-        this.vitalSpace = section.vitalSpace;
-        this.seats = new Seat[section.seats.length][];
-        for (int row = 0; row < section.seats.length; row++) {
-            this.seats[row] = new Seat[section.seats[row].length];
-            for (int col = 0; col < section.seats[row].length; col++) {
-                this.seats[row][col] = new Seat(section.seats[row][col]);
-            }
-        }
-        this.theta = section.theta;
-    }
-
     public static SeatedSection create(double x, double y, int columns, int rows, VitalSpace vitalSpace, Stage stage) {
         Objects.requireNonNull(vitalSpace);
         Objects.requireNonNull(stage);
@@ -328,24 +315,5 @@ public final class SeatedSection extends AbstractSection {
     @JsonIgnore
     public boolean isAuto(){
         return autoSetSeat;
-    }
-
-    @Override
-    public boolean isSameSection(Section section) {
-        SeatedSection seatedSection = (SeatedSection) section;
-        if (getName().equals(seatedSection.getName()) &&
-                getElevation() == seatedSection.getElevation() &&
-                getShape().isSameShape(seatedSection.getShape()) &&
-                this.vitalSpace == seatedSection.vitalSpace &&
-                this.seats.equals(seatedSection.seats)) {
-            for (int row = 0; row < this.seats.length; row++) {
-                for (int col = 0; col < this.seats[row].length; col++) {
-                    if (!this.seats[row][col].isSameSeat(seatedSection.seats[row][col])) {
-                        return false;
-                    }
-                }
-            }
-        }
-        return true;
     }
 }
