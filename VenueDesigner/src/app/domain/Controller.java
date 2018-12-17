@@ -26,7 +26,7 @@ public class Controller {
     private final SelectionHolder selectionHolder;
 
     private final Point cursor = new Point(-1, -1);
-    private final Point offset = new Point(15, 15);
+    private final Point offset = new Point(30, 30);
 
     private Room room;
     private Mode mode = Mode.None;
@@ -39,13 +39,14 @@ public class Controller {
     private Timer timer = new Timer();
     private Observer observer;
     private double delta = 20.0;
+    private double deltaScale = 1;
     private boolean isGridOn = true;
 
     public Controller(Collider collider) {
         this.collider = Objects.requireNonNull(collider);
         this.validator = new ColliderValidator(collider);
         this.selectionHolder = new SelectionHolder(collider);
-        this.room = new Room(900, 900, new VitalSpace(30, 30));
+        this.room = new Room(850, 850, new VitalSpace(30, 30));
     }
 
     public Room getRoom() {
@@ -83,16 +84,12 @@ public class Controller {
 
     public void mouseDragged(int x, int y) {
         observer.onLeave();
-        double scaleX = x / scale;
-        double scaleY = y / scale;
-        double dx = scaleX - cursor.x;
-        double dy = scaleY - cursor.y;
-        cursor.set(scaleX, scaleY);
-        if(isGridOn && current != null){
+        Point destination = getTransformedPoint(new Point(x,y));
+        cursor.set(destination.x, destination.y);
+        if(isGridOn){
             Point magnet = magnet(cursor);
             cursor.set(magnet.x,magnet.y);
         }
-
         if (!selectionHolder.applySelection(new SelectionVisitor() {
             @Override
             public void visit(Stage stage) {
@@ -123,17 +120,15 @@ public class Controller {
 
             @Override
             public void visit(PointSelection point) {
-                point.move(cursor.x, cursor.y, offset);
+                point.move(cursor.x, cursor.y);
             }
 
             private void move(Selection selection) {
                 if (isMovable(selection.getShape(), cursor.x, cursor.y)) {
-                    selection.move(cursor.x, cursor.y, offset);
+                    selection.move(cursor.x, cursor.y);
                 }
             }
-        })) {
-            offset.offset(dx, dy);
-        }
+        }))
         ui.repaint();
     }
 
@@ -151,9 +146,8 @@ public class Controller {
         if (room == null) {
             return;
         }
-        double scaleX = x / scale;
-        double scaleY = y / scale;
-        cursor.set(scaleX,scaleY);
+        Point destination = getTransformedPoint(new Point(x,y));
+        cursor.set(destination.x,destination.y);
         if(isGridOn){
             Point magnet = magnet(cursor);
             cursor.set(magnet.x,magnet.y);
@@ -168,12 +162,11 @@ public class Controller {
 
     public void mouseMoved(int x, int y) {
         seatHovered = false;
-        double scaleX = x / scale;
-        double scaleY = y / scale;
-        cursor.set(scaleX, scaleY);
+        Point destination = getTransformedPoint(new Point(x,y));
+        cursor.set(destination.x, destination.y);
         for (Section s: room.getSections()){
             s.forEachSeats( seat -> {
-                if (selectionHolder.selectionCheck(seat.getShape(), scaleX, scaleY, offset)) {
+                if (selectionHolder.selectionCheck(seat.getShape(), cursor.x, cursor.y)) {
                     mode = Mode.Selection;
                     seatHovered = true;
                     if (hoveredSeat != seat) {
@@ -194,14 +187,16 @@ public class Controller {
         ui.repaint();
     }
 
-    public void mouseWheelMoved(double rotation) {
+    public void mouseWheelMoved(double rotation, int width, int heigth) {
         double scale = (0.05 *-(rotation));
-        zoom(scale);
+        zoom(this.scale+scale);
         ui.repaint();
     }
 
     public void zoom(double scale) {
-        this.scale += scale;
+        delta = delta * (this.scale+2-this.scale%2);
+        this.scale = scale;
+        delta=delta/(this.scale+2-this.scale%2);
         ui.repaint();
     }
 
@@ -322,8 +317,8 @@ public class Controller {
         if (!room.getStage().isPresent()) {
             return false;
         }
-        Section section = SeatedSection.create(x - offset.x, y - offset.y, xInt, yInt, room.getVitalSpace(), room.getStage().get());
-        if (!validator.validShape(section.getShape(), room, new Point())) {
+        Section section = SeatedSection.create(x , y , xInt, yInt, room.getVitalSpace(), room.getStage().get());
+        if (!validator.validShape(section.getShape(), room)) {
             return false;
         }
         room.addSection(section);
@@ -333,7 +328,7 @@ public class Controller {
 
     private void doSelection(double x, double y) {
         mode = Mode.None;
-        if (selectionHolder.checkSelection(room, x, y, offset)) {
+        if (selectionHolder.checkSelection(room, x, y)) {
             mode = Mode.Selection;
         }
     }
@@ -352,12 +347,8 @@ public class Controller {
         current.correctLastPoint();
         Shape shape = current.build();
         current = null;
-        if (!validator.validShape(shape, room, offset)) {
+        if (!validator.validShape(shape, room)) {
             return;
-        }
-        for (Point p : shape.getPoints()) {
-            p.x -= offset.x;
-            p.y -= offset.y;
         }
         if (mode == Mode.Stage) {
             room.setStage(new Stage(shape));
@@ -373,8 +364,8 @@ public class Controller {
 
     private boolean isMovable(Shape shape, double x, double y) {
         Shape predict = shape.clone();
-        predict.move(x, y, offset);
-        return validator.validPredictShape(shape, predict, room, new Point());
+        predict.move(x, y);
+        return validator.validPredictShape(shape, predict, room);
     }
 
     private boolean isRotatable(Shape shape, boolean direction) {
@@ -384,7 +375,7 @@ public class Controller {
         } else {
             predict.rotate(31*Math.PI/32,predict.computeCentroid());
         }
-        return validator.validPredictShape(shape, predict, room, new Point());
+        return validator.validPredictShape(shape, predict, room);
     }
 
     public void autoScaling(int panelWidth, int panelHeight) {
@@ -410,11 +401,11 @@ public class Controller {
         Room predict = new Room(roomWidth, roomHeight, vs);
         Optional<Stage> opt = room.getStage();
         if (opt.isPresent()) {
-            if (validator.invalidShapeRoom(opt.get().getShape(), predict, new Point())) {
+            if (validator.invalidShapeRoom(opt.get().getShape(), predict)) {
                 return false;
             }
             for (Section section : room.getSections()) {
-                if (!validator.invalidShapeRoom(section.getShape(), predict, new Point())) {
+                if (!validator.invalidShapeRoom(section.getShape(), predict)) {
                     return false;
                 }
             }
@@ -425,7 +416,7 @@ public class Controller {
     public boolean validateSectionDimensions(Section section, int nbColums, int nbRows, double spaceWidth, double spaceHeight) {
         VitalSpace vs = new VitalSpace(spaceWidth, spaceHeight);
         Section predict = SeatedSection.create(section.getShape().getPoints().firstElement().x, section.getShape().getPoints().firstElement().y, nbColums, nbRows, vs, room.getStage().get());
-        return validator.validPredictShape(section.getShape(), predict.getShape(), room, new Point());
+        return validator.validPredictShape(section.getShape(), predict.getShape(), room);
     }
 
     public boolean validateStageDimensions(Stage stage, double width, double height) {
@@ -433,7 +424,7 @@ public class Controller {
         Stage predict = new Stage(shape);
         predict.setWidth(width);
         predict.setHeight(height);
-        return validator.validPredictShape(stage.getShape(), predict.getShape(), room, new Point());
+        return validator.validPredictShape(stage.getShape(), predict.getShape(), room);
     }
 
     public void setObserver(Observer observer){
@@ -499,6 +490,7 @@ public class Controller {
 
     public void toggleGrid(){
         isGridOn=!isGridOn;
+        ui.repaint();
     }
 
     public boolean isGridOn() {
@@ -509,7 +501,23 @@ public class Controller {
         return delta;
     }
 
-    public void setDelta( double delta){
-        this.delta=delta;
+    public void setDeltaScale( double deltaScale){
+        this.delta = delta/this.deltaScale;
+        this.deltaScale=deltaScale;
+        this.delta = delta*this.deltaScale;
+        ui.repaint();
     }
+
+    public Point getCursor(){
+        return cursor;
+    }
+
+    private Point getTransformedPoint(Point p0){
+        double px = (p0.x-offset.x)/scale;
+        double py = (p0.y-offset.y)/scale;
+        return new Point(px,py);
+    }
+
+
+
 }

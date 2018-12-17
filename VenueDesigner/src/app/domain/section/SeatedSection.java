@@ -79,15 +79,15 @@ public final class SeatedSection extends AbstractSection {
     }
 
     @Override
-    public  void move(double x, double y, Point offset) {
-        Point ref = getShape().computeCentroid();
+    public  void move(double x, double y) {
+        Point ref = getShape().getPoints().elementAt(0);
         forEachSeats(seat -> {
-            Point seatCenter = seat.getShape().computeCentroid();
-            double dx = ref.x-seatCenter.x;
-            double dy = ref.y-seatCenter.y;
-            seat.move(x - dx,y-dy, offset);
+            Point p0 = seat.getShape().getPoints().elementAt(0);
+            double dx = ref.x-p0.x;
+            double dy = ref.y-p0.y;
+            seat.move(x - dx,y-dy);
         });
-        getShape().move(x, y, offset);
+        getShape().move(x, y);
     }
 
     @Override

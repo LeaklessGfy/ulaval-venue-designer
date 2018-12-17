@@ -15,8 +15,8 @@ public final class ColliderValidator {
         this.collider = Objects.requireNonNull(collider);
     }
 
-    public boolean validShape(Shape shape, Room room, Point offset) {
-        if (invalidShapeRoom(shape, room, offset)) {
+    public boolean validShape(Shape shape, Room room) {
+        if (invalidShapeRoom(shape, room)) {
             return false;
         }
         if (room.getStage().isPresent()) {
@@ -32,8 +32,8 @@ public final class ColliderValidator {
         return true;
     }
 
-    public boolean validPredictShape(Shape shape, Shape predict, Room room, Point offset) {
-        if (invalidShapeRoom(predict, room, offset)) {
+    public boolean validPredictShape(Shape shape, Shape predict, Room room) {
+        if (invalidShapeRoom(predict, room)) {
             return false;
         }
         if (room.getStage().isPresent() && shape != room.getStage().get().getShape()) {
@@ -49,16 +49,16 @@ public final class ColliderValidator {
         return true;
     }
 
-    public boolean invalidShapeRoom(Shape shape, Room room, Point offset) {
+    public boolean invalidShapeRoom(Shape shape, Room room) {
         Vector<Point> points = room.getShape().getPoints();
         double x = points.firstElement().x;
         double y = points.firstElement().y;
 
         for (Point p : shape.getPoints()) {
-            if (p.x - offset.x < x || p.x - offset.x > x + room.getWidth()) {
+            if (p.x  < x || p.x  > x + room.getWidth()) {
                 return true;
             }
-            if (p.y - offset.y < y || p.y - offset.y > y + room.getHeight()) {
+            if (p.y  < y || p.y  > y + room.getHeight()) {
                 return true;
             }
         }

@@ -26,16 +26,20 @@ public final class MainWindow extends Frame implements Observer {
     private JPanel tablePanel;
     private JButton stage;
     private JButton regSeatedSection;
-    private JButton zoomIn;
-    private JButton zoomOut;
+
     private JButton editButton;
     private JButton removeButton;
     private JButton leftRotateButton;
     private JButton rightRotateButton;
     private JButton irregularSeatedSectionButton;
     private JButton standingSectionButton;
-    private JButton autoScalingButton;
     private JCheckBox autoSeatCheckBox;
+    private JSlider sliderGrid;
+    private JSlider sliderZoom;
+    private JButton onButton;
+    private JPanel buttonBottomPanel;
+    private JPanel leftPanel;
+    private JPanel RightPanel;
     private JMenu file;
     private JMenuItem newItem;
     private JMenuItem openItem;
@@ -52,8 +56,25 @@ public final class MainWindow extends Frame implements Observer {
         buttonTopPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 3, 0, Color.LIGHT_GRAY));
         tablePanel.setBorder(BorderFactory.createMatteBorder(0, 5, 0, 0, Color.LIGHT_GRAY));
         tablePanel.setVisible(false);
-        buttonTopPanel.setBackground(new Color(20, 38, 52));
         mainScrollPane.setBorder(BorderFactory.createEmptyBorder());
+        mainScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+
+        onButton.addActionListener( e -> {
+            controller.toggleGrid();
+            if (!controller.isGridOn())onButton.setText("Off");
+            else onButton.setText("On");
+        });
+        sliderZoom.addChangeListener( e ->{
+            int value = sliderZoom.getValue();
+            double scale = (double) value/100;
+            controller.zoom(scale);
+        });
+
+        sliderGrid.addChangeListener(e -> {
+            int value = sliderGrid.getValue();
+            double deltaScale = (double) value/100;
+            controller.setDeltaScale(deltaScale);
+        });
 
         drawingPanel.addMouseListener(new MouseAdapter() {
             @Override
@@ -101,7 +122,7 @@ public final class MainWindow extends Frame implements Observer {
             @Override
             public void mouseWheelMoved(MouseWheelEvent e) {
                 super.mouseWheelMoved(e);
-                controller.mouseWheelMoved(e.getPreciseWheelRotation());
+                controller.mouseWheelMoved(e.getPreciseWheelRotation(),drawingPanel.getWidth(),drawingPanel.getHeight());
             }
         });
 
@@ -128,7 +149,7 @@ public final class MainWindow extends Frame implements Observer {
             tablePanel.setVisible(false);
         });
 
-        zoomIn.addActionListener( e -> {
+/*        zoomIn.addActionListener( e -> {
             controller.zoom(0.1);
         });
 
@@ -138,7 +159,7 @@ public final class MainWindow extends Frame implements Observer {
 
         autoScalingButton.addActionListener(e -> {
             controller.autoScaling(drawingPanel.getWidth(), drawingPanel.getHeight());
-        });
+        });*/
 
         editButton.addActionListener(e -> {
             controller.editSelected(new SelectionAdapter() {
@@ -233,6 +254,8 @@ public final class MainWindow extends Frame implements Observer {
         drawingPanel = new DrawingPanel(painter);
         controller.setDrawingPanel(drawingPanel);
         seatInfo = new SeatInfo();
+        sliderZoom = new JSlider(33,400,100);
+        sliderGrid = new JSlider(50,200,100);
     }
 
     private void initMenu(JFrame frame) {

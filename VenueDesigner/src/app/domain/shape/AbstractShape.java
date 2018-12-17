@@ -102,12 +102,13 @@ abstract class AbstractShape implements Shape {
     }
 
     @Override
-    public void move(double x, double y, Point offset) {
-        Point centroid = this.computeCentroid();
+    public void move(double x, double y) {
+        double refX = points.elementAt(0).x;
+        double refY = points.elementAt(0).y;
         for (Point p : points) {
-            double dx = p.x - centroid.x;
-            double dy = p.y - centroid.y;
-            p.set((x+dx) - offset.x, (y+dy) - offset.y);
+            double dx = p.x - refX;
+            double dy = p.y - refY;
+            p.set(x+dx, y+dy);
         }
     }
 

@@ -94,8 +94,8 @@ public final class Seat implements Selection {
     }
 
     @Override
-    public void move(double x, double y, Point offset){
-        shape.move(x, y, offset);
+    public void move(double x, double y){
+        shape.move(x, y);
     }
 
     @Override

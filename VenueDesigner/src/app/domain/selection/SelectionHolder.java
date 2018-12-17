@@ -26,7 +26,7 @@ public final class SelectionHolder {
         this.collider = Objects.requireNonNull(collider);
     }
 
-    public boolean checkSelection(Room room, double x, double y, Point offset) {
+    public boolean checkSelection(Room room, double x, double y) {
         Selection backup = current;
         resetSelection(room);
 
@@ -36,7 +36,7 @@ public final class SelectionHolder {
                 @Override
                 public void visit(SeatedSection section) {
                     section.forEachSeats(seat -> {
-                        if (!selection[0] && selectionCheck(seat.getShape(), x, y, offset)) {
+                        if (!selection[0] && selectionCheck(seat.getShape(), x, y)) {
                             current = seat;
                             current.setSelected(true);
                             preSelection.setSelected(true);
@@ -56,7 +56,7 @@ public final class SelectionHolder {
                 public void visit(Seat seat) {
                     Seat[] seats = preSelection.getSeats()[seat.getRow()];
                     for (Seat s : seats) {
-                        if (selectionCheck(s.getShape(), x, y, offset)) {
+                        if (selectionCheck(s.getShape(), x, y)) {
                             current = new SeatSection(seats);
                             current.setSelected(true);
                             preSelection.setSelected(true);
@@ -73,7 +73,7 @@ public final class SelectionHolder {
 
                 private PointSelection pointSelection(Shape shape) {
                     for (Point p : shape.getPoints()) {
-                        if (selectionCheck(p, x, y, offset)) {
+                        if (selectionCheck(p, x, y) ){
                             PointSelection pointSelection = new PointSelection(shape, p);
                             current = pointSelection;
                             preSelection.setSelected(true);
@@ -91,7 +91,7 @@ public final class SelectionHolder {
 
         if (room.getStage().isPresent()) {
             Stage stage = room.getStage().get();
-            if (selectionCheck(stage.getShape(), x, y, offset)) {
+            if (selectionCheck(stage.getShape(), x, y)) {
                 current = stage;
                 current.setSelected(true);
                 return true;
@@ -99,7 +99,7 @@ public final class SelectionHolder {
         }
 
         for (Section section : room.getSections()) {
-            if (selectionCheck(section.getShape(), x, y, offset)) {
+            if (selectionCheck(section.getShape(), x, y)) {
                 current = section;
                 current.setSelected(true);
                 preSelection = section;
@@ -110,12 +110,12 @@ public final class SelectionHolder {
         return false;
     }
 
-    public boolean selectionCheck(Shape shape, double x, double y, Point offset) {
-        return collider.hasCollide(x - offset.x, y - offset.y, shape);
+    public boolean selectionCheck(Shape shape, double x, double y) {
+        return collider.hasCollide(x , y , shape);
     }
 
-    public boolean selectionCheck(Point point, double x, double y, Point offset) {
-        return ShapeUtils.distance(point, x - offset.x, y - offset.y) < 50;
+    public boolean selectionCheck(Point point, double x, double y) {
+        return ShapeUtils.distance(point, x , y ) < 50;
     }
 
     public void resetSelection(Room room) {

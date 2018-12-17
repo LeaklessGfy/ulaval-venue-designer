@@ -6,19 +6,28 @@ import java.awt.Color;
 import java.util.Vector;
 
 final class GUIUtils {
-    static Coordinates getCoordinates(Vector<Point> points, Point offset) {
+    static Coordinates getCoordinates(Vector<Point> points, Point offset, double scale) {
         int size = points.size();
         int[] xCoords = new int[size];
         int[] yCoords = new int[size];
+        Vector<Point> newPoints = new Vector<>();
         int i = 0;
 
         for (Point point : points) {
-            xCoords[i] = (int)Math.round(point.x + offset.x);
-            yCoords[i] = (int)Math.round(point.y + offset.y);
+            Point yp = getTransformedPoint(point, offset, scale);
+            newPoints.add(yp);
+            xCoords[i] = (int)yp.x;
+            yCoords[i] = (int)yp.y;
             i++;
         }
 
-        return new Coordinates(points, xCoords, yCoords);
+        return new Coordinates(newPoints, xCoords, yCoords);
+    }
+
+    static Point getTransformedPoint(Point p0, Point offset, double scale){
+        double px = scale*p0.x + offset.x;
+        double py = scale*p0.y + offset.y;
+        return new Point(px,py);
     }
 
     static boolean isNotInteger(String text) {

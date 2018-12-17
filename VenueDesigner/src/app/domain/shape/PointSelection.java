@@ -27,11 +27,11 @@ public final class PointSelection implements Selection {
     public void setSelected(boolean selected) {}
 
     @Override
-    public void move(double x, double y, Point offset) {
+    public void move(double x, double y) {
         Point centroid = shape.computeCentroid();
         double dx = point.x - centroid.x;
         double dy = point.y - centroid.y;
-        point.set((x+dx) - offset.x, (y+dy) - offset.y);
+        point.set(x+dx, y+dy);
     }
 
     @Override

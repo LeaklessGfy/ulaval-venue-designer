@@ -24,16 +24,18 @@ final class GUIPainter implements Painter<Graphics2D> {
         this.controller = Objects.requireNonNull(controller);
     }
 
-    void draw(Graphics2D g) {
-        g.scale(controller.getScale(), controller.getScale());
+    void draw(Graphics2D g, DrawingPanel drawingPanel) {
+        Point limits = GUIUtils.getTransformedPoint(controller.getRoom().getShape().getPoints().elementAt(2)
+                ,controller.getOffset(),controller.getScale());
+        drawingPanel.setPreferredSize((int)Math.round(limits.x+controller.getOffset().x), (int)Math.round(limits.y+controller.getOffset().y));
         controller.getRoom().accept(g, this);
         controller.getCurrent().ifPresent(s -> s.accept(g, this));
-        drawGrid(g);
     }
 
     @Override
     public void draw(Graphics2D g, Room room) {
         room.getShape().accept(g, this);
+        drawGrid(g);
         room.getStage().ifPresent(stage -> draw(g, stage));
         room.getSections().forEach(section -> section.accept(g, this));
     }
@@ -85,26 +87,26 @@ final class GUIPainter implements Painter<Graphics2D> {
 
     @Override
     public void draw(Graphics2D g, Rectangle.Builder rectangle) {
-        Coordinates coordinates = GUIUtils.getCoordinates(rectangle.getPoints(), new Point(0, 0));
+        Coordinates coordinates = GUIUtils.getCoordinates(rectangle.getPoints(), controller.getOffset(), controller.getScale());
 
         g.setStroke(new BasicStroke(2));
         g.setColor(Color.lightGray);
-        g.drawPolyline(coordinates.xCoords, coordinates.yCoords, coordinates.points.size());
-        app.domain.shape.Point last = coordinates.points.lastElement();
+        Point last = coordinates.points.lastElement();
 
         double startX = last.x;
         double startY = last.y;
-        double endX = controller.getXCursor() - last.x;
-        double endY = controller.getYCursor() - last.y;
+        Point cursor = GUIUtils.getTransformedPoint(controller.getCursor(), controller.getOffset(), controller.getScale());
+        double endX = cursor.x - last.x;
+        double endY = cursor.y - last.y;
 
         if (endX < 0) {
-            startX = controller.getXCursor();
-            endX = last.x - controller.getXCursor();
+            startX = cursor.x;
+            endX = last.x - cursor.x;
         }
 
         if (endY < 0) {
-            startY = controller.getYCursor();
-            endY = last.y - controller.getYCursor();
+            startY = cursor.y;
+            endY = last.y - cursor.y;
         }
 
         g.drawRect((int)Math.round(startX), (int)Math.round(startY), (int)Math.round(endX), (int)Math.round(endY));
@@ -112,14 +114,14 @@ final class GUIPainter implements Painter<Graphics2D> {
 
     @Override
     public void draw(Graphics2D g, Polygon.Builder polygon) {
-        Coordinates coordinates = GUIUtils.getCoordinates(polygon.getPoints(), new Point(0, 0));
+        Coordinates coordinates = GUIUtils.getCoordinates(polygon.getPoints(), controller.getOffset(), controller.getScale());
 
         g.setStroke(new BasicStroke(2));
         g.setColor(Color.lightGray);
         g.drawPolyline(coordinates.xCoords, coordinates.yCoords, coordinates.points.size());
-        app.domain.shape.Point last = coordinates.points.lastElement();
-
-        g.drawLine((int)Math.round(last.x), (int)Math.round(last.y), (int)Math.round(controller.getXCursor()), (int)Math.round(controller.getYCursor()));
+        Point last = coordinates.points.lastElement();
+        Point cursor = GUIUtils.getTransformedPoint(controller.getCursor(),controller.getOffset(), controller.getScale());
+        g.drawLine((int)Math.round(last.x), (int)Math.round(last.y), (int)Math.round(cursor.x), (int)Math.round(cursor.y));
     }
 
     private void drawFinal(Graphics2D g, Shape shape) {
@@ -142,15 +144,9 @@ final class GUIPainter implements Painter<Graphics2D> {
     }
 
     private void drawShapeColor(Graphics2D g, Shape shape, Color stroke, Color fill) {
-        Coordinates coordinates = GUIUtils.getCoordinates(shape.getPoints(), controller.getOffset());
+        Coordinates coordinates = GUIUtils.getCoordinates(shape.getPoints(), controller.getOffset(), controller.getScale());
         java.awt.Polygon polygon = new java.awt.Polygon(coordinates.xCoords, coordinates.yCoords, coordinates.points.size());
-        int lineWidth;
-        if (controller.getScale() >= 0.8) {
-            lineWidth = 2;
-        } else {
-            lineWidth = (int)(-10 * controller.getScale() + 10);
-        }
-        g.setStroke(new BasicStroke(lineWidth));
+        g.setStroke(new BasicStroke(1));
         g.setColor(stroke);
         g.draw(polygon);
         g.setColor(fill);
@@ -158,17 +154,15 @@ final class GUIPainter implements Painter<Graphics2D> {
     }
 
     private void numberSeats(Graphics2D g, SeatedSection section) {
+        double scale = controller.getScale();
         if (section.getSeats().length==0){return;}
         g.setRenderingHint(
                 RenderingHints.KEY_FRACTIONALMETRICS,
                 RenderingHints.VALUE_FRACTIONALMETRICS_ON
                 );
         Font font = Font.decode("Arial");
-        double maxWidth = section.getVitalSpace().getWidth()/2.0;
-        double x_space = Math.max(section.getSeats()[0][0].getShape().getPoints().elementAt(0).x,
-                section.getSeats()[0][0].getShape().getPoints().elementAt(2).x)-
-                Math.min(section.getSeats()[0][0].getShape().getPoints().elementAt(0).x,
-                        section.getSeats()[0][0].getShape().getPoints().elementAt(2).x);
+        double maxWidth = scale*section.getVitalSpace().getWidth()/2.0;
+        double x_space = section.getVitalSpace().getWidth();
         double y_space = Math.max(section.getSeats()[0][0].getShape().getPoints().elementAt(1).y,
                 section.getSeats()[0][0].getShape().getPoints().elementAt(3).y)-
                 Math.min(section.getSeats()[0][0].getShape().getPoints().elementAt(1).y,
@@ -202,7 +196,8 @@ final class GUIPainter implements Painter<Graphics2D> {
     private void drawText(Graphics2D g, Point point, String string, Color color, Font font){
         g.setFont(font);
         g.setColor(color);
-        g.drawString(string, (int)Math.round(point.x+controller.getOffset().x), (int)Math.round(point.y+controller.getOffset().y));
+        Point tp = GUIUtils.getTransformedPoint(point,controller.getOffset(),controller.getScale());
+        g.drawString(string, (int)tp.x, (int)tp.y);
     }
 
     private void drawGrid(Graphics2D g){
@@ -210,8 +205,8 @@ final class GUIPainter implements Painter<Graphics2D> {
         g.setColor(Color.DARK_GRAY);
 
         boolean isGridOn = controller.isGridOn();
-        double delta = controller.getDelta();
-        Coordinates perimeterCoords = GUIUtils.getCoordinates(controller.getRoom().getShape().getPoints(),controller.getOffset());
+        double delta = controller.getDelta()*controller.getScale();
+        Coordinates perimeterCoords = GUIUtils.getCoordinates(controller.getRoom().getShape().getPoints(),controller.getOffset(),controller.getScale());
         double width = Math.abs(perimeterCoords.xCoords[1]-perimeterCoords.xCoords[0]);
         double height = Math.abs(perimeterCoords.yCoords[1]-perimeterCoords.yCoords[2]);
         if (!isGridOn)return;
@@ -234,7 +229,8 @@ final class GUIPainter implements Painter<Graphics2D> {
     }
 
     private void drawLine(Graphics2D g, Vector<Point> points){
-        Coordinates coordinates = GUIUtils.getCoordinates(points, controller.getOffset());
-        g.drawLine(coordinates.xCoords[0], coordinates.yCoords[0],coordinates.xCoords[1],coordinates.yCoords[1]);
+        Point offset = GUIUtils.getTransformedPoint(new Point(0,0), controller.getOffset(), controller.getScale());
+        g.drawLine((int)(points.elementAt(0).x+offset.x), (int)(points.elementAt(0).y+offset.y)
+                ,(int)(points.elementAt(1).x+offset.x),(int)(points.elementAt(1).y+offset.y));
     }
 }
