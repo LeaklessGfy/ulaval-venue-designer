@@ -31,7 +31,7 @@ public final class SeatedSection extends AbstractSection {
         super(name, elevation, shape);
         this.vitalSpace = vitalSpace;
         this.isRegular = false;
-        this.autoSetSeat=false;
+        this.autoSetSeat = false;
     }
 
     @JsonCreator
@@ -68,10 +68,10 @@ public final class SeatedSection extends AbstractSection {
         section.setElevation(0.0);
         section.isRegular = true;
 
-        int number =1;
+        int number = 1;
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
-                section.seats[i][j] = new Seat(i, j, vitalSpace, new Point(x,y), theta,number++, true);
+                section.seats[i][j] = new Seat(i, j, vitalSpace, new Point(x,y), theta, number++, true);
             }
         }
 
@@ -303,8 +303,8 @@ public final class SeatedSection extends AbstractSection {
             double d = Math.sqrt(Math.pow(p.x-gravityCenter.x,2)+Math.pow(p.y-gravityCenter.y,2));
             double alpha = thetaCalc(p,gravityCenter);
             d *= scaleFactor;
-            double px= gravityCenter.x + d*Math.cos(alpha);
-            double py= gravityCenter.y + d*Math.sin(alpha);
+            double px = gravityCenter.x + d*Math.cos(alpha);
+            double py = gravityCenter.y + d*Math.sin(alpha);
             points.add(new Point(px,py));
         }
         Shape tolerantShape = new Polygon(points, new int[4]);

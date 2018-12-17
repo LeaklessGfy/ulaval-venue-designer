@@ -27,6 +27,8 @@ public class Controller {
 
     private final Point cursor = new Point(-1, -1);
     private final Point offset = new Point(15, 15);
+    private final History history = new History();
+    private final JSONSerialize serializer = new JSONSerialize();
 
     private Room room;
     private Mode mode = Mode.None;
@@ -59,11 +61,11 @@ public class Controller {
     }
 
     public void save(String path) {
-        JSONSerialize.serializeToJson(room, path);
+        serializer.serializeToJson(room, path);
     }
 
     public void load(String path) {
-        room = JSONSerialize.deserializeFromJson(path);
+        room = serializer.deserializeFromJson(path);
         ui.repaint();
     }
 
@@ -132,10 +134,36 @@ public class Controller {
     }
 
     public void mouseReleased() {
-        selectionHolder.applySelection(new SelectionAdapter() {
+        selectionHolder.applySelection(new SelectionVisitor() {
+            @Override
+            public void visit(Stage stage) {
+                saveRoom();
+            }
+
+            @Override
+            public void visit(SeatedSection section) {
+                saveRoom();
+            }
+
+            @Override
+            public void visit(StandingSection section) {
+                saveRoom();
+            }
+
+            @Override
+            public void visit(Seat seat) {
+                saveRoom();
+            }
+
+            @Override
+            public void visit(SeatSection seatSection) {
+                saveRoom();
+            }
+
             @Override
             public void visit(PointSelection point) {
                 point.recalculate(room.getStage().get(), collider);
+                saveRoom();
             }
         });
     }
@@ -230,16 +258,19 @@ public class Controller {
             public void visit(Stage stage) {
                 room.setStage(null);
                 mode = Mode.None;
+                saveRoom();
             }
 
             @Override
             public void visit(SeatedSection section) {
                 room.getSections().remove(section);
+                saveRoom();
             }
 
             @Override
             public void visit(StandingSection section) {
                 room.getSections().remove(section);
+                saveRoom();
             }
         });
         ui.repaint();
@@ -271,6 +302,7 @@ public class Controller {
                     } else {
                         select.rotate(-Math.PI/32);
                     }
+                    saveRoom();
                 }
             }
         });
@@ -316,6 +348,7 @@ public class Controller {
         }
         room.addSection(section);
         mode = Mode.None;
+        saveRoom();
         return true;
     }
 
@@ -357,6 +390,7 @@ public class Controller {
             room.addSection(s);
         }
         mode = Mode.None;
+        saveRoom();
     }
 
     private boolean isMovable(Shape shape, double x, double y) {
@@ -472,5 +506,36 @@ public class Controller {
         this.offset.y = offset.y;
         this.scale = scale;
         ui.repaint();
+    }
+
+    public void saveRoom() {
+        history.add(serializer.toJson(room));
+        observer.onUndoRedo();
+    }
+
+    public void undo() {
+        if (history.canUndo()) {
+            room = serializer.fromJson(history.undo());
+            selectionHolder.resetSelection(room);
+            observer.onUndoRedo();
+            ui.repaint();
+        }
+    }
+
+    public void redo() {
+        if (history.canRedo()) {
+            room = serializer.fromJson(history.redo());
+            selectionHolder.resetSelection(room);
+            observer.onUndoRedo();
+            ui.repaint();
+        }
+    }
+
+    public boolean canUndo() {
+        return history.canUndo();
+    }
+
+    public boolean canRedo() {
+        return history.canRedo();
     }
 }

@@ -86,5 +86,4 @@ public final class Stage implements Selection {
     public boolean isAuto(){
         return false;
     }
-
 }

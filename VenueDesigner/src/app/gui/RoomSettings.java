@@ -63,7 +63,7 @@ final class RoomSettings extends JFrame {
                     });
                 }
             }
-
+            controller.saveRoom();
             setVisible(false);
             dispose();
             ui.repaint();

@@ -25,7 +25,7 @@ public final class StandingSection extends AbstractSection {
                     @JsonProperty("shape") Shape shape, @JsonProperty("max") int max, @JsonProperty("price") double price) {
         super(name, elevation, shape);
         this.max = max;
-        this.price =price;
+        this.price = price;
     }
 
     public static StandingSection create(int max, Shape shape) {
@@ -75,14 +75,14 @@ public final class StandingSection extends AbstractSection {
     }
 
     public void setPrice(double price){
-        this.price=price;
+        this.price = price;
     }
 
     public int getMax(){
         return max;
     }
 
-    public void setMax(int max){
-        this.max=max;
+    public void setMax(int max) {
+        this.max = max;
     }
 }

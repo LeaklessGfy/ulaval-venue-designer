@@ -1,5 +1,6 @@
 package app.gui;
 
+import app.domain.Controller;
 import app.domain.seat.Seat;
 import app.domain.seat.SeatSection;
 import app.domain.UIPanel;
@@ -24,7 +25,7 @@ final class SeatSectionEdition extends JFrame {
 
     private final ColorPicker colorPicker = new ColorPicker();
 
-    SeatSectionEdition(SeatSection seatSection, UIPanel panel) {
+    SeatSectionEdition(Controller controller, SeatSection seatSection, UIPanel panel) {
         Objects.requireNonNull(seatSection);
         Objects.requireNonNull(panel);
         setContentPane(panelMain);
@@ -52,6 +53,7 @@ final class SeatSectionEdition extends JFrame {
                 seat.setPrice(Double.parseDouble(price.getText()));
                 seat.getShape().setColor(colorToArray(colorPicker.getColor()));
             }
+            controller.saveRoom();
             setVisible(false);
             dispose();
             panel.repaint();

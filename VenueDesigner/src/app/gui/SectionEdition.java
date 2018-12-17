@@ -78,6 +78,7 @@ final class SectionEdition extends JFrame {
                     seat.setPrice(Double.parseDouble(price.getText()));
                     seat.getShape().setColor(colorToArray(colorPicker.getColor()));
                 });
+                controller.saveRoom();
                 setVisible(false);
                 dispose();
                 panel.repaint();
