@@ -22,10 +22,6 @@ abstract class AbstractSection implements Section {
         this.shape = shape;
     }
 
-    AbstractSection(Shape shape) {
-        this(null, 0, shape);
-    }
-
     @Override
     public String getName() {
         return name == null ? "" : name;

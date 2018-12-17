@@ -35,10 +35,16 @@ public final class SeatedSection extends AbstractSection {
     }
 
     @JsonCreator
-    SeatedSection(@JsonProperty("name") String name, @JsonProperty("elevation") int elevation, @JsonProperty("shape") Shape shape,
-                  @JsonProperty("vitalSpace") VitalSpace vitalSpace, @JsonProperty("seats") Seat[][] seats,
-                  @JsonProperty("theta") double theta, @JsonProperty("isRegular") boolean isRegular,
-                  @JsonProperty("autoSetSeat") boolean autoSetSeat) {
+    SeatedSection(
+            @JsonProperty("name") String name,
+            @JsonProperty("elevation") int elevation,
+            @JsonProperty("shape") Shape shape,
+            @JsonProperty("vitalSpace") VitalSpace vitalSpace,
+            @JsonProperty("seats") Seat[][] seats,
+            @JsonProperty("theta") double theta,
+            @JsonProperty("isRegular") boolean isRegular,
+            @JsonProperty("autoSetSeat") boolean autoSetSeat
+    ) {
         super(name, elevation, shape);
         this.vitalSpace = vitalSpace;
         this.seats = seats;
@@ -307,8 +313,7 @@ public final class SeatedSection extends AbstractSection {
             double py = gravityCenter.y + d*Math.sin(alpha);
             points.add(new Point(px,py));
         }
-        Shape tolerantShape = new Polygon(points, new int[4]);
-        return tolerantShape;
+        return new Polygon(points, new int[4]);
     }
 
     @Override

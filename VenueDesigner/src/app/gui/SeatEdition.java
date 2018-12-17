@@ -20,6 +20,7 @@ final class SeatEdition extends JFrame {
     private JButton okButton;
     private JButton cancelButton;
     private JButton colorButton;
+    private JButton offersButton;
 
     private final ColorPicker colorPicker = new ColorPicker();
 
@@ -31,15 +32,14 @@ final class SeatEdition extends JFrame {
         setVisible(true);
 
         price.setText(String.format(Locale.ROOT,"%.2f", seat.getPrice()));
-        colorButton.addActionListener(e -> {
-            colorPicker.setVisible(true);
-        });
+        colorButton.addActionListener(e -> colorPicker.setVisible(true));
         colorPicker.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentHidden(ComponentEvent e) {
                 colorButton.setBackground(colorPicker.getColor());
             }
         });
+        offersButton.addActionListener(e -> new OfferAttribution(controller, seat));
 
         okButton.addActionListener(e -> {
             if (!isValidForm()) {
