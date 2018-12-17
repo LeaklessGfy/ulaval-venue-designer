@@ -19,7 +19,6 @@ final class SeatInfo extends JDialog{
         setContentPane(panelMain);
         setUndecorated(true);
         setSize(300, 400);
-        setVisible(true);
     }
 
     void update(Seat hoveredSeat, Section hoveredSection) {

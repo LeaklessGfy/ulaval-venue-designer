@@ -250,13 +250,12 @@ public final class MainWindow extends Frame implements Observer {
         openItem = new JMenuItem("Open");
         saveItem = new JMenuItem("Save");
         exportImage = new JMenuItem(("Export as image"));
+        file.add(newItem);
+        file.add(openItem);
+        file.add(saveItem);
+        file.add(exportImage);
 
-        newItem.addActionListener( e -> {
-            JFrame roomSettings = new RoomSettings(controller, drawingPanel, e);
-            roomSettings.setSize(300,400);
-            roomSettings.setVisible(true);
-        });
-
+        newItem.addActionListener(e -> new RoomSettings(controller, drawingPanel, e));
         openItem.addActionListener( e -> {
             JFileChooser fileChooser = new JFileChooser();
             FileFilter filter = new FileNameExtensionFilter("JSON files", "json");
@@ -268,16 +267,8 @@ public final class MainWindow extends Frame implements Observer {
             }
             regSeatedSection.setVisible(controller.getRoom().isStageSet());
         });
-
         saveItem.addActionListener(e -> save());
         exportImage.addActionListener(e -> saveImage());
-
-        file.add(newItem);
-        file.add(openItem);
-        file.add(saveItem);
-        file.add(exportImage);
-
-        newItem.addActionListener(e -> new RoomSettings(controller, drawingPanel, e));
 
         edition = new JMenu("Edition");
         room = new JMenuItem("Room");
@@ -290,11 +281,19 @@ public final class MainWindow extends Frame implements Observer {
         edition.add(prices);
 
         room.addActionListener(e -> new RoomSettings(controller, drawingPanel, e));
+        offers.addActionListener(e-> {
+            if (controller.getMode() == Mode.Selection) {
+                new OfferAttribution(controller, drawingPanel, e);
+            } else {
+                new OfferWindow(controller);
+            }
+        });
         prices.addActionListener(e -> {
             if(controller.getRoom().getStage().isPresent()){
             new AutoPrices(controller.getRoom().getSections(),controller.getRoom().getStage().get());}
             else {JOptionPane.showMessageDialog(null, "A stage is needed to use this feature.", "Error", JOptionPane.ERROR_MESSAGE);}
         });
+
         menuBar.add(file);
         menuBar.add(edition);
         frame.setJMenuBar(menuBar);

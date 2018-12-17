@@ -1,20 +1,24 @@
 package app.domain;
 
+import app.domain.seat.Seat;
 import app.domain.section.Section;
 import app.domain.shape.Painter;
 import app.domain.shape.Rectangle;
 import app.domain.shape.Shape;
 import com.fasterxml.jackson.annotation.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 public final class Room implements Drawable {
     private final ArrayList<Section> sections;
+    private final HashMap<Seat, ArrayList<Offer>> seatOffers;
+    private final ArrayList<Offer> offers;
+
     @JsonProperty
     private Shape shape;
-
     private double width;
     private double height;
     private VitalSpace vitalSpace;
@@ -23,11 +27,13 @@ public final class Room implements Drawable {
     private Stage stage;
 
     public Room(double width, double height, VitalSpace vitalSpace) {
+        this.sections = new ArrayList<>();
+        this.seatOffers = new HashMap<>();
+        this.offers = new ArrayList<>();
         this.shape = Rectangle.create(0, 0, width, height, new int[]{20, 38, 52, 255});
         this.width = width;
         this.height = height;
         this.vitalSpace = Objects.requireNonNull(vitalSpace);
-        this.sections = new ArrayList<>();
     }
 
     @JsonCreator
@@ -37,11 +43,13 @@ public final class Room implements Drawable {
                  @JsonProperty("vitalSpace") VitalSpace vitalSpace,
                  @JsonProperty("sections") ArrayList<Section> sections,
                  @JsonProperty("stage") Stage stage) {
+        this.sections = sections;
+        this.seatOffers = new HashMap<>();
+        this.offers = new ArrayList<>();
         this.shape = shape;
         this.width = width;
         this.height = height;
         this.vitalSpace = Objects.requireNonNull(vitalSpace);
-        this.sections = sections;
         this.stage = stage;
     }
 
@@ -88,5 +96,18 @@ public final class Room implements Drawable {
     @JsonIgnore
     public boolean isStageSet(){
         return !(stage ==  null);
+    }
+
+    public List<Offer> getOffers() {
+        return offers;
+    }
+
+    public void addOffer(Offer offer) {
+        offers.add(offer);
+    }
+
+    public void removeOffer(Offer offer) {
+        offers.remove(offer);
+        // handle seatOffers
     }
 }
