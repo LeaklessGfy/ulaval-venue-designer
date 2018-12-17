@@ -5,33 +5,51 @@ import app.domain.VitalSpace;
 import app.domain.section.SeatedSection;
 
 import javax.swing.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.util.Locale;
 import java.util.Objects;
 
+import static app.gui.GUIUtils.colorToArray;
 import static app.gui.GUIUtils.isNotNumber;
 
 final class IrregularSectionEdition  extends JFrame {
     private JTextField name;
     private JTextField elevationText;
-    private JPanel panel1;
-    private JTextField priceText;
+    private JPanel panelMain;
+    private JTextField price;
     private JTextField vsHeightText;
     private JTextField vsWidthText;
     private JButton okButton;
     private JButton cancelButton;
+    private JButton colorButton;
+
+    private final ColorPicker colorPicker = new ColorPicker();
 
     IrregularSectionEdition(Controller controller, SeatedSection section) {
         Objects.requireNonNull(controller);
         Objects.requireNonNull(section);
-        setContentPane(panel1);
+        setContentPane(panelMain);
         setSize(300, 400);
         setVisible(true);
+
+        colorButton.addActionListener(e -> {
+            colorPicker.setVisible(true);
+        });
+
+        colorPicker.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentHidden(ComponentEvent e) {
+                colorButton.setBackground(colorPicker.getColor());
+            }
+        });
 
         VitalSpace vitalSpace = section.getVitalSpace();
         name.setText(section.getName());
         elevationText.setText(String.format(Locale.ROOT,"%.2f", section.getElevation()));
         vsWidthText.setText(String.format(Locale.ROOT,"%.2f", vitalSpace.getWidth()));
         vsHeightText.setText(String.format(Locale.ROOT,"%.2f", vitalSpace.getHeight()));
+        price.setText(String.format(Locale.ROOT,"%.2f", 0.0));
 
         okButton.addActionListener(e -> {
             if (!isValidForm()) {
@@ -46,16 +64,17 @@ final class IrregularSectionEdition  extends JFrame {
             section.setVitalSpace(new VitalSpace(spaceWidth, spaceHeight));
             boolean check = false;
             if(!section.autoSetSeat) {
-                section.autoSetSeat=true;
-                check=true;
+                section.autoSetSeat = true;
+                check = true;
             }
-            section.forEachSeats(seat -> {
-                seat.setPrice(Double.parseDouble(priceText.getText()));
-            });
             setVisible(false);
             dispose();
             controller.autoSetSeat();
-            if (check){
+            section.forEachSeats(seat -> {
+                seat.setPrice(Double.parseDouble(price.getText()));
+                seat.getShape().setColor(colorToArray(colorPicker.getColor()));
+            });
+            if (check) {
                 section.autoSetSeat=false;
             }
         });
@@ -71,7 +90,7 @@ final class IrregularSectionEdition  extends JFrame {
             isNotNumber(elevationText.getText()) ||
             isNotNumber(vsWidthText.getText()) ||
             isNotNumber(vsHeightText.getText()) ||
-            isNotNumber(priceText.getText())
+            isNotNumber(price.getText())
         ) {
             JOptionPane.showMessageDialog(null, "One or more fields are not an integer.", "Error", JOptionPane.ERROR_MESSAGE);
             return false;

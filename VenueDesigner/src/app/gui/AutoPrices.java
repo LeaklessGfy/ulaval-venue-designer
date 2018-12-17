@@ -8,11 +8,12 @@ import app.domain.section.Section;
 
 import javax.swing.*;
 import java.util.List;
+import java.util.Objects;
 
 import static app.gui.GUIUtils.isNotNumber;
 
-public class AutoPrices extends JFrame{
-    private JPanel panel1;
+final class AutoPrices extends JFrame{
+    private JPanel panelMain;
     private JRadioButton seatBtn;
     private JRadioButton rowBtn;
     private JRadioButton sectionBtn;
@@ -20,9 +21,11 @@ public class AutoPrices extends JFrame{
     private JTextField min;
     private JTextField max;
 
-    AutoPrices(List<Section> sections, Stage stage){
+    AutoPrices(List<Section> sections, Stage stage) {
+        Objects.requireNonNull(sections);
+        Objects.requireNonNull(stage);
         setLocation(300,300);
-        setContentPane(panel1);
+        setContentPane(panelMain);
         setSize(200, 200);
         setVisible(true);
 
