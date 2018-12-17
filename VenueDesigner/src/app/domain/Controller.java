@@ -38,6 +38,8 @@ public class Controller {
     private boolean seatHovered = false;
     private Timer timer = new Timer();
     private Observer observer;
+    private double delta = 20.0;
+    private boolean isGridOn = true;
 
     public Controller(Collider collider) {
         this.collider = Objects.requireNonNull(collider);
@@ -86,6 +88,10 @@ public class Controller {
         double dx = scaleX - cursor.x;
         double dy = scaleY - cursor.y;
         cursor.set(scaleX, scaleY);
+        if(isGridOn && current != null){
+            Point magnet = magnet(cursor);
+            cursor.set(magnet.x,magnet.y);
+        }
 
         if (!selectionHolder.applySelection(new SelectionVisitor() {
             @Override
@@ -117,12 +123,12 @@ public class Controller {
 
             @Override
             public void visit(PointSelection point) {
-                point.move(scaleX, scaleY, offset);
+                point.move(cursor.x, cursor.y, offset);
             }
 
             private void move(Selection selection) {
-                if (isMovable(selection.getShape(), scaleX, scaleY)) {
-                    selection.move(scaleX, scaleY, offset);
+                if (isMovable(selection.getShape(), cursor.x, cursor.y)) {
+                    selection.move(cursor.x, cursor.y, offset);
                 }
             }
         })) {
@@ -147,10 +153,15 @@ public class Controller {
         }
         double scaleX = x / scale;
         double scaleY = y / scale;
+        cursor.set(scaleX,scaleY);
+        if(isGridOn){
+            Point magnet = magnet(cursor);
+            cursor.set(magnet.x,magnet.y);
+        }
         if (mode == Mode.None || mode == Mode.Selection) {
-            doSelection(scaleX, scaleY);
+            doSelection(cursor.x, cursor.y);
         } else {
-            doShape(scaleX, scaleY);
+            doShape(cursor.x, cursor.y);
         }
         ui.repaint();
     }
@@ -184,7 +195,8 @@ public class Controller {
     }
 
     public void mouseWheelMoved(double rotation) {
-        this.scale += (0.1 *-(rotation));
+        double scale = (0.05 *-(rotation));
+        zoom(scale);
         ui.repaint();
     }
 
@@ -472,5 +484,32 @@ public class Controller {
         this.offset.y = offset.y;
         this.scale = scale;
         ui.repaint();
+    }
+
+    private Point magnet(Point cursor){
+
+        double dx =cursor.x%delta;
+        double dy =cursor.y%delta;
+        Point magnet = new Point();
+        if (dx >= delta/2){ dx = dx - delta;}
+        if (dy >= delta/2){ dy = dy - delta;}
+        magnet.set(cursor.x-dx,cursor.y-dy);
+        return magnet;
+    }
+
+    public void toggleGrid(){
+        isGridOn=!isGridOn;
+    }
+
+    public boolean isGridOn() {
+        return isGridOn;
+    }
+
+    public double getDelta() {
+        return delta;
+    }
+
+    public void setDelta( double delta){
+        this.delta=delta;
     }
 }

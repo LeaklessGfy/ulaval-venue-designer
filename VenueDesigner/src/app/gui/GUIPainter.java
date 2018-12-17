@@ -15,6 +15,7 @@ import app.domain.shape.Shape;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.util.Objects;
+import java.util.Vector;
 
 final class GUIPainter implements Painter<Graphics2D> {
     private final Controller controller;
@@ -27,7 +28,7 @@ final class GUIPainter implements Painter<Graphics2D> {
         g.scale(controller.getScale(), controller.getScale());
         controller.getRoom().accept(g, this);
         controller.getCurrent().ifPresent(s -> s.accept(g, this));
-        g.scale(1/controller.getScale(),1/controller.getScale());
+        drawGrid(g);
     }
 
     @Override
@@ -202,5 +203,38 @@ final class GUIPainter implements Painter<Graphics2D> {
         g.setFont(font);
         g.setColor(color);
         g.drawString(string, (int)Math.round(point.x+controller.getOffset().x), (int)Math.round(point.y+controller.getOffset().y));
+    }
+
+    private void drawGrid(Graphics2D g){
+        g.setStroke(new BasicStroke(1));
+        g.setColor(Color.DARK_GRAY);
+
+        boolean isGridOn = controller.isGridOn();
+        double delta = controller.getDelta();
+        Coordinates perimeterCoords = GUIUtils.getCoordinates(controller.getRoom().getShape().getPoints(),controller.getOffset());
+        double width = Math.abs(perimeterCoords.xCoords[1]-perimeterCoords.xCoords[0]);
+        double height = Math.abs(perimeterCoords.yCoords[1]-perimeterCoords.yCoords[2]);
+        if (!isGridOn)return;
+        double i = 0;
+        double j = 0;
+        while (i<= width){
+            Vector<Point> points = new Vector<>();
+            points.add(new Point(i,0));
+            points.add(new Point(i,height));
+            drawLine(g,points);
+            i+= delta;
+        }
+        while (j<=height){
+            Vector<Point> points = new Vector<>();
+            points.add(new Point(0,j));
+            points.add(new Point(width,j));
+            drawLine(g,points);
+            j+= delta;
+        }
+    }
+
+    private void drawLine(Graphics2D g, Vector<Point> points){
+        Coordinates coordinates = GUIUtils.getCoordinates(points, controller.getOffset());
+        g.drawLine(coordinates.xCoords[0], coordinates.yCoords[0],coordinates.xCoords[1],coordinates.yCoords[1]);
     }
 }
