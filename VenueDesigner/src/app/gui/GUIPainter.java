@@ -154,15 +154,18 @@ final class GUIPainter implements Painter<Graphics2D> {
     }
 
     private void numberSeats(Graphics2D g, SeatedSection section) {
-        double scale = controller.getScale();
         if (section.getSeats().length==0){return;}
         g.setRenderingHint(
                 RenderingHints.KEY_FRACTIONALMETRICS,
                 RenderingHints.VALUE_FRACTIONALMETRICS_ON
                 );
         Font font = Font.decode("Arial");
-        double maxWidth = scale*section.getVitalSpace().getWidth()/2.0;
-        double x_space = section.getVitalSpace().getWidth();
+        double scale = controller.getScale();
+        double maxWidth = scale*Math.min(section.getVitalSpace().getWidth(),section.getVitalSpace().getHeight())/2.0;
+        double x_space = Math.max(section.getSeats()[0][0].getShape().getPoints().elementAt(0).x,
+                section.getSeats()[0][0].getShape().getPoints().elementAt(2).x)-
+                Math.min(section.getSeats()[0][0].getShape().getPoints().elementAt(0).x,
+                        section.getSeats()[0][0].getShape().getPoints().elementAt(2).x);
         double y_space = Math.max(section.getSeats()[0][0].getShape().getPoints().elementAt(1).y,
                 section.getSeats()[0][0].getShape().getPoints().elementAt(3).y)-
                 Math.min(section.getSeats()[0][0].getShape().getPoints().elementAt(1).y,
