@@ -553,6 +553,7 @@ public class Controller {
          if (listRoomsSize == 0 || !listRooms.get(listRooms.size() - 1).isSameRoom(room)) {
             if (listRooms.size() == maximumListRoomsSize) {
                 listRooms.remove(0);
+                currentindexListRoom--;
             }
              if (listRoomsSize != 0  && !listRooms.get(listRooms.size() - 1).isSameRoom(listRooms.get(currentindexListRoom))) {
                  for (int i = currentindexListRoom + 1; i < listRooms.size(); i++) {
@@ -561,7 +562,9 @@ public class Controller {
              }
             Room newRoom = new Room(room);
             listRooms.add(newRoom);
-            currentindexListRoom++;
+            if (currentindexListRoom < maximumListRoomsSize - 1) {
+                currentindexListRoom++;
+            }
             observer.onUndoRedo();
          }
     }
