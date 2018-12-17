@@ -47,6 +47,7 @@ public final class MainWindow extends Frame implements Observer {
     private JMenuItem room;
     private JMenuItem offers;
     private JMenuItem grid;
+    private JMenuItem prices;
     private SeatInfo seatInfo;
 
     private MainWindow(JFrame frame) {
@@ -78,6 +79,11 @@ public final class MainWindow extends Frame implements Observer {
                     standingSectionButton.setVisible(controller.getRoom().isStageSet());
                     irregularSeatedSectionButton.setVisible(controller.getRoom().isStageSet());
                 }
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                controller.mouseReleased();
             }
         });
 
@@ -192,15 +198,13 @@ public final class MainWindow extends Frame implements Observer {
 
         autoSeatCheckBox.addActionListener(e -> {
             controller.autoSetSeatSelected();
+            controller.autoSetSeat();
         });
 
-        undo.addActionListener( e -> {
-            controller.undo();
-        });
-
-        redo.addActionListener(e -> {
-            controller.redo();
-        });
+        undo.addActionListener(e -> controller.undo());
+        undo.setEnabled(false);
+        redo.addActionListener(e -> controller.redo());
+        redo.setEnabled(false);
 
         frame.addWindowListener(new WindowAdapter() {
             @Override
@@ -265,10 +269,7 @@ public final class MainWindow extends Frame implements Observer {
             regSeatedSection.setVisible(controller.getRoom().isStageSet());
         });
 
-        saveItem.addActionListener( e -> {
-            save();
-        });
-
+        saveItem.addActionListener(e -> save());
         exportImage.addActionListener(e -> saveImage());
 
         file.add(newItem);
@@ -282,12 +283,18 @@ public final class MainWindow extends Frame implements Observer {
         room = new JMenuItem("Room");
         offers = new JMenuItem("Offers");
         grid = new JMenuItem("Grid");
+        prices = new JMenuItem("Prices");
         edition.add(room);
         edition.add(offers);
         edition.add(grid);
+        edition.add(prices);
 
         room.addActionListener(e -> new RoomSettings(controller, drawingPanel, e));
-
+        prices.addActionListener(e -> {
+            if(controller.getRoom().getStage().isPresent()){
+            new AutoPrices(controller.getRoom().getSections(),controller.getRoom().getStage().get());}
+            else {JOptionPane.showMessageDialog(null, "A stage is needed to use this feature.", "Error", JOptionPane.ERROR_MESSAGE);}
+        });
         menuBar.add(file);
         menuBar.add(edition);
         frame.setJMenuBar(menuBar);
@@ -379,18 +386,11 @@ public final class MainWindow extends Frame implements Observer {
 
     @Override
     public void onUndoRedo() {
-        if (controller.undoFirstIndex()) {
-            undo.setEnabled(false);
-        }
-        else {
-            undo.setEnabled(true);
-        }
-        if (controller.redoLastIndex()) {
-            redo.setEnabled(false);
-        }
-        else {
-            redo.setEnabled(true);
-        }
+        undo.setEnabled(controller.canUndo());
+        redo.setEnabled(controller.canRedo());
+        regSeatedSection.setVisible(controller.getRoom().isStageSet());
+        standingSectionButton.setVisible(controller.getRoom().isStageSet());
+        irregularSeatedSectionButton.setVisible(controller.getRoom().isStageSet());
     }
 }
 

@@ -149,7 +149,8 @@ public final class SeatedSection extends AbstractSection {
 
     @Override
     public void autoSetSeats(Stage stage, Collider collider){
-        this.isRegular=false;
+        isRegular = false;
+
         Point stageCenter =stage.getShape().computeCentroid();
         Shape tolerantShape = createTolerantShape(getShape(),1.01);
         Shape box = makeBox(tolerantShape,stageCenter);

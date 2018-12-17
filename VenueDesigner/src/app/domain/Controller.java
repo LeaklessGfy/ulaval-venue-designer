@@ -9,43 +9,42 @@ import app.domain.section.Section;
 import app.domain.section.StandingSection;
 import app.domain.selection.Selection;
 import app.domain.selection.SelectionAdapter;
+import app.domain.selection.SelectionHolder;
 import app.domain.selection.SelectionVisitor;
 import app.domain.shape.Point;
+import app.domain.shape.PointSelection;
 import app.domain.shape.Shape;
 import app.domain.shape.ShapeBuilder;
 import app.domain.shape.ShapeBuilderFactory;
 import app.domain.section.SectionFactory;
 
 import java.util.*;
-import java.util.function.BiConsumer;
 
 public class Controller {
     private final Collider collider;
     private final ColliderValidator validator;
+    private final SelectionHolder selectionHolder;
+
     private final Point cursor = new Point(-1, -1);
     private final Point offset = new Point(15, 15);
-    private final HashMap<Mode, BiConsumer<Integer, Integer>> clickActions = new HashMap<>();
+    private final History history = new History();
+    private final JSONSerialize serializer = new JSONSerialize();
 
-    private ArrayList<Room> listRooms = new ArrayList<Room>();
-    private int currentindexListRoom = -1;
-    private int maximumListRoomsSize = 20;
     private Room room;
     private Mode mode = Mode.None;
     private UIPanel ui;
     private ShapeBuilder current;
     private double scale = 1.0;
-    private Selection selection;
-    private Section preSelection;
     private Seat hoveredSeat;
     private Section hoveredSection;
     private boolean seatHovered = false;
     private Timer timer = new Timer();
     private Observer observer;
 
-
     public Controller(Collider collider) {
         this.collider = Objects.requireNonNull(collider);
         this.validator = new ColliderValidator(collider);
+        this.selectionHolder = new SelectionHolder(collider);
         this.room = new Room(900, 900, new VitalSpace(30, 30));
     }
 
@@ -62,11 +61,11 @@ public class Controller {
     }
 
     public void save(String path) {
-        JSONSerialize.serializeToJson(room, path);
+        serializer.serializeToJson(room, path);
     }
 
     public void load(String path) {
-        room = JSONSerialize.deserializeFromJson(path);
+        room = serializer.deserializeFromJson(path);
         ui.repaint();
     }
 
@@ -82,10 +81,6 @@ public class Controller {
         return scale;
     }
 
-    public int getCurrentindexListRoom() {
-        return currentindexListRoom;
-    }
-
     public void mouseDragged(int x, int y) {
         observer.onLeave();
         double scaleX = x / scale;
@@ -94,46 +89,85 @@ public class Controller {
         double dy = scaleY - cursor.y;
         cursor.set(scaleX, scaleY);
 
-        if (selection != null) {
-            selection.accept(new SelectionVisitor() {
-                @Override
-                public void visit(Stage stage) {
-                    move(stage);
-                    autoSetSeat();
-                }
+        if (!selectionHolder.applySelection(new SelectionVisitor() {
+            @Override
+            public void visit(Stage stage) {
+                move(stage);
+                autoSetSeat();
+            }
 
-                @Override
-                public void visit(SeatedSection section) {
-                    move(section);
-                    autoSetSeat();
-                }
+            @Override
+            public void visit(SeatedSection section) {
+                move(section);
+                autoSetSeat();
+            }
 
-                @Override
-                public void visit(StandingSection section) {
-                    move(section);
-                }
+            @Override
+            public void visit(StandingSection section) {
+                move(section);
+            }
 
-                @Override
-                public void visit(Seat seat) {
-                    move(preSelection);
-                }
+            @Override
+            public void visit(Seat seat) {
+                move(selectionHolder.getPreSelection());
+            }
 
-                @Override
-                public void visit(SeatSection seatSection) {
-                    move(preSelection);
-                }
+            @Override
+            public void visit(SeatSection seatSection) {
+                move(selectionHolder.getPreSelection());
+            }
 
-                private void move(Selection selection) {
-                    if (isMovable(selection.getShape(), scaleX, scaleY)) {
-                        selection.move(scaleX, scaleY, offset);
-                    }
+            @Override
+            public void visit(PointSelection point) {
+                point.move(scaleX, scaleY, offset);
+            }
+
+            private void move(Selection selection) {
+                if (isMovable(selection.getShape(), scaleX, scaleY)) {
+                    selection.move(scaleX, scaleY, offset);
                 }
-            });
-        } else {
+            }
+        })) {
             offset.offset(dx, dy);
         }
         ui.repaint();
     }
+
+    public void mouseReleased() {
+        selectionHolder.applySelection(new SelectionVisitor() {
+            @Override
+            public void visit(Stage stage) {
+                saveRoom();
+            }
+
+            @Override
+            public void visit(SeatedSection section) {
+                saveRoom();
+            }
+
+            @Override
+            public void visit(StandingSection section) {
+                saveRoom();
+            }
+
+            @Override
+            public void visit(Seat seat) {
+                saveRoom();
+            }
+
+            @Override
+            public void visit(SeatSection seatSection) {
+                saveRoom();
+            }
+
+            @Override
+            public void visit(PointSelection point) {
+                point.recalculate(room.getStage().get(), collider);
+                saveRoom();
+            }
+        });
+    }
+
     public void mouseClicked(int x, int y) {
         observer.onLeave();
         if (room == null) {
@@ -156,12 +190,13 @@ public class Controller {
         cursor.set(scaleX, scaleY);
         for (Section s: room.getSections()){
             s.forEachSeats( seat -> {
-                if (selectionCheck(scaleX,scaleY,seat.getShape())){
+                if (selectionHolder.selectionCheck(seat.getShape(), scaleX, scaleY, offset)) {
+                    mode = Mode.Selection;
                     seatHovered = true;
-                    if (hoveredSeat!=seat) {
+                    if (hoveredSeat != seat) {
                         observer.onLeave();
-                        hoveredSection=s;
-                        hoveredSeat=seat;
+                        hoveredSection = s;
+                        hoveredSeat = seat;
                         timerReset();
                     }
                 }
@@ -196,7 +231,7 @@ public class Controller {
             return false;
         }
         this.mode = Objects.requireNonNull(mode);
-        resetSelection();
+        selectionHolder.resetSelection(room);
         ui.repaint();
         return true;
     }
@@ -214,17 +249,11 @@ public class Controller {
     }
 
     public void editSelected(SelectionVisitor visitor) {
-        if (selection == null) {
-            return;
-        }
-        selection.accept(visitor);
+        selectionHolder.applySelection(visitor);
     }
 
     public void removeSelected() {
-        if (selection == null) {
-            return;
-        }
-        selection.accept(new SelectionAdapter() {
+        selectionHolder.applySelection(new SelectionAdapter() {
             @Override
             public void visit(Stage stage) {
                 room.setStage(null);
@@ -248,10 +277,7 @@ public class Controller {
     }
 
     public void rotateSelected(boolean direction) {
-        if (selection == null) {
-            return;
-        }
-        selection.accept(new SelectionAdapter() {
+        selectionHolder.applySelection(new SelectionAdapter() {
             @Override
             public void visit(Stage stage) {
                 rotate(stage);
@@ -280,21 +306,15 @@ public class Controller {
                 }
             }
         });
-
         ui.repaint();
     }
-    public boolean isAutoSelected(){
-        if (selection == null) {
-            return false;
-        }
-        return selection.isAuto();
+
+    public boolean isAutoSelected() {
+        return selectionHolder.getSelection().map(Selection::isAuto).orElse(false);
     }
 
     public void autoSetSeatSelected(){
-        if (selection == null) {
-            return;
-        }
-        selection.accept(new SelectionAdapter() {
+        selectionHolder.applySelection(new SelectionAdapter() {
             @Override
             public void visit(SeatedSection section) {
                 section.autoSetSeat=!section.autoSetSeat;
@@ -303,20 +323,19 @@ public class Controller {
     }
 
     public void autoSetSeat() {
-        for (Section s: room.getSections()){
-            if(!room.getStage().isPresent()){
-                return;
-            }
-            s.accept(new SelectionAdapter() {
-                @Override
-                public void visit(SeatedSection section) {
-                    if (section.autoSetSeat){
-                        section.autoSetSeats(room.getStage().get(),collider);
+        room.getStage().ifPresent(stage -> {
+            room.getSections().forEach(section -> {
+                section.accept(new SelectionAdapter() {
+                    @Override
+                    public void visit(SeatedSection section) {
+                        if (section.autoSetSeat){
+                            section.autoSetSeats(stage, collider);
+                        }
                     }
-                }
+                });
             });
-        }
-        ui.repaint();
+            ui.repaint();
+        });
     }
 
     public boolean createRegularSection(int x, int y, int xInt, int yInt) {
@@ -335,51 +354,8 @@ public class Controller {
 
     private void doSelection(double x, double y) {
         mode = Mode.None;
-        Selection s = selection;
-        resetSelection();
-        if (s != null) {
-            s.accept(new SelectionAdapter() {
-                @Override
-                public void visit(SeatedSection section) {
-                    section.forEachSeats(seat -> {
-                        if (selectionCheck(x, y, seat.getShape())) {
-                            selection = seat;
-                            selection.setSelected(true);
-                            preSelection.setSelected(true);
-                        }
-                    });
-                }
-
-                @Override
-                public void visit(Seat seat) {
-                    Seat[] seats = preSelection.getSeats()[seat.getRow()];
-                    for (Seat s : seats) {
-                        if (selectionCheck(x, y, s.getShape())) {
-                            selection = new SeatSection(seats);
-                            selection.setSelected(true);
-                            preSelection.setSelected(true);
-                        }
-                    }
-                }
-            });
-            return;
-        }
-        Optional<Stage> opt = room.getStage();
-        if (opt.isPresent()) {
-            Stage stage = opt.get();
-            if (selectionCheck(x, y, stage.getShape())) {
-                selection = stage;
-                selection.setSelected(true);
-                return;
-            }
-        }
-        for (Section section : room.getSections()) {
-            if (selectionCheck(x, y, section.getShape())) {
-                selection = section;
-                selection.setSelected(true);
-                preSelection = section;
-                return;
-            }
+        if (selectionHolder.checkSelection(room, x, y, offset)) {
+            mode = Mode.Selection;
         }
     }
 
@@ -433,26 +409,6 @@ public class Controller {
         return validator.validPredictShape(shape, predict, room, new Point());
     }
 
-    private boolean selectionCheck(double x, double y, Shape shape){
-        if (collider.hasCollide(x - offset.x, y - offset.y, shape)) {
-            mode = Mode.Selection;
-            return true;
-        }
-        return false;
-    }
-
-    private void resetSelection() {
-        if (selection != null) {
-            selection.setSelected(false);
-            selection = null;
-        }
-        room.getStage().ifPresent(stage -> stage.setSelected(false));
-        room.getSections().forEach(section -> {
-            section.setSelected(false);
-            section.forEachSeats(seat -> seat.setSelected(false));
-        });
-    }
-
     public void autoScaling(int panelWidth, int panelHeight) {
         double maxRoom;
         int maxPanel;
@@ -471,6 +427,23 @@ public class Controller {
         ui.repaint();
     }
 
+    public boolean validateRoomDimensions(double roomWidth, double roomHeight, double vitalSpaceWidth, double vitalSpaceHeight) {
+        VitalSpace vs = new VitalSpace(vitalSpaceWidth, vitalSpaceHeight);
+        Room predict = new Room(roomWidth, roomHeight, vs);
+        Optional<Stage> opt = room.getStage();
+        if (opt.isPresent()) {
+            if (validator.invalidShapeRoom(opt.get().getShape(), predict, new Point())) {
+                return false;
+            }
+            for (Section section : room.getSections()) {
+                if (validator.invalidShapeRoom(section.getShape(), predict, new Point())) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     public boolean validateSectionDimensions(Section section, int nbColums, int nbRows, double spaceWidth, double spaceHeight) {
         VitalSpace vs = new VitalSpace(spaceWidth, spaceHeight);
         Section predict = SeatedSection.create(section.getShape().getPoints().firstElement().x, section.getShape().getPoints().firstElement().y, nbColums, nbRows, vs, room.getStage().get());
@@ -485,25 +458,8 @@ public class Controller {
         return validator.validPredictShape(stage.getShape(), predict.getShape(), room, new Point());
     }
 
-    public boolean validateRoomDimensions(double roomWidth, double roomHeight, double vitalSpaceWidth, double vitalSpaceHeight) {
-        VitalSpace vs = new VitalSpace(vitalSpaceWidth, vitalSpaceHeight);
-        Room predict = new Room(roomWidth, roomHeight, vs);
-        Optional<Stage> opt = room.getStage();
-        if (opt.isPresent()) {
-            if (validator.invalidShapeRoom(opt.get().getShape(), predict, new Point())) {
-                return false;
-            }
-            for (Section section : room.getSections()) {
-                if (!validator.invalidShapeRoom(section.getShape(), predict, new Point())) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    public void setObserver(Observer obs){
-        observer=obs;
+    public void setObserver(Observer observer){
+        this.observer = Objects.requireNonNull(observer);
     }
     
     private void timerReset(){
@@ -553,56 +509,33 @@ public class Controller {
     }
 
     public void saveRoom() {
-         int listRoomsSize = listRooms.size();
-         if (listRoomsSize == 0 || !listRooms.get(listRooms.size() - 1).isSameRoom(room)) {
-            if (listRooms.size() == maximumListRoomsSize) {
-                listRooms.remove(0);
-            }
-             if (listRoomsSize != 0  && !listRooms.get(listRooms.size() - 1).isSameRoom(listRooms.get(currentindexListRoom))) {
-                 for (int i = currentindexListRoom + 1; i < listRooms.size(); i++) {
-                     listRooms.remove(i);
-                 }
-             }
-            Room newRoom = new Room(room);
-            listRooms.add(newRoom);
-            currentindexListRoom++;
-            observer.onUndoRedo();
-         }
+        history.add(serializer.toJson(room));
+        observer.onUndoRedo();
     }
 
     public void undo() {
-        currentindexListRoom--;
-        room = new Room(listRooms.get(currentindexListRoom));
-        selection = null;
-        resetSelection();
-        observer.onUndoRedo();
-        ui.repaint();
+        if (history.canUndo()) {
+            room = serializer.fromJson(history.undo());
+            selectionHolder.resetSelection(room);
+            observer.onUndoRedo();
+            ui.repaint();
+        }
     }
 
     public void redo() {
-        currentindexListRoom++;
-        room = new Room(listRooms.get(currentindexListRoom));
-        selection = null;
-        resetSelection();
-        observer.onUndoRedo();
-        ui.repaint();
-    }
-
-    public boolean undoFirstIndex() {
-        if (currentindexListRoom == 0) {
-            return true;
-        }
-        else {
-            return false;
+        if (history.canRedo()) {
+            room = serializer.fromJson(history.redo());
+            selectionHolder.resetSelection(room);
+            observer.onUndoRedo();
+            ui.repaint();
         }
     }
 
-    public boolean redoLastIndex() {
-        if (currentindexListRoom == listRooms.size() - 1) {
-            return true;
-        }
-        else {
-            return false;
-        }
+    public boolean canUndo() {
+        return history.canUndo();
+    }
+
+    public boolean canRedo() {
+        return history.canRedo();
     }
 }
