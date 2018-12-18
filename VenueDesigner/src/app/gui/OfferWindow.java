@@ -30,6 +30,7 @@ final class OfferWindow extends JFrame{
     private JLabel typeAmount;
     private JPanel panelEdit;
     private JButton editButton;
+    private JTextField numberOfSeats;
 
     private boolean edition = false;
 
@@ -74,7 +75,10 @@ final class OfferWindow extends JFrame{
             resetEditPanel();
         });
         editButton.addActionListener(e -> onEdit());
-        listOffers.addListSelectionListener(e ->{showSeats(room); ui.repaint(); });
+        listOffers.addListSelectionListener(e ->{
+            removeButton.setEnabled(listOffers.getSelectedValue() != null);
+            editButton.setEnabled(listOffers.getSelectedValue() != null);
+            showSeats(room); ui.repaint(); });
 
         removeButton.setEnabled(listOffers.getSelectedValue() != null);
         editButton.setEnabled(listOffers.getSelectedValue() != null);
@@ -201,13 +205,17 @@ final class OfferWindow extends JFrame{
     private void showSeats(Room room){
         Offer offer =listOffers.getSelectedValue();
         if (offer == null) { return; }
+        int i=0;
         for (Section section: room.getSections()){
-            section.forEachSeats( seat -> {
-                seat.setSelected(false);
-                for (Offer o: seat.getOffers()){
-                    if (o == offer){seat.setSelected(true); }
+            for (Seat[] row : section.getSeats()){
+                for (Seat seat: row){
+                    seat.setSelected(false);
+                    for (Offer o: seat.getOffers()){
+                        if (o == offer){seat.setSelected(true);i++;}
+                    }
                 }
-            });
+            }
         }
+        numberOfSeats.setText(Integer.toString(i));
     }
 }
