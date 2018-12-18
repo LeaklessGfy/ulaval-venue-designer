@@ -2,11 +2,13 @@ package app.gui;
 
 import app.domain.Controller;
 import app.domain.VitalSpace;
+import app.domain.seat.Seat;
 import app.domain.section.SeatedSection;
 
 import javax.swing.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -23,6 +25,8 @@ final class IrregularSectionEdition  extends JFrame {
     private JButton okButton;
     private JButton cancelButton;
     private JButton colorButton;
+    private JButton offersButton;
+    private ArrayList<Seat> listSeats = new ArrayList<>();
 
     private final ColorPicker colorPicker = new ColorPicker();
 
@@ -32,6 +36,12 @@ final class IrregularSectionEdition  extends JFrame {
         setContentPane(panelMain);
         setSize(300, 400);
         setVisible(true);
+
+        for (int i = 0; i < section.getSeats().length; i++) {
+            for (int j = 0; j < section.getSeats()[i].length; j++) {
+                listSeats.add(section.getSeats()[i][j]);
+            }
+        }
 
         colorButton.addActionListener(e -> {
             colorPicker.setVisible(true);
@@ -43,6 +53,8 @@ final class IrregularSectionEdition  extends JFrame {
                 colorButton.setBackground(colorPicker.getColor());
             }
         });
+
+        offersButton.addActionListener(e -> new OfferAttribution(controller, listSeats));
 
         VitalSpace vitalSpace = section.getVitalSpace();
         name.setText(section.getName());

@@ -8,6 +8,7 @@ import javax.swing.*;
 
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -31,6 +32,9 @@ final class SeatEdition extends JFrame {
         setSize(300, 400);
         setVisible(true);
 
+        ArrayList<Seat> listSeats = new ArrayList<>();
+        listSeats.add(seat);
+
         price.setText(String.format(Locale.ROOT,"%.2f", seat.getPrice()));
         colorButton.addActionListener(e -> colorPicker.setVisible(true));
         colorPicker.addComponentListener(new ComponentAdapter() {
@@ -39,7 +43,8 @@ final class SeatEdition extends JFrame {
                 colorButton.setBackground(colorPicker.getColor());
             }
         });
-        offersButton.addActionListener(e -> new OfferAttribution(controller, seat));
+
+        offersButton.addActionListener(e -> new OfferAttribution(controller, listSeats));
 
         okButton.addActionListener(e -> {
             if (!isValidForm()) {
