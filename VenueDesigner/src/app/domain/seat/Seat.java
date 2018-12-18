@@ -1,5 +1,6 @@
 package app.domain.seat;
 
+import app.domain.Observer;
 import app.domain.Offer;
 import app.domain.VitalSpace;
 import app.domain.selection.Selection;
@@ -13,6 +14,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Vector;
 
 public final class Seat implements Selection {
@@ -94,7 +96,7 @@ public final class Seat implements Selection {
         this.number = number;
     }
 
-    public List<Offer> getOffers() {
+    public ArrayList<Offer> getOffers() {
         return offers;
     }
 
