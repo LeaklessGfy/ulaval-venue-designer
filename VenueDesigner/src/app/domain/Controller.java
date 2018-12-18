@@ -142,6 +142,9 @@ public class Controller {
             private void move(Selection selection) {
                 if (isMovable(selection.getShape(), dx,dy)) {
                     selection.move(dx, dy);
+                    if (isGridOn()){
+                        anchor(selection);
+                    }
                     ui.repaint();
                 }
             }
@@ -588,5 +591,15 @@ public class Controller {
 
     public SelectionHolder getSelectionHolder(){
         return selectionHolder;
+    }
+
+    private void anchor(Selection selection){
+        Point p0 =selection.getShape().getPoints().firstElement();
+        Point anchor = magnet(p0);
+        if (p0!=anchor){
+            double dx = anchor.x-p0.x;
+            double dy = anchor.y - p0.y;
+            selection.move(dx,dy);
+        }
     }
 }
