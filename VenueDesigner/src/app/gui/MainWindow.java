@@ -98,9 +98,9 @@ public final class MainWindow extends Frame implements Observer {
                     }
                     tablePanel.setVisible(controller.getMode() == Mode.Selection);
                     autoSeatCheckBox.setSelected(controller.isAutoSelected());
-                    regSeatedSection.setVisible(controller.getRoom().isStageSet());
-                    standingSectionButton.setVisible(controller.getRoom().isStageSet());
-                    irregularSeatedSectionButton.setVisible(controller.getRoom().isStageSet());
+                    regSeatedSection.setEnabled(controller.getRoom().isStageSet());
+                    standingSectionButton.setEnabled(controller.getRoom().isStageSet());
+                    irregularSeatedSectionButton.setEnabled(controller.getRoom().isStageSet());
                 }
             }
 
@@ -135,19 +135,20 @@ public final class MainWindow extends Frame implements Observer {
             tablePanel.setVisible(false);
         });
 
-        regSeatedSection.setVisible(controller.getRoom().isStageSet());
+        regSeatedSection.setEnabled(controller.getRoom().isStageSet());
+        standingSectionButton.setEnabled(controller.getRoom().isStageSet());
+        irregularSeatedSectionButton.setEnabled(controller.getRoom().isStageSet());
+        regSeatedSection.setEnabled(controller.getRoom().isStageSet());
         regSeatedSection.addActionListener(e -> {
             toggleButton(regSeatedSection, Mode.RegularSeatedSection);
             tablePanel.setVisible(false);
         });
 
-        irregularSeatedSectionButton.setVisible(controller.getRoom().isStageSet());
         irregularSeatedSectionButton.addActionListener(e -> {
             toggleButton(irregularSeatedSectionButton, Mode.IrregularSeatedSection);
             tablePanel.setVisible(false);
         });
 
-        standingSectionButton.setVisible(controller.getRoom().isStageSet());
         standingSectionButton.addActionListener(e -> {
             toggleButton(standingSectionButton, Mode.IrregularStandingSection);
             tablePanel.setVisible(false);
@@ -195,9 +196,9 @@ public final class MainWindow extends Frame implements Observer {
             controller.removeSelected();
             tablePanel.setVisible(controller.getMode()==Mode.Selection);
             autoSeatCheckBox.setSelected(controller.isAutoSelected());
-            regSeatedSection.setVisible(controller.getRoom().isStageSet());
-            standingSectionButton.setVisible(controller.getRoom().isStageSet());
-            irregularSeatedSectionButton.setVisible(controller.getRoom().isStageSet());
+            regSeatedSection.setEnabled(controller.getRoom().isStageSet());
+            standingSectionButton.setEnabled(controller.getRoom().isStageSet());
+            irregularSeatedSectionButton.setEnabled(controller.getRoom().isStageSet());
         });
 
         leftRotateButton.addActionListener(e -> {
@@ -282,7 +283,9 @@ public final class MainWindow extends Frame implements Observer {
                 String filename = fileChooser.getSelectedFile().toString();
                 this.controller.load(filename);
             }
-            regSeatedSection.setVisible(controller.getRoom().isStageSet());
+            regSeatedSection.setEnabled(controller.getRoom().isStageSet());
+            standingSectionButton.setEnabled(controller.getRoom().isStageSet());
+            irregularSeatedSectionButton.setEnabled(controller.getRoom().isStageSet());
         });
         saveItem.addActionListener(e -> save());
         exportImage.addActionListener(e -> saveImage());
@@ -325,8 +328,8 @@ public final class MainWindow extends Frame implements Observer {
         boolean isEnabled = controller.toggleMode(mode);
         reset();
         if (isEnabled) {
-            btn.setBackground(Color.BLUE);
-            btn.setForeground(Color.WHITE);
+            btn.setBackground(new Color(72,206,226,250));
+            btn.setForeground(new Color(72,206,226,250));
         } else {
             btn.setBackground(UIManager.getColor("Button.background"));
             btn.setForeground(UIManager.getColor("Button.foreground"));
@@ -401,9 +404,9 @@ public final class MainWindow extends Frame implements Observer {
     public void onUndoRedo() {
         undo.setEnabled(controller.canUndo());
         redo.setEnabled(controller.canRedo());
-        regSeatedSection.setVisible(controller.getRoom().isStageSet());
-        standingSectionButton.setVisible(controller.getRoom().isStageSet());
-        irregularSeatedSectionButton.setVisible(controller.getRoom().isStageSet());
+        regSeatedSection.setEnabled(controller.getRoom().isStageSet());
+        standingSectionButton.setEnabled(controller.getRoom().isStageSet());
+        irregularSeatedSectionButton.setEnabled(controller.getRoom().isStageSet());
     }
 }
 
