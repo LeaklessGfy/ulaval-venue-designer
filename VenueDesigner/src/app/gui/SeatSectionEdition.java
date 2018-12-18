@@ -24,7 +24,6 @@ final class SeatSectionEdition extends JFrame {
     private JPanel panelMain;
     private JButton colorButton;
     private JButton offersButton;
-    ArrayList<Seat> listSeats = new ArrayList<>();
 
     private final ColorPicker colorPicker = new ColorPicker();
 
@@ -32,8 +31,10 @@ final class SeatSectionEdition extends JFrame {
         Objects.requireNonNull(seatSection);
         Objects.requireNonNull(panel);
         setContentPane(panelMain);
-        setSize(300, 400);
+        setSize(400, 400);
         setVisible(true);
+
+        ArrayList<Seat> listSeats = new ArrayList<>();
 
         for (int i = 0; i < seatSection.getSeats().length; i++) {
             listSeats.add(seatSection.getSeats()[i]);

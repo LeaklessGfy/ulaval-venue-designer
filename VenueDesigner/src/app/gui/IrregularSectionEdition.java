@@ -26,7 +26,6 @@ final class IrregularSectionEdition  extends JFrame {
     private JButton cancelButton;
     private JButton colorButton;
     private JButton offersButton;
-    private ArrayList<Seat> listSeats = new ArrayList<>();
 
     private final ColorPicker colorPicker = new ColorPicker();
 
@@ -36,6 +35,8 @@ final class IrregularSectionEdition  extends JFrame {
         setContentPane(panelMain);
         setSize(300, 400);
         setVisible(true);
+
+        ArrayList<Seat> listSeats = new ArrayList<>();
 
         for (int i = 0; i < section.getSeats().length; i++) {
             for (int j = 0; j < section.getSeats()[i].length; j++) {
