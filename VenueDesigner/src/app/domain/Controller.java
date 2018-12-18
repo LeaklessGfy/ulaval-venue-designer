@@ -89,12 +89,17 @@ public class Controller {
     public void mouseDragged(int x, int y) {
         observer.onLeave();
         Point destination = getTransformedPoint(new Point(x,y));
-        double dx= destination.x-cursor.x;
-        double dy = destination.y-cursor.y;
-        cursor.set(destination.x, destination.y);
-        if(isGridOn){
-            Point magnet = magnet(cursor);
+        double dx;
+        double dy;
+        if (isGridOn){
+            Point magnet = magnet(destination);
+            dx= magnet.x-cursor.x;
+            dy = magnet.y-cursor.y;
             cursor.set(magnet.x,magnet.y);
+        } else {
+            dx = destination.x - cursor.x;
+            dy = destination.y - cursor.y;
+            cursor.set(destination.x, destination.y);
         }
         if (!selectionHolder.applySelection(new SelectionVisitor() {
             @Override
@@ -134,8 +139,8 @@ public class Controller {
             }
 
             private void move(Selection selection) {
-                if (isMovable(selection.getShape(), cursor.x,cursor.y)) {
-                    selection.move(cursor.x, cursor.y);
+                if (isMovable(selection.getShape(), dx,dy)) {
+                    selection.move(dx, dy);
                     ui.repaint();
                 }
             }
@@ -204,6 +209,10 @@ public class Controller {
         seatHovered = false;
         Point destination = getTransformedPoint(new Point(x,y));
         cursor.set(destination.x, destination.y);
+        if(isGridOn){
+            Point magnet = magnet(cursor);
+            cursor.set(magnet.x,magnet.y);
+        }
         for (Section s: room.getSections()){
             s.forEachSeats( seat -> {
                 if (selectionHolder.selectionCheck(seat.getShape(), cursor.x, cursor.y)) {
