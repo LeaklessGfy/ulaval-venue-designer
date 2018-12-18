@@ -9,6 +9,7 @@ import javax.swing.*;
 
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -22,6 +23,8 @@ final class SeatSectionEdition extends JFrame {
     private JButton cancelButton;
     private JPanel panelMain;
     private JButton colorButton;
+    private JButton offersButton;
+    ArrayList<Seat> listSeats = new ArrayList<>();
 
     private final ColorPicker colorPicker = new ColorPicker();
 
@@ -31,6 +34,10 @@ final class SeatSectionEdition extends JFrame {
         setContentPane(panelMain);
         setSize(300, 400);
         setVisible(true);
+
+        for (int i = 0; i < seatSection.getSeats().length; i++) {
+            listSeats.add(seatSection.getSeats()[i]);
+        }
 
         price.setText(String.format(Locale.ROOT,"%.2f", 0.0));
 
@@ -44,6 +51,8 @@ final class SeatSectionEdition extends JFrame {
                 colorButton.setBackground(colorPicker.getColor());
             }
         });
+
+        offersButton.addActionListener(e -> new OfferAttribution(controller, listSeats));
 
         okButton.addActionListener(e -> {
             if (!isValidForm()) {

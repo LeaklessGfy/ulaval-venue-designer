@@ -139,4 +139,7 @@ public final class Seat implements Selection {
     public boolean isAuto(){
         return false;
     }
+
+    @Override
+    public String toString() { return Integer.toString(number); }
 }
