@@ -286,7 +286,7 @@ public final class MainWindow extends Frame implements Observer {
     }
 
     public static void main(String[] args) {
-        JFrame frame = new JFrame("MainWindow");
+        JFrame frame = new JFrame("VenueDesigner");
         frame.setContentPane(new MainWindow(frame).panelMain);
         frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         frame.pack();
