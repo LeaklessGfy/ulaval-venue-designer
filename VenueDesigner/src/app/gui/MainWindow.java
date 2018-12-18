@@ -9,7 +9,6 @@ import app.domain.section.SeatedSection;
 import app.domain.selection.SelectionVisitor;
 import app.domain.shape.Point;
 import app.domain.shape.PointSelection;
-import app.domain.shape.Shape;
 
 import javax.swing.*;
 import java.awt.*;

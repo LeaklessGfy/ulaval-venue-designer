@@ -105,7 +105,6 @@ public class Controller {
             @Override
             public void visit(Stage stage) {
                 move(stage);
-                autoSetSeat();
             }
 
             @Override
@@ -157,6 +156,7 @@ public class Controller {
             @Override
             public void visit(Stage stage) {
                 saveRoom();
+                autoSetSeat();
             }
 
             @Override
