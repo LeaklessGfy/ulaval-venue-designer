@@ -14,7 +14,7 @@ import java.util.Objects;
 import static app.gui.GUIUtils.isNotNumber;
 import static app.gui.GUIUtils.colorToArray;
 
-final class SeatEdition extends JFrame {
+final class SeatEdition extends JPanel {
     private JPanel panelMain;
     private JTextField price;
     private JButton okButton;
@@ -27,7 +27,6 @@ final class SeatEdition extends JFrame {
     SeatEdition(Controller controller, Seat seat, UIPanel panel) {
         Objects.requireNonNull(seat);
         Objects.requireNonNull(panel);
-        setContentPane(panelMain);
         setSize(300, 400);
         setVisible(true);
 
@@ -49,14 +48,12 @@ final class SeatEdition extends JFrame {
             seat.getShape().setColor(colorToArray(colorPicker.getColor()));
             controller.saveRoom();
             setVisible(false);
-            dispose();
             panel.repaint();
         });
 
         cancelButton.addActionListener(e -> {
             colorPicker.setVisible(false);
             setVisible(false);
-            dispose();
         });
     }
 

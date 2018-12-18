@@ -6,7 +6,10 @@ import app.domain.seat.SeatSection;
 import app.domain.section.StandingSection;
 import app.domain.selection.SelectionAdapter;
 import app.domain.section.SeatedSection;
+import app.domain.selection.SelectionVisitor;
 import app.domain.shape.Point;
+import app.domain.shape.PointSelection;
+import app.domain.shape.Shape;
 
 import javax.swing.*;
 import java.awt.*;
@@ -97,13 +100,57 @@ public final class MainWindow extends Frame implements Observer {
                         reset();
                     }
                     tablePanel.setVisible(controller.getMode() == Mode.Selection);
+                    controller.getSelectionHolder().applySelection( new SelectionVisitor(){
+                        @Override
+                        public void visit(Stage stage) {
+                            autoSeatCheckBox.setVisible(false);
+                            leftRotateButton.setVisible(true);
+                            rightRotateButton.setVisible(true);
+                            removeButton.setVisible(true);
+                        }
+                        @Override
+                        public void visit(SeatedSection section) {
+                            autoSeatCheckBox.setVisible(true);
+                            leftRotateButton.setVisible(true);
+                            rightRotateButton.setVisible(true);
+                            removeButton.setVisible(true);
+                        }
+
+                        @Override
+                        public void visit(StandingSection section) {
+                            autoSeatCheckBox.setVisible(false);
+                            leftRotateButton.setVisible(true);
+                            rightRotateButton.setVisible(true);
+                            removeButton.setVisible(true);
+                        }
+
+                        @Override
+                        public void visit(Seat seat) {
+                            autoSeatCheckBox.setVisible(false);
+                            leftRotateButton.setVisible(false);
+                            rightRotateButton.setVisible(false);
+                            removeButton.setVisible(false);
+                        }
+
+                        @Override
+                        public void visit(SeatSection seatSection) {
+                            autoSeatCheckBox.setVisible(false);
+                            leftRotateButton.setVisible(false);
+                            rightRotateButton.setVisible(false);
+                            removeButton.setVisible(false);
+                        }
+
+                        @Override
+                        public void visit(PointSelection point) {
+                            tablePanel.setVisible(false);
+                            }
+                        });
+                    }
                     autoSeatCheckBox.setSelected(controller.isAutoSelected());
                     regSeatedSection.setEnabled(controller.getRoom().isStageSet());
                     standingSectionButton.setEnabled(controller.getRoom().isStageSet());
                     irregularSeatedSectionButton.setEnabled(controller.getRoom().isStageSet());
                 }
-            }
-
             @Override
             public void mouseReleased(MouseEvent e) {
                 controller.mouseReleased();

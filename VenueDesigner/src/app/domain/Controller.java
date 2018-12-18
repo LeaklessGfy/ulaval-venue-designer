@@ -105,6 +105,7 @@ public class Controller {
             @Override
             public void visit(Stage stage) {
                 move(stage);
+                autoSetSeat();
             }
 
             @Override
@@ -216,7 +217,6 @@ public class Controller {
         for (Section s: room.getSections()){
             s.forEachSeats( seat -> {
                 if (selectionHolder.selectionCheck(seat.getShape(), cursor.x, cursor.y)) {
-                    mode = Mode.Selection;
                     seatHovered = true;
                     if (hoveredSeat != seat) {
                         observer.onLeave();
@@ -428,7 +428,7 @@ public class Controller {
         if (direction){
             predict.rotate(Math.PI/32,predict.computeCentroid());
         } else {
-            predict.rotate(31*Math.PI/32,predict.computeCentroid());
+            predict.rotate(-Math.PI/32,predict.computeCentroid());
         }
         return validator.validPredictShape(shape, predict, room);
     }
@@ -584,5 +584,9 @@ public class Controller {
 
     public boolean canRedo() {
         return history.canRedo();
+    }
+
+    public SelectionHolder getSelectionHolder(){
+        return selectionHolder;
     }
 }
