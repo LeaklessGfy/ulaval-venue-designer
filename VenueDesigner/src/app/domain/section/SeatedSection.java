@@ -1,5 +1,6 @@
 package app.domain.section;
 
+import app.domain.Offer;
 import app.domain.collider.Collider;
 import app.domain.seat.Seat;
 import app.domain.selection.SelectionVisitor;
@@ -7,10 +8,16 @@ import app.domain.Stage;
 import app.domain.VitalSpace;
 import app.domain.shape.*;
 import app.domain.shape.Painter;
+import app.domain.shape.Point;
+import app.domain.shape.Polygon;
+import app.domain.shape.Rectangle;
+import app.domain.shape.Shape;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.awt.*;
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Vector;
 import java.util.function.Consumer;
@@ -153,6 +160,17 @@ public final class SeatedSection extends AbstractSection {
         double boxHeight = Math.sqrt(Math.pow(box.getPoints().elementAt(2).x-box.getPoints().elementAt(1).x,2)+
                 Math.pow(box.getPoints().elementAt(2).y-box.getPoints().elementAt(1).y,2));
         Vector<Vector<Seat>> tempSeats= new Vector<>();
+        ArrayList<Integer> listPrices = new ArrayList<>();
+        ArrayList<ArrayList<Offer>> listOffers = new ArrayList<>();
+        ArrayList<int[]> listColors = new ArrayList<>();
+
+        for (int i = 0; i < seats.length; i++) {
+            for (int j = 0; j < seats[i].length; j++) {
+                listPrices.add((int)seats[i][j].getPrice());
+                listOffers.add(seats[i][j].getOffers());
+                listColors.add(seats[i][j].getShape().getColor());
+            }
+        }
 
         int i=0;
         Point p0 = box.getPoints().elementAt(0);
@@ -199,6 +217,11 @@ public final class SeatedSection extends AbstractSection {
             int rowSize = row.size();
             seats[a]=new Seat[rowSize];
             for(Seat seat: row){
+                if (number - 1 < listPrices.size()) {
+                    seat.setPrice(listPrices.get(number - 1));
+                    seat.getOffers().addAll(listOffers.get(number - 1));
+                    seat.getShape().setColor(listColors.get(number - 1));
+                }
                 seat.setNumber(number++);
                 seats[a][b]=seat;
                 b++;
