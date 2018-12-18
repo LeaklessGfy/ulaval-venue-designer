@@ -20,11 +20,13 @@ final class OfferAttribution extends JFrame{
     private JList<Seat> listSeatsJlist;
     private JScrollPane scrollPaneSeatOffers;
     private JScrollPane scrollPaneSeats;
+    private JButton addOfferToAllButton;
+    private JButton removeOfferFromAllButton;
 
     OfferAttribution(Controller controller, ArrayList<Seat> listSeats) {
         Objects.requireNonNull(controller);
         setContentPane(panelMain);
-        setSize(350, 400);
+        setSize(500, 400);
         setVisible(true);
         panelAdd.setVisible(false);
 
@@ -75,6 +77,37 @@ final class OfferAttribution extends JFrame{
                     seatOffer.add(offer);
                     modelSeatOffer.addElement(offer);
                 }
+        });
+
+        addOfferToAllButton.addActionListener(e -> {
+            List<Offer> offerList = listOffers.getSelectedValuesList();
+            for (Seat seat : listSeats) {
+                List<Offer> seatOffer = seat.getOffers();
+                for (Offer offer : offerList) {
+                    if (seatOffer.contains(offer)) {
+                        continue;
+                    }
+                    seatOffer.add(offer);
+                }
+            }
+            Seat seat = listSeatsJlist.getSelectedValue();
+            modelSeatOffer.removeAllElements();
+            for (Offer offer : seat.getOffers()) {
+                modelSeatOffer.addElement(offer);
+            }
+        });
+
+        removeOfferFromAllButton.addActionListener(e -> {
+            Offer offer = seatOffers.getSelectedValue();
+            if (offer == null) {
+                return;
+            }
+            for (Seat seat : listSeats) {
+                if (seat.getOffers().contains(offer)) {
+                    seat.getOffers().remove(offer);
+                }
+                modelSeatOffer.removeElement(offer);
+            }
         });
 
         listSeatsJlist.addListSelectionListener( e -> {
